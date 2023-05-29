@@ -59,16 +59,27 @@ ds["train"][0]
 
 To train model, firstly different image classification models will be pretrained with imagenet. Then, panoptic segmentation model will be built based on pre-trained backbone. 
 
+(later ...)
 
 
+## Supported Backbones for Architectures
+
+List of supported backbones - bit, convnext, convnextv2, dinat, focalnet, maskformer-swin, nat, resnet, swin.
 
 
+- **maskformer, mask2former** use detr object detection architecture as decoder, and are not dynamic for changing decoder architecture (facebook)
+- **maskformer, mask2former** are currently only supporting maskformer-swin-transformer (not vanilla swin-transformer) as backbone (facebook). Any change in maskformer/mask2former backbone requires new architecture design.
+- **oneformer** supports only above mentioned backbones/ classifiers.
+- **DeTR** supports only above mentioned backbones/ classifiers.
 
+ 
+## To-Do
 
-
-
-
-
+ - backbones config + preprocessor files - bit, convnext, convnextv2, dinat, focalnet, maskformer-swin, nat, resnet, swin
+ - DeTR model with dynamic backbones along with config file
+ - maskformer model with default mask-swin transformer along with config file
+ - mask2former model with default mask-swin transformer along with config file
+ - oneformer model with dynamic backbones along with config file
 
 ## References & Citations
 
