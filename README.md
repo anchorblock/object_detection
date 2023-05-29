@@ -1,6 +1,6 @@
 # object_detection
 
-Object detection benchmarking with coco dataset using different transformers backbones and different architectures for panoptic segmentation task.
+Object detection benchmarking with coco dataset using different transformers backbones and different architectures for panoptic segmentation task. We are using tiny version of every models and every backbones for training and inference convenience.
 
 ## Install Requirements
 
@@ -57,7 +57,7 @@ ds["train"][0]
 
 ## Train different models for different backbones
 
-To train model, firstly different image classification models will be pretrained with imagenet. Then, panoptic segmentation model will be built based on pre-trained backbone. We are using tiny version of every models and every backbones for training and inference convenience.
+To train model, firstly different image classification models will be pretrained with imagenet. Then, panoptic segmentation model will be built based on pre-trained backbone. 
 
 
 

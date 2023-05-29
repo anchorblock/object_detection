@@ -1,0 +1,39 @@
+.
+├── coco_datasets
+│   └── train2017.zip
+├── configs
+│   ├── backbones
+│   │   ├── DINAT_config.json
+│   │   ├── focalnet_config.json (current)
+│   │   └── swin_transformer_config.json
+│   ├── datasets (done)
+│   │   ├── coco-panoptic-id2label.json
+│   │   ├── coco-panoptic-label2id.json
+│   │   ├── imagenet-1k-id2label.json
+│   │   ├── imagenet-1k-label2id.json
+│   │   ├── imagenet-22k-id2label.json
+│   │   └── imagenet-22k-label2id.json
+│   └── models
+│       ├── DeTR_config.json
+│       ├── DINO_config.json
+│       ├── mask2former_config.json
+│       ├── maskformer_config.json (current)
+│       └── oneformer_config.json
+├── dev
+│   ├── config_initialize.py
+│   ├── experiment2.ipynb
+│   ├── experiment.ipynb
+│   └── rough.py
+├── INSTALL.md
+├── models
+│   ├── DeTR.py
+│   ├── DINO.py
+│   ├── mask2former.py
+│   ├── maskformer.py (current)
+│   └── oneformer.py
+├── README.md
+├── requirements.txt
+└── utils
+    ├── coco_dataset_script.py
+    ├── inference_script.ipynb (current)
+    └── training_script.py (current)
