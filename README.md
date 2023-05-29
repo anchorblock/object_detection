@@ -1,6 +1,6 @@
 # object_detection
 
-Object detection benchmarking with coco dataset using different transformers backbone for panoptic segmentation task.
+Object detection benchmarking with coco dataset using different transformers backbones and different architectures for panoptic segmentation task.
 
 ## Install Requirements
 
@@ -51,13 +51,13 @@ For testing purpose, you can use the hosted dataset as follows:
 import datasets
 
 COCO_DIR = "coco_datasets"
-ds = datasets.load_dataset("coco_dataset_script.py", "2017", data_dir=COCO_DIR)
+ds = datasets.load_dataset("utils/coco_dataset_script.py", "2017", data_dir=COCO_DIR)
 ds["train"][0]
 ```
 
-## Train maskformer model for different backbones
+## Train different models for different backbones
 
-To train maskformer model, firstly different image classification models will be pretrained with imagenet. Then, maskformer model will be built based on pre-trained backbone.
+To train model, firstly different image classification models will be pretrained with imagenet. Then, panoptic segmentation model will be built based on pre-trained backbone. We are using tiny version of every models and every backbones for training and inference convenience.
 
 
 
