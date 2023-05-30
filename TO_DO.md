@@ -2,8 +2,9 @@
 
 ### Pre-Alpha Release 0.1.0
 
-- [ ] general config and preprocess_config architectures: DeTR
-- [ ] general config and preprocess_config architectures: maskformer
+- [x] Argparse problem: initializing parse arguments in a python script, but passing those arguments from bash terminal while running another python script. The goal is to make training script dynamic for any model training.
+- [x] general config and preprocess_config architectures: DeTR
+- [x] general config and preprocess_config architectures: maskformer
 - [ ] general config and preprocess_config architectures: mask2former
 - [ ] general config and preprocess_config architectures: oneformer
 - [ ] general config and preprocess_config backbones: bit

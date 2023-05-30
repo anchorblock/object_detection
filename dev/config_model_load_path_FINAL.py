@@ -2,6 +2,9 @@ from transformers import DetrConfig, DetrForObjectDetection, FocalNetConfig, Foc
 
 
 config = FocalNetConfig.from_json_file('./weights_focalnet_img_classify/config.json')
+
+# config.id2label = {"0": "a", "1": "b"}
+
 model = FocalNetForImageClassification.from_pretrained('./weights_focalnet_img_classify/pytorch_model.bin', config=config)
 
 print(model)
