@@ -31,6 +31,7 @@
 
 ### Future Releases
 
+- [x] writing download script: coco_datasets_download_and_extract.sh
 - [ ] general config and preprocess_config architectures: DeTR
 - [ ] general config and preprocess_config architectures: maskformer
 - [ ] general config and preprocess_config architectures: mask2former
