@@ -9,15 +9,40 @@ Releases and To-Do archive lists, referring to [TO_DO.md](./TO_DO.md)
 
 ## Install Requirements
 
-To setup installation, referring to [INSTALL.md](./INSTALL.md)
+To setup and installation, referring to [INSTALL.md](./INSTALL.md)
 
-## Download ImageNet dataset and format for training
+## Backbones Training Pipelines
 
-For using the ImageNet-1k dataset (2012), you need to download it manually first.
+The following backbones can be trained with imagenet-1k dataset using this current repository:
+
+backbones : 
+
+- bit
+- convnext
+- convnextv2
+- dinat
+- focalnet
+- nat
+- resnet
+- swin
+
+
+### Download ImageNet dataset and format for training
+
+For using the ImageNet-1k dataset (2012), you need to download, extract and organize it manually first.
+
+Download:
 
 ```bash
-bash imagenet_1k_download_and_extract.sh
+bash imagenet_1k_download.sh
 ```
+
+Extract:
+
+```bash
+bash imagenet_1k_extract.sh
+```
+
 
 For testing purpose, you can use the hosted dataset as follows:
 
@@ -30,28 +55,105 @@ ds["train"][0]
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+
+### Train backbones using ImageNet and config files
+
+To train classifier model, run:
+
+<!-- 
+
+
+```bash
+export OMP_NUM_THREADS=4
+export n_gpu=1
+
+torchrun --standalone --nproc_per_node=$n_gpu z05_training_fp16_DDP_A100.py \
+    --train_parquet_data_file="./mlm_processed_bn_data/train_data.parquet" \
+    --test_parquet_data_file="./mlm_processed_bn_data/validation_data.parquet" \
+    --per_device_train_batch_size=32 \
+    --gradient_accumulation_steps=64 \
+    --learning_rate=5e-4 \
+    --warmup_steps=10000 \
+    --max_steps=1250000 \
+    --logging_steps=500 \
+    --eval_steps=100000 \
+    --save_steps=10000 \
+    --init_model_directory="./DeBERTaV3" \
+    --save_directory="./DeBERTaV3_trained_bn" \
+    --resume_from_checkpoint="./DeBERTaV3" \
+    --gradient_checkpointing=true
+
+```
+
+SNIPPET !
+
+export OMP_NUM_THREADS=4
+export n_gpu=1
+
+# Create a config file
+cat << EOF > config.yaml
+train_parquet_data_file: "./mlm_processed_bn_data/train_data.parquet"
+test_parquet_data_file: "./mlm_processed_bn_data/validation_data.parquet"
+per_device_train_batch_size: 32
+gradient_accumulation_steps: 64
+learning_rate: 5e-4
+warmup_steps: 10000
+max_steps: 1250000
+logging_steps: 500
+eval_steps: 100000
+save_steps: 10000
+init_model_directory: "./DeBERTaV3"
+save_directory: "./DeBERTaV3_trained_bn"
+resume_from_checkpoint: "./DeBERTaV3"
+gradient_checkpointing: true
+EOF
+
+# Pass the arguments mentioned in the config file
+torchrun --standalone --nproc_per_node=$n_gpu z05_training_fp16_DDP_A100.py \
+    --config config.yaml
+
+
+
+ -->
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Download COCO dataset and format for training
 
-For using the COCO dataset (2017), you need to download it manually first:
+For using the COCO dataset (2017), you need to download and extract it manually first:
+
+Download:
 
 ```bash
-mkdir coco_datasets
-cd coco_datasets
-wget http://images.cocodataset.org/zips/train2017.zip
-wget http://images.cocodataset.org/zips/val2017.zip
-wget http://images.cocodataset.org/zips/test2017.zip
-wget http://images.cocodataset.org/annotations/annotations_trainval2017.zip
-wget http://images.cocodataset.org/annotations/image_info_test2017.zip
-unzip train2017.zip
-unzip val2017.zip
-unzip test2017.zip
-unzip annotations_trainval2017.zip
-unzip image_info_test2017.zip
+bash coco_datasets_download.sh
 ```
 
+Extract:
+
 ```bash
-cd ..
+bash coco_datasets_extract.sh
 ```
+
 
 Expected dataset structure for COCO:
 
@@ -99,6 +201,18 @@ List of supported backbones - bit, convnext, convnextv2, dinat, focalnet, maskfo
 
 
 ## References & Citations
+
+ImageNet Datasets:
+```
+@inproceedings{deng2009imagenet,
+  title={Imagenet: A large-scale hierarchical image database},
+  author={Deng, Jia and Dong, Wei and Socher, Richard and Li, Li-Jia and Li, Kai and Fei-Fei, Li},
+  booktitle={2009 IEEE conference on computer vision and pattern recognition},
+  pages={248--255},
+  year={2009},
+  organization={Ieee}
+}
+```
 
 COCO Datatsets:
 
