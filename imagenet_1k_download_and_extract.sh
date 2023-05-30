@@ -5,6 +5,18 @@ axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_val.tar
 axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_test_v10102019.tar
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 mkdir train && mv ILSVRC2012_img_train.tar train/ && cd train
 # Extract training set; remove compressed file
 tar -xvf ILSVRC2012_img_train.tar 
@@ -63,3 +75,5 @@ mkdir imagenet_1k/val && mv ILSVRC2012_img_val.tar imagenet_1k/val/ && cd imagen
 # #  $ find val/ -name "*.JPEG" | wc -l
 # #  50000
 # #
+
+#### write for test.tar

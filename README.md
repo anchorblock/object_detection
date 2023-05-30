@@ -13,15 +13,20 @@ To setup installation, referring to [INSTALL.md](./INSTALL.md)
 
 ## Download ImageNet dataset and format for training
 
-For using the ImageNet-1k dataset (2012), you need to download it manually first:
+For using the ImageNet-1k dataset (2012), you need to download it manually first.
 
 ```bash
-mkdir imagenet_1k
-cd imagenet_1k
-axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_train.tar
-axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_val.tar
-axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_test_v10102019.tar
-cd ..
+bash imagenet_1k_download_and_extract.sh
+```
+
+For testing purpose, you can use the hosted dataset as follows:
+
+```python
+import datasets
+
+IMAGENET_DIR = "imagenet_1k"
+ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", "2017", data_dir=IMAGENET_DIR)
+ds["train"][0]
 ```
 
 

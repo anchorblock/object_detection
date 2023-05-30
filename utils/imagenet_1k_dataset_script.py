@@ -17,8 +17,8 @@ import os
 
 import datasets
 from datasets.tasks import ImageClassification
-
-from .classes import IMAGENET2012_CLASSES
+from PIL import Image
+from imagenet_1k_classes import IMAGENET2012_CLASSES
 
 
 _CITATION = """\
@@ -39,19 +39,6 @@ _HOMEPAGE = "https://image-net.org/index.php"
 _DESCRIPTION = """\
 ILSVRC 2012, commonly known as 'ImageNet' is an image dataset organized according to the WordNet hierarchy. Each meaningful concept in WordNet, possibly described by multiple words or word phrases, is called a "synonym set" or "synset". There are more than 100,000 synsets in WordNet, majority of them are nouns (80,000+). ImageNet aims to provide on average 1000 images to illustrate each synset. Images of each concept are quality-controlled and human-annotated. In its completion, ImageNet hopes to offer tens of millions of cleanly sorted images for most of the concepts in the WordNet hierarchy. ImageNet 2012 is the most commonly used subset of ImageNet. This dataset spans 1000 object classes and contains 1,281,167 training images, 50,000 validation images and 100,000 test images
 """
-
-_DATA_URL = {
-    "train": [
-        f"https://huggingface.co/datasets/imagenet-1k/resolve/1500f8c59b214ce459c0a593fa1c87993aeb7700/data/train_images_{i}.tar.gz"
-        for i in range(5)
-    ],
-    "val": [
-        "https://huggingface.co/datasets/imagenet-1k/resolve/1500f8c59b214ce459c0a593fa1c87993aeb7700/data/val_images.tar.gz"
-    ],
-    "test": [
-        "https://huggingface.co/datasets/imagenet-1k/resolve/1500f8c59b214ce459c0a593fa1c87993aeb7700/data/test_images.tar.gz"
-    ],
-}
 
 
 class Imagenet1k(datasets.GeneratorBasedBuilder):
@@ -76,86 +63,63 @@ class Imagenet1k(datasets.GeneratorBasedBuilder):
 
     def _split_generators(self, dl_manager):
         """Returns SplitGenerators."""
-        archives = dl_manager.download(_DATA_URL)
+        data_dir = self.config.data_dir
+        if not data_dir:
+            raise ValueError(
+                "This script is supposed to work with local (downloaded) imagenet-1k dataset. The argument `data_dir` in `load_dataset()` is required."
+            )
+        
+        train_files = [os.path.join(data_dir, "train", filename) for filename in os.listdir(os.path.join(data_dir, "train"))]
+        val_files = [os.path.join(data_dir, "val", filename) for filename in os.listdir(os.path.join(data_dir, "val"))]
+        test_files = [os.path.join(data_dir, "test", filename) for filename in os.listdir(os.path.join(data_dir, "test"))]
 
         return [
             datasets.SplitGenerator(
                 name=datasets.Split.TRAIN,
                 gen_kwargs={
-                    "archives": [dl_manager.iter_archive(archive) for archive in archives["train"]],
+                    "filepaths": train_files,
                     "split": "train",
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.VALIDATION,
                 gen_kwargs={
-                    "archives": [dl_manager.iter_archive(archive) for archive in archives["val"]],
+                    "filepaths": val_files,
                     "split": "validation",
                 },
             ),
             datasets.SplitGenerator(
                 name=datasets.Split.TEST,
                 gen_kwargs={
-                    "archives": [dl_manager.iter_archive(archive) for archive in archives["test"]],
+                    "filepaths": test_files,
                     "split": "test",
                 },
             ),
         ]
 
-    def _generate_examples(self, archives, split):
+
+    def _generate_examples(self, filepaths, split):
         """Yields examples."""
         idx = 0
-        for archive in archives:
-            for path, file in archive:
-                if path.endswith(".JPEG"):
-                    if split != "test":
-                        # image filepath format: <IMAGE_FILENAME>_<SYNSET_ID>.JPEG
-                        root, _ = os.path.splitext(path)
-                        _, synset_id = os.path.basename(root).rsplit("_", 1)
-                        label = IMAGENET2012_CLASSES[synset_id]
-                    else:
-                        label = -1
-                    ex = {"image": {"path": path, "bytes": file.read()}, "label": label}
-                    yield idx, ex
-                    idx += 1
+        for path in filepaths:
+            if path.endswith(".JPEG"):
+                if split != "test":
+                    # image filepath format: <CLASS_ID>_<FILE_SERIAL>.JPEG
+                    (root, filename) = os.path.split(path)
+                    split_filename = filename.split('_')
+                    class_id = split_filename[0]
+                    label = list(IMAGENET2012_CLASSES.keys()).index(class_id)
+                else:
+                    label = -1
+                
+                image = Image.open(path)
+
+                ex = {"image": image, "label": label}
+                yield idx, ex
+                idx += 1
 
 
 
 
 
-###################  MODIFIED
 
-
-# import os
-
-# def _split_generators(self, dl_manager):
-#     """Returns SplitGenerators."""
-#     data_dir = "/path/to/data"  # Update with the path to your local data directory
-
-#     train_files = [os.path.join(data_dir, "train", filename) for filename in os.listdir(os.path.join(data_dir, "train"))]
-#     val_files = [os.path.join(data_dir, "val", filename) for filename in os.listdir(os.path.join(data_dir, "val"))]
-#     test_files = [os.path.join(data_dir, "test", filename) for filename in os.listdir(os.path.join(data_dir, "test"))]
-
-#     return [
-#         datasets.SplitGenerator(
-#             name=datasets.Split.TRAIN,
-#             gen_kwargs={
-#                 "filepaths": train_files,
-#                 "split": "train",
-#             },
-#         ),
-#         datasets.SplitGenerator(
-#             name=datasets.Split.VALIDATION,
-#             gen_kwargs={
-#                 "filepaths": val_files,
-#                 "split": "validation",
-#             },
-#         ),
-#         datasets.SplitGenerator(
-#             name=datasets.Split.TEST,
-#             gen_kwargs={
-#                 "filepaths": test_files,
-#                 "split": "test",
-#             },
-#         ),
-#     ]
