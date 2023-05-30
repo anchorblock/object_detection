@@ -6,11 +6,11 @@ experiment/
 
 *.zip
 
+imagenet_1k/
 
+weights/*
 
-
-
-
+**/*.bin
 
 
 # Byte-compiled / optimized / DLL files

@@ -2,6 +2,11 @@
 
 Object detection benchmarking with coco dataset using different transformers backbones and different architectures for panoptic segmentation task. We are using tiny version of every models and every backbones for training and inference convenience.
 
+## To-Do
+
+Releases and To-Do archive lists, referring to [TO_DO.md](./TO_DO.md)
+
+
 ## Install Requirements
 
 To setup installation, referring to [INSTALL.md](./INSTALL.md)
@@ -18,42 +23,7 @@ axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_val.tar
 axel -aN -n 100 https://image-net.org/data/ILSVRC/2012/ILSVRC2012_img_test_v10102019.tar
 cd ..
 ```
-<!-- 
-#
-mkdir imagenet
-#
-# Extract the training data:
-#
-# Create train directory; move .tar file; change directory
-mkdir imagenet/train && mv ILSVRC2012_img_train.tar imagenet/train/ && cd imagenet/train
-# Extract training set; remove compressed file
-tar -xvf ILSVRC2012_img_train.tar && rm -f ILSVRC2012_img_train.tar
-#
-# At this stage imagenet/train will contain 1000 compressed .tar files, one for each category
-#
-# For each .tar file: 
-#   1. create directory with same name as .tar file
-#   2. extract and copy contents of .tar file into directory
-#   3. remove .tar file
-find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
-#
-# This results in a training directory like so:
-#
-#  imagenet/train/
-#  ├── n01440764
-#  │   ├── n01440764_10026.JPEG
-#  │   ├── n01440764_10027.JPEG
-#  │   ├── ......
-#  ├── ......
-#
-# Change back to original directory
-cd ../..
-#
-# Extract the validation data and move images to subfolders:
-#
-# Create validation directory; move .tar file; change directory; extract validation .tar; remove compressed file
-mkdir imagenet/val && mv ILSVRC2012_img_val.tar imagenet/val/ && cd imagenet/val && tar -xvf ILSVRC2012_img_val.tar && rm -f ILSVRC2012_img_val.tar
-# get script from soumith and run; this script creates all class directories and moves images into corresponding directories -->
+
 
 ## Download COCO dataset and format for training
 
@@ -121,14 +91,6 @@ List of supported backbones - bit, convnext, convnextv2, dinat, focalnet, maskfo
 - **oneformer** supports only above mentioned backbones/ classifiers.
 - **DeTR** supports only above mentioned backbones/ classifiers.
 
- 
-## To-Do
-
- - backbones config + preprocessor files - bit, convnext, convnextv2, dinat, focalnet, maskformer-swin, nat, resnet, swin
- - DeTR model with dynamic backbones along with config file
- - maskformer model with default mask-swin transformer along with config file
- - mask2former model with default mask-swin transformer along with config file
- - oneformer model with dynamic backbones along with config file
 
 
 ## References & Citations
