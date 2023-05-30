@@ -50,7 +50,7 @@ For testing purpose, you can use the hosted dataset as follows:
 import datasets
 
 IMAGENET_DIR = "imagenet_1k"
-ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", "2017", data_dir=IMAGENET_DIR)
+ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR)
 ds["train"][0]
 ```
 
