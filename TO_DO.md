@@ -12,9 +12,9 @@
 
 
 - [x] general config and preprocess_config backbones: focalnet
-- [ ] general config and preprocess_config backbones: nat
-- [ ] general config and preprocess_config backbones: resnet
-- [ ] general config and preprocess_config backbones: swin
+- [x] general config and preprocess_config backbones: nat
+- [x] general config and preprocess_config backbones: resnet
+- [x] general config and preprocess_config backbones: swin
 
 
 - [ ] backbone model and preprocessor loading scripts: bit.py 
