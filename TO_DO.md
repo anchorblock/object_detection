@@ -11,7 +11,7 @@
 - [x] general config and preprocess_config backbones: dinat
 
 
-- [ ] general config and preprocess_config backbones: focalnet
+- [x] general config and preprocess_config backbones: focalnet
 - [ ] general config and preprocess_config backbones: nat
 - [ ] general config and preprocess_config backbones: resnet
 - [ ] general config and preprocess_config backbones: swin

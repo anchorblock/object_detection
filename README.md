@@ -54,10 +54,44 @@ ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGE
 ds["train"][0]
 ```
 
+An example output:
+
+```python
+>>> ds["validation"][5678]
+{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=500x375 at 0x7F15A02B0B50>, 'label': 118}
+```
 
 ### Train backbones using ImageNet and config files
 
 To train classifier model, run:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- 
 
