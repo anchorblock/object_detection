@@ -1,24 +1,12 @@
-# coding=utf-8
-# Copyright 2022 the HuggingFace Datasets Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import os
-
+import glob
+from typing import Tuple
 import datasets
+from datasets.builder import BuilderConfig
 from datasets.tasks import ImageClassification
 from PIL import Image
-from imagenet_1k_classes import IMAGENET2012_CLASSES
+from .imagenet_1k_classes import IMAGENET2012_CLASSES
+from typing import List
 
 
 _CITATION = """\
@@ -42,6 +30,10 @@ ILSVRC 2012, commonly known as 'ImageNet' is an image dataset organized accordin
 
 
 class Imagenet1k(datasets.GeneratorBasedBuilder):
+    def __init__(self, splits: List[str], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.splits = splits
+    
     VERSION = datasets.Version("1.0.0")
 
     DEFAULT_WRITER_BATCH_SIZE = 1000
@@ -69,33 +61,42 @@ class Imagenet1k(datasets.GeneratorBasedBuilder):
                 "This script is supposed to work with local (downloaded) imagenet-1k dataset. The argument `data_dir` in `load_dataset()` is required."
             )
         
-        train_files = [os.path.join(data_dir, "train", filename) for filename in os.listdir(os.path.join(data_dir, "train"))]
-        val_files = [os.path.join(data_dir, "val", filename) for filename in os.listdir(os.path.join(data_dir, "val"))]
-        test_files = [os.path.join(data_dir, "test", filename) for filename in os.listdir(os.path.join(data_dir, "test"))]
+        train_files = glob.glob(os.path.join(data_dir, "train") + "/**/*.JPEG", recursive=True)
+        val_files = glob.glob(os.path.join(data_dir, "val") + "/**/*.JPEG", recursive=True)
+        test_files = glob.glob(os.path.join(data_dir, "test") + "/**/*.JPEG", recursive=True)
 
-        return [
-            datasets.SplitGenerator(
-                name=datasets.Split.TRAIN,
-                gen_kwargs={
-                    "filepaths": train_files,
-                    "split": "train",
-                },
-            ),
-            datasets.SplitGenerator(
-                name=datasets.Split.VALIDATION,
-                gen_kwargs={
-                    "filepaths": val_files,
-                    "split": "validation",
-                },
-            ),
-            datasets.SplitGenerator(
-                name=datasets.Split.TEST,
-                gen_kwargs={
-                    "filepaths": test_files,
-                    "split": "test",
-                },
-            ),
-        ]
+        splits = []
+        for split in self.splits:
+            if split == 'train':
+                dataset = datasets.SplitGenerator(
+                                name=datasets.Split.TRAIN,
+                                gen_kwargs={
+                                    "filepaths": train_files,
+                                    "split": "train",
+                                },
+                            )
+            elif split in ['val', 'valid', 'validation', 'dev']:
+                dataset = datasets.SplitGenerator(
+                                name=datasets.Split.VALIDATION,
+                                gen_kwargs={
+                                    "filepaths": val_files,
+                                    "split": "validation",
+                                },
+                            )
+            elif split == 'test':
+                dataset = datasets.SplitGenerator(
+                    name=datasets.Split.TEST,
+                    gen_kwargs={
+                        "filepaths": test_files,
+                        "split": "test",
+                    },
+                )
+            else:
+                continue
+
+            splits.append(dataset)
+
+        return splits
 
 
     def _generate_examples(self, filepaths, split):
@@ -103,12 +104,19 @@ class Imagenet1k(datasets.GeneratorBasedBuilder):
         idx = 0
         for path in filepaths:
             if path.endswith(".JPEG"):
-                if split != "test":
+                if split == "train":
                     # image filepath format: <CLASS_ID>_<FILE_SERIAL>.JPEG
                     (root, filename) = os.path.split(path)
                     split_filename = filename.split('_')
                     class_id = split_filename[0]
                     label = list(IMAGENET2012_CLASSES.keys()).index(class_id)
+
+                if split in ['val', 'valid', 'validation', 'dev']:
+                    # image filepath format: <CLASS_ID>/ILSVRC2012_val_<FILE_SERIAL>.JPEG
+                    (root, filename) = os.path.split(path)
+                    class_id = os.path.split(root)[-1]
+                    label = list(IMAGENET2012_CLASSES.keys()).index(class_id)
+
                 else:
                     label = -1
                 
@@ -117,9 +125,4 @@ class Imagenet1k(datasets.GeneratorBasedBuilder):
                 ex = {"image": image, "label": label}
                 yield idx, ex
                 idx += 1
-
-
-
-
-
 

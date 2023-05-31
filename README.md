@@ -50,20 +50,9 @@ For testing purpose, you can use the hosted dataset as follows:
 import datasets
 
 IMAGENET_DIR = "imagenet_1k"
-ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR)
+ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR, splits = ["train", "validation", "test"], cache_dir=".cache")
 ds["train"][0]
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 
 ### Train backbones using ImageNet and config files
@@ -193,8 +182,8 @@ To train model, firstly different image classification models will be pretrained
 List of supported backbones - bit, convnext, convnextv2, dinat, focalnet, maskformer-swin, nat, resnet, swin.
 
 
-- **maskformer, mask2former** use detr object detection architecture as decoder, and are not dynamic for changing decoder architecture (facebook)
-- **maskformer, mask2former** are currently only supporting maskformer-swin-transformer (not vanilla swin-transformer) as backbone (facebook). Any change in maskformer/mask2former backbone requires new architecture design.
+- **maskformer, mask2former** use detr object detection architecture as decoder, and are not dynamic for changing decoder architecture
+- **maskformer, mask2former** are currently only supporting swin-transformer as backbone (facebook). Any change in maskformer/mask2former backbone requires new architecture design.
 - **oneformer** supports only above mentioned backbones/ classifiers.
 - **DeTR** supports only above mentioned backbones/ classifiers.
 
@@ -204,13 +193,15 @@ List of supported backbones - bit, convnext, convnextv2, dinat, focalnet, maskfo
 
 ImageNet Datasets:
 ```
-@inproceedings{deng2009imagenet,
-  title={Imagenet: A large-scale hierarchical image database},
-  author={Deng, Jia and Dong, Wei and Socher, Richard and Li, Li-Jia and Li, Kai and Fei-Fei, Li},
-  booktitle={2009 IEEE conference on computer vision and pattern recognition},
-  pages={248--255},
-  year={2009},
-  organization={Ieee}
+@article{imagenet15russakovsky,
+    Author = {Olga Russakovsky and Jia Deng and Hao Su and Jonathan Krause and Sanjeev Satheesh and Sean Ma and Zhiheng Huang and Andrej Karpathy and Aditya Khosla and Michael Bernstein and Alexander C. Berg and Li Fei-Fei},
+    Title = { {ImageNet Large Scale Visual Recognition Challenge} },
+    Year = {2015},
+    journal   = {International Journal of Computer Vision (IJCV)},
+    doi = {10.1007/s11263-015-0816-y},
+    volume={115},
+    number={3},
+    pages={211-252}
 }
 ```
 

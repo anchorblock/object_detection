@@ -5,23 +5,33 @@
 done :
 
 - [x] Argparse problem: initializing parse arguments in a python script, but passing those arguments from bash terminal while running another python script. The goal is to make training script dynamic for any model training.
+- [x] writing download script: imagenet_1k_download.sh, imagenet_1k_extract.sh
+
 
 current :
 
 - [ ] writing utils/imagenet_1k_dataset_script.py similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format
-- [ ] writing download script: imagenet_1k_download.sh, imagenet_1k_extract.sh
+
 
 later :
 
-- [ ] general config and preprocess_config backbones: bit
-- [ ] general config and preprocess_config backbones: convnext
-- [ ] general config and preprocess_config backbones: convnextv2
-- [ ] general config and preprocess_config backbones: dinat
+- [x] general config and preprocess_config backbones: bit
+- [x] general config and preprocess_config backbones: convnext
+- [x] general config and preprocess_config backbones: convnextv2
+- [x] general config and preprocess_config backbones: dinat
 - [ ] general config and preprocess_config backbones: focalnet
 - [ ] general config and preprocess_config backbones: nat
 - [ ] general config and preprocess_config backbones: resnet
 - [ ] general config and preprocess_config backbones: swin
+
+
+
+
+
 - [ ] backbone model and preprocessor loading scripts: bit.py 
+
+
+
 - [ ] backbone model and preprocessor loading scripts: convnext.py
 - [ ] backbone model and preprocessor loading scripts: convnextv2.py
 - [ ] backbone model and preprocessor loading scripts: dinat.py
@@ -29,6 +39,9 @@ later :
 - [ ] backbone model and preprocessor loading scripts: nat.py 
 - [ ] backbone model and preprocessor loading scripts: resnet.py 
 - [ ] backbone model and preprocessor loading scripts: swin.py
+
+
+
 - [ ] training_script_imagenet_1k.py (load config from dict path, save path (temporary))
 - [ ] inference_script_imagenet_1k.ipynb
 - [ ] training_imagenet_1k bash command (readme, trial)
