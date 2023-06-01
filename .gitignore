@@ -1,12 +1,11 @@
 # Custom
 
-coco_datasets/
+data/*
 
 experiment/
 
 *.zip
 
-imagenet_1k/
 
 weights/*
 

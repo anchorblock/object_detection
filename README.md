@@ -49,9 +49,9 @@ For testing purpose, you can use the hosted dataset as follows:
 ```python
 import datasets
 
-IMAGENET_DIR = "imagenet_1k"
-ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR, splits = ["train", "validation", "test"], cache_dir=".cache")
-ds["train"][0]
+IMAGENET_DIR = "data/imagenet_1k"
+ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR, splits = ["validation", "test"], cache_dir=".cache")
+ds["validation"][0]
 ```
 
 An example output:
@@ -61,9 +61,24 @@ An example output:
 {'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=500x375 at 0x7F15A02B0B50>, 'label': 118}
 ```
 
+
 ### Train backbones using ImageNet and config files
 
-To train classifier model, run:
+
+preprocess beforehand:
+
+
+train classifier:
+
+
+
+inference:
+
+
+
+
+
+
 
 
 

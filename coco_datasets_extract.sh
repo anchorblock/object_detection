@@ -1,4 +1,4 @@
-cd coco_datasets
+cd data/coco_datasets
 
 unzip train2017.zip
 rm -rf train2017.zip
@@ -21,5 +21,5 @@ rm -rf image_info_test2017.zip
 echo "image_info_test2017.zip extraction completed ..."
 
 
-cd ..
+cd ../..
 

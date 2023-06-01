@@ -1,4 +1,4 @@
-cd imagenet_1k
+cd data/imagenet_1k
 
 
 mkdir train && mv ILSVRC2012_img_train.tar train/ && cd train
@@ -82,3 +82,4 @@ find val/ -name "*.JPEG" | wc -l
 find test/ -name "*.JPEG" | wc -l
 #  100000
 
+cd ../..

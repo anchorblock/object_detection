@@ -1,5 +1,6 @@
 # Download COCO datasets
 
+cd data
 mkdir coco_datasets
 cd coco_datasets
 
@@ -18,4 +19,4 @@ echo "annotations_trainval2017.zip download completed ..."
 axel -aN -n 100 http://images.cocodataset.org/annotations/image_info_test2017.zip
 echo "image_info_test2017.zip download completed ..."
 
-cd ..
+cd ../..
