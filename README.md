@@ -34,13 +34,13 @@ For using the ImageNet-1k dataset (2012), you need to download, extract and orga
 Download:
 
 ```bash
-bash imagenet_1k_download.sh
+bash data/imagenet_1k_download.sh
 ```
 
 Extract:
 
 ```bash
-bash imagenet_1k_extract.sh
+bash data/imagenet_1k_extract.sh
 ```
 
 
@@ -183,20 +183,20 @@ For using the COCO dataset (2017), you need to download and extract it manually 
 Download:
 
 ```bash
-bash coco_datasets_download.sh
+bash data/coco_datasets_download.sh
 ```
 
 Extract:
 
 ```bash
-bash coco_datasets_extract.sh
+bash data/coco_datasets_extract.sh
 ```
 
 
 Expected dataset structure for COCO:
 
 ```
-coco_datasets/
+data/coco_datasets/
   annotations/
     instances_{train,val}2017.json
     panoptic_{train,val}2017.json
@@ -214,7 +214,7 @@ For testing purpose, you can use the hosted dataset as follows:
 ```python
 import datasets
 
-COCO_DIR = "coco_datasets"
+COCO_DIR = "data/coco_datasets"
 ds = datasets.load_dataset("utils/coco_dataset_script.py", "2017", data_dir=COCO_DIR)
 ds["train"][0]
 ```
