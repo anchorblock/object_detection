@@ -86,7 +86,84 @@ def main():
     date_time_str = now.strftime("%Y_%m_%d__%H_%M_%S")
 
     # Create the argument parser
-    parser = argparse.ArgumentParser(description="ImageNet Classifier Training")
+    parser = argparse.ArgumentParser(description="ImageNet Classifier (backbone) Training")
+
+
+    parser.add_argument('--model_type', type=str, choices=['bit', 'convnext', 'convnextv2', 'dinat', 'focalnet', 'nat', 'resnet', 'swin'],
+                        default='resnet',  # Set the default value to 'resnet'
+                        help='Specify the model type (optional if config_path and processor_config_path are given)')
+
+    type_args = parser.parse_args()
+
+    parser.add_argument('--config_path', type=str,
+                        default=f'configs/backbones/{type_args.model_type}/config.json',  # Set the default value to 'config.json'
+                        help='Specify the path to the model config.json file (optional if model_type is given)')
+
+    parser.add_argument('--processor_config_path', type=str,
+                        default=f'configs/backbones/{type_args.model_type}/preprocessor_config.json',  # Set the default value to 'processor_config.json'
+                        help='Specify the path to the processor_config.json file (optional if model_type is given)')
+
+
+    parser.add_argument('--id2label', type=str,
+                        default='configs/datasets/imagenet-1k-id2label.json',  # Set the default value to 'configs/datasets/imagenet-1k-id2label.json'
+                        help='Specify the path to the id2label.json file (optional)')
+
+    parser.add_argument('--label2id', type=str,
+                        default='configs/datasets/imagenet-1k-label2id.json',  # Set the default value to 'configs/datasets/imagenet-1k-label2id.json'
+                        help='Specify the path to the label2id.json file (optional)')
+
+
+
+
+from datasets import load_dataset
+
+food = load_dataset("food101", split="train[:5000]")
+
+food["train"][0]
+
+id2label
+
+label2id
+
+
+from transformers import AutoImageProcessor
+
+checkpoint = "google/vit-base-patch16-224-in21k"
+image_processor = AutoImageProcessor.from_pretrained(checkpoint)
+
+
+
+
+from torchvision.transforms import RandomResizedCrop, Compose, Normalize, ToTensor
+
+normalize = Normalize(mean=image_processor.image_mean, std=image_processor.image_std)
+size = (
+    image_processor.size["shortest_edge"]
+    if "shortest_edge" in image_processor.size
+    else (image_processor.size["height"], image_processor.size["width"])
+)
+_transforms = Compose([RandomResizedCrop(size), ToTensor(), normalize])
+
+
+
+
+
+
+# from torchvision.transforms import Compose, RandomResizedCrop, ColorJitter, ToTensor, Normalize, RandomErasing
+# from PIL import Image
+
+# # Define augmentation transforms
+# transforms = Compose([
+#     RandomResizedCrop(size=size),
+#     ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.4),
+#     ToTensor(),
+#     Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+#     RandomErasing(p=0.25, scale=(0.02, 0.33), ratio=(0.3, 3.3), value='random', inplace=False)
+# ])
+
+# # Example usage
+# image = Image.open('example_image.jpg')
+# augmented_image = transforms(image)
 
 
 
@@ -99,9 +176,152 @@ def main():
 
 
 
-    # Define the command-line arguments
-    parser.add_argument("--train_parquet_data_file", type=str, default="./mlm_processed_bn_data/train_data.parquet", help="Path to the training dataset file (parquet)")
-    parser.add_argument("--test_parquet_data_file", type=str, default="./mlm_processed_bn_data/validation_data.parquet", help="Path to the test dataset file (parquet)")
+
+
+
+
+
+
+
+
+
+
+def transforms(examples):
+    examples["pixel_values"] = [_transforms(img.convert("RGB")) for img in examples["image"]]
+    del examples["image"]
+    return examples
+
+
+food = food.with_transform(transforms)
+
+
+from transformers import DefaultDataCollator
+
+data_collator = DefaultDataCollator()
+
+
+## EVALUATION
+
+import evaluate
+
+accuracy = evaluate.load("accuracy")
+
+
+import numpy as np
+
+
+def compute_metrics(eval_pred):
+    predictions, labels = eval_pred
+    predictions = np.argmax(predictions, axis=1)
+    return accuracy.compute(predictions=predictions, references=labels)
+
+
+
+
+
+### TRAIN
+
+
+
+from transformers import AutoModelForImageClassification, TrainingArguments, Trainer
+
+model = AutoModelForImageClassification.from_pretrained(
+    checkpoint,
+    num_labels=len(labels),
+    id2label=id2label,
+    label2id=label2id,
+)
+
+
+
+
+
+
+training_args = TrainingArguments(
+    output_dir="my_awesome_food_model",
+    remove_unused_columns=False,
+    evaluation_strategy="epoch",
+    save_strategy="epoch",
+    learning_rate=5e-5,
+    per_device_train_batch_size=16,
+    gradient_accumulation_steps=4,
+    per_device_eval_batch_size=16,
+    num_train_epochs=3,
+    warmup_ratio=0.1,
+    logging_steps=10,
+    load_best_model_at_end=True,
+    metric_for_best_model="accuracy",
+    push_to_hub=True,
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    data_collator=data_collator,
+    train_dataset=food["train"],
+    eval_dataset=food["test"],
+    tokenizer=image_processor,
+    compute_metrics=compute_metrics,
+)
+
+trainer.train()
+
+
+
+
+trainer.push_to_hub()
+
+
+
+#### Inference
+
+
+ds = load_dataset("food101", split="validation[:10]")
+image = ds["image"][0]
+
+
+from transformers import pipeline
+
+classifier = pipeline("image-classification", model="my_awesome_food_model") # must pre-loaded id2label, label2id
+classifier(image)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     parser.add_argument("--per_device_train_batch_size", type=int, default=8, help="Batch size per device")
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4, help="Number of gradient accumulation steps")
     parser.add_argument("--learning_rate", type=float, default=3e-4, help="Maximum learning rate")
@@ -384,33 +604,30 @@ print('processor_config_path:', processor_config_path)
 
 
 
-# from transformers import AutoConfig, AutoImageProcessor, AutoModelForImageClassification
-# import json
+from transformers import AutoConfig, AutoImageProcessor, AutoModelForImageClassification
+import json
 
 
-# config = AutoConfig.from_json_file('./config.json')
+config = AutoConfig.from_json_file('./config.json')
 
-# # read id2label and label2id
-# with open("configs/datasets/imagenet-1k-id2label.json", 'r') as json_file:
-#     # Load the JSON data
-#     id2label = json.load(json_file)
-
-
-# with open("configs/datasets/imagenet-1k-label2id.json", 'r') as json_file:
-#     # Load the JSON data
-#     label2id = json.load(json_file)
-
-# config["id2label"] = id2label
-# config["label2id"] = label2id
+# read id2label and label2id
+with open("configs/datasets/imagenet-1k-id2label.json", 'r') as json_file:
+    # Load the JSON data
+    id2label = json.load(json_file)
 
 
+with open("configs/datasets/imagenet-1k-label2id.json", 'r') as json_file:
+    # Load the JSON data
+    label2id = json.load(json_file)
 
-# model = AutoModelForImageClassification(config)
-
-# image_processor = AutoImageProcessor.from_json_file('./config.json')
+config["id2label"] = id2label
+config["label2id"] = label2id
 
 
 
+model = AutoModelForImageClassification(config)
+
+image_processor = AutoImageProcessor.from_json_file('./config.json')
 
 
 
@@ -418,12 +635,19 @@ print('processor_config_path:', processor_config_path)
 
 
 
-# id2label
-
-
-# label2id
 
 
 
+id2label
 
 
+label2id
+
+
+
+
+
+
+    # Define the command-line arguments
+    parser.add_argument("--train_parquet_data_file", type=str, default="./mlm_processed_bn_data/train_data.parquet", help="Path to the training dataset file (parquet)")
+    parser.add_argument("--test_parquet_data_file", type=str, default="./mlm_processed_bn_data/validation_data.parquet", help="Path to the test dataset file (parquet)")

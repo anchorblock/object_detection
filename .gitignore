@@ -5,6 +5,8 @@ experiment/
 
 *.zip
 
+preloaded_data_imagenet/
+
 
 weights/*
 

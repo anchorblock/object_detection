@@ -70,6 +70,34 @@ preprocess beforehand:
 
 train classifier:
 
+default hyperparameters for training (from [FocalNet paper](https://arxiv.org/abs/2203.11926)):
+
+
+| Parameter                      | Value     |
+|-------------------------------|----------|
+| Batch Size                    | 1024     |
+| Base Learning Rate            | 1e-3     |
+| Learning Rate Scheduler       | Cosine   |
+| Minimum Learning Rate         | 1e-5     |
+| Training Epochs               | 300      |
+| Warm-up Epochs                | 20       |
+| Warm-up Schedule              | Linear   |
+| Warm-up Learning Rate         | 1e-6     |
+| Optimizer                     | AdamW    |
+| Color Jitter Factor           | 0.4      |
+| Auto-augmentation             | rand-m9-mstd0.5-inc1 |
+| Random Erasing Probability    | 0.25     |
+| Random Erasing Mode           | Pixel    |
+| Mixup α                       | 0.8      |
+| Cutmix α                      | 0.8      |
+| Mixup Probability             | 1.0      |
+| Mixup Switch Probability      | 0.5      |
+| Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
+| Label Smoothing               | 0.1      |
+| Gradient Clip                 | 5.0      |
+| Weight Decay                  | 0.05     |
+
+
 
 
 inference:
