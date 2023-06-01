@@ -62,10 +62,25 @@ An example output:
 ```
 
 
-### Train backbones using ImageNet and config files
+### Train backbones using ImageNet-1k and config files
+
+convert all raw data to huggingface image classification data format and save to parquet for faster loading:
+
+```bash
+python scripts/raw_to_parquet_imagenet.py \
+    --imagenet_dir="data/imagenet_1k" \
+    --save_path="formatted_data/imagenet_1k"
+```
 
 
-preprocess beforehand:
+
+
+
+
+
+
+
+
 
 
 train classifier:
