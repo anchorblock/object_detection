@@ -30,6 +30,8 @@ ILSVRC 2012, commonly known as 'ImageNet' is an image dataset organized accordin
 
 
 class Imagenet1k(datasets.GeneratorBasedBuilder):
+    """A dataset script to work with the local (downloaded) ImageNet dataset"""
+    
     def __init__(self, splits: List[str], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.splits = splits

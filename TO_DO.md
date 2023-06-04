@@ -1,15 +1,21 @@
 ## To-Do
 
-### Pre-Alpha Release 0.1.0 (Train Backbones with ImageNet-1k)
+### Pre-Alpha Release 0.1.0
+
+#### Train Backbones with ImageNet-1k (Partial)
 
 - [x] Argparse problem: initializing parse arguments in a python script, but passing those arguments from bash terminal while running another python script. The goal is to make training script dynamic for any model training.
+- [x] Repository organization
 - [x] writing download script: imagenet_1k_download.sh, imagenet_1k_extract.sh
 - [x] writing utils/imagenet_1k_dataset_script.py similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format
 - [x] general config and preprocess_config backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
+- [x] scripts/raw_to_parquet_imagenet.py for faster saving and loading
 
+<br>
 
+### Future Releases
 
-
+#### Train Backbones with ImageNet-1k (remaining)
 
 - [ ] training_script_imagenet_1k.py (load config from dict path, save path (temporary))
 - [ ] inference_script_imagenet_1k.ipynb
@@ -17,7 +23,7 @@
 - [ ] inference_imagenet_1k (readme, trial)
 
 
-### Future Releases (Train Models with COCO_panoptic using imagenet-pretrained backbones)
+#### Train Models with COCO_panoptic using imagenet-pretrained backbones
 
 - [x] writing download script: coco_datasets_download_and_extract.sh
 - [ ] general config and preprocess_config architectures: DeTR

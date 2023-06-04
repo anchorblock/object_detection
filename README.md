@@ -72,17 +72,6 @@ python scripts/raw_to_parquet_imagenet.py \
     --save_path="formatted_data/imagenet_1k"
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 train classifier:
 
 default hyperparameters for training (from [FocalNet paper](https://arxiv.org/abs/2203.11926)):
@@ -114,14 +103,14 @@ default hyperparameters for training (from [FocalNet paper](https://arxiv.org/ab
 
 
 
-
+<!-- 
 inference:
 
 
 
 
 
-
+ -->
 
 
 
@@ -264,9 +253,9 @@ ds["train"][0]
 
 ## Train different models for different backbones
 
-To train model, firstly different image classification models will be pretrained with imagenet. Then, panoptic segmentation model will be built based on pre-trained backbone. 
+To train model, firstly different image classification models (backbones) will be pretrained with imagenet. Then, panoptic segmentation model will be built based on pre-trained backbone. 
 
-(later ...)
+Will be added in future release.
 
 
 ## Supported Backbones for Architectures
@@ -274,11 +263,10 @@ To train model, firstly different image classification models will be pretrained
 List of supported backbones - bit, convnext, convnextv2, dinat, focalnet, maskformer-swin, nat, resnet, swin.
 
 
-- **maskformer, mask2former** use detr object detection architecture as decoder, and are not dynamic for changing decoder architecture
+- **maskformer, mask2former** only supporting detr object detection architecture as decoder.
 - **maskformer, mask2former** are currently only supporting swin-transformer as backbone (facebook). Any change in maskformer/mask2former backbone requires new architecture design.
 - **oneformer** supports only above mentioned backbones/ classifiers.
 - **DeTR** supports only above mentioned backbones/ classifiers.
-
 
 
 ## References & Citations

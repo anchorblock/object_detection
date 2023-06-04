@@ -3,19 +3,23 @@ import os
 from datasets import load_dataset
 
 if __name__ == "__main__":
+
+    # argument parser
     parser = argparse.ArgumentParser(description='raw_to_parquet_imagenet.py')
     parser.add_argument('--imagenet_dir', type=str, default = "data/imagenet_1k", help='Path to the ImageNet dataset directory')
     parser.add_argument('--save_path', type=str, default='formatted_data/imagenet_1k', help='Path to save the formatted data (default: formatted_data/imagenet_1k)')
 
     args = parser.parse_args()
 
+    # loading full imagnet dataset
     imagenet_dataset = load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=args.imagenet_dir, splits = ["train", "validation", "test"], cache_dir=".cache")
 
-
+    # creating saving directory
     if not os.path.exists(args.save_path):
         os.makedirs(args.save_path) 
 
 
+    # saving data to parquet formats
     imagenet_dataset["train"].to_parquet(f"{args.save_path}/train.parquet") 
     print(f"{args.save_path}/train.parquet has been saved. ")
 
