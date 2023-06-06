@@ -10,6 +10,9 @@ sys.setrecursionlimit(10000)
 import argparse
 import torch
 import torch.nn as nn
+import torchvision.transforms as transforms
+
+from PIL import Image
 import numpy as np
 import math
 import os
@@ -109,6 +112,16 @@ def main():
                         help='Specify the path to the processor_config.json file (optional if model_type is given)')
 
 
+    parser.add_argument('--train_data_path', type=str, default='formatted_data/imagenet_1k/train.parquet',
+                        help='Path to the training data parquet file')
+    
+    parser.add_argument('--validation_data_path', type=str, default='formatted_data/imagenet_1k/validation.parquet',
+                        help='Path to the validation data parquet file')
+    
+    parser.add_argument('--test_data_path', type=str, default='formatted_data/imagenet_1k/test.parquet',
+                        help='Path to the test data parquet file')
+
+
     parser.add_argument('--id2label', type=str,
                         default='configs/datasets/imagenet-1k-id2label.json',  # Set the default value to 'configs/datasets/imagenet-1k-id2label.json'
                         help='Specify the path to the id2label.json file (optional)')
@@ -118,51 +131,82 @@ def main():
                         help='Specify the path to the label2id.json file (optional)')
 
 
+    args = parser.parse_args()
+
+    ### LOAD DATA
+    disable_caching()
+
+    imagenet_dataset = load_dataset(
+        "parquet", 
+        data_files={"train": args.train_data_path,
+                    "validation": args.validation_data_path,
+                    "test": args.test_data_path},
+        cache_dir=".cache")
+        
+
+    # TODO : **************
+    ### LOAD CONFIG, BUILD MODEL AND LOAD PROCESSORS
+
+    config = AutoConfig.from_json_file(args.config_path)
+
+    # read id2label
+    with open(args.id2label, 'r') as json_file:
+        # Load the JSON data
+        id2label = json.load(json_file)
+
+    # read label2id
+    with open(args.label2id, 'r') as json_file:
+        # Load the JSON data
+        label2id = json.load(json_file)
+
+    config.id2label = id2label
+    config.label2id = label2id
+    config.num_labels = len(label2id.keys())
 
 
-from datasets import load_dataset
+    model = AutoModelForImageClassification.from_config(config)
 
-food = load_dataset("food101", split="train[:5000]")
-
-food["train"][0]
-
-id2label
-
-label2id
+    image_processor = AutoImageProcessor.from_json_file(args.processor_config_path)
 
 
-from transformers import AutoImageProcessor
-
-checkpoint = "google/vit-base-patch16-224-in21k"
-image_processor = AutoImageProcessor.from_pretrained(checkpoint)
-
-
-
-
-from torchvision.transforms import RandomResizedCrop, Compose, Normalize, ToTensor
-
-normalize = Normalize(mean=image_processor.image_mean, std=image_processor.image_std)
-size = (
-    image_processor.size["shortest_edge"]
-    if "shortest_edge" in image_processor.size
-    else (image_processor.size["height"], image_processor.size["width"])
-)
-_transforms = Compose([RandomResizedCrop(size), ToTensor(), normalize])
+    # | Color Jitter Factor           | 0.4      | d
+    # | Auto-augmentation             | rand-m9-mstd0.5-inc1 | d
+    # | Random Erasing Probability    | 0.25     | d
+    # | Random Erasing Mode           | Pixel    | d
+    # | Mixup α                       | 0.8      |
+    # | Cutmix α                      | 0.8      |
+    # | Mixup Probability             | 1.0      |
+    # | Mixup Switch Probability      | 0.5      |
+    # | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
+    # | Label Smoothing               | 0.1      |
 
 
 
+    normalize = Normalize(mean=image_processor.image_mean, std=image_processor.image_std)
+    size = (
+        (image_processor.size["shortest_edge"], image_processor.size["shortest_edge"])
+        if "shortest_edge" in image_processor.size
+        else (image_processor.size["height"], image_processor.size["width"])
+    )
+    _transforms = Compose([
+        RandomResizedCrop(size), 
+        ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.4),
+        PILToTensor(),
+        ConvertImageDtype(torch.float32),
+        normalize,
+
+
+        RandomErasing(p=0.25, value='random', inplace=False),
+        AugMix()
+        ])
 
 
 
-# from torchvision.transforms import Compose, RandomResizedCrop, ColorJitter, ToTensor, Normalize, RandomErasing
-# from PIL import Image
 
 # # Define augmentation transforms
 # transforms = Compose([
-#     RandomResizedCrop(size=size),
-#     ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.4),
-#     ToTensor(),
-#     Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+
+
 #     RandomErasing(p=0.25, scale=(0.02, 0.33), ratio=(0.3, 3.3), value='random', inplace=False)
 # ])
 
@@ -515,31 +559,7 @@ if __name__=="__main__":
 
 
 
-parser = argparse.ArgumentParser(description='Script description')
 
-
-parser.add_argument('--model_type', type=str, choices=['bit', 'convnext', 'convnextv2', 'dinat', 'focalnet', 'nat', 'resnet', 'swin'],
-                    default='resnet',  # Set the default value to 'resnet'
-                    help='Specify the model type (optional if config_path and processor_config_path are given)')
-
-type_args = parser.parse_args()
-
-parser.add_argument('--config_path', type=str,
-                    default=f'configs/backbones/{type_args.model_type}/config.json',  # Set the default value to 'config.json'
-                    help='Specify the path to the model config.json file (optional if model_type is given)')
-
-parser.add_argument('--processor_config_path', type=str,
-                    default=f'configs/backbones/{type_args.model_type}/preprocessor_config.json',  # Set the default value to 'processor_config.json'
-                    help='Specify the path to the processor_config.json file (optional if model_type is given)')
-
-
-parser.add_argument('--id2label', type=str,
-                    default='configs/datasets/imagenet-1k-id2label.json',  # Set the default value to 'configs/datasets/imagenet-1k-id2label.json'
-                    help='Specify the path to the id2label.json file (optional)')
-
-parser.add_argument('--label2id', type=str,
-                    default='configs/datasets/imagenet-1k-label2id.json',  # Set the default value to 'configs/datasets/imagenet-1k-label2id.json'
-                    help='Specify the path to the label2id.json file (optional)')
 
 
 
@@ -579,60 +599,6 @@ parser.add_argument('--label2id', type=str,
 
 
 
-
-
-
-# parser.add_argument('--training_hparams', type=str,
-#                     default='configs/training_hparams/imagenet.json',  # Set the default value to 'configs/training_hparams/imagenet.json'
-#                     help='Specify the path to the configs/training_hparams/imagenet.json file')
-
-args = parser.parse_args()
-
-# Access the values of the arguments
-model_type = args.model_type
-config_path = args.config_path
-id2label = args.id2label
-label2id = args.label2id
-processor_config_path = args.processor_config_path
-# training_hparams = args.training_hparams
-
-
-# Use the arguments as needed in your script
-print('model_type:', model_type)
-print('config_path:', config_path)
-print('id2label:', id2label)
-print('label2id:', label2id)
-print('processor_config_path:', processor_config_path)
-# print('training_hparams:', training_hparams)
-
-
-
-
-
-from transformers import AutoConfig, AutoImageProcessor, AutoModelForImageClassification
-import json
-
-
-config = AutoConfig.from_json_file('./config.json')
-
-# read id2label and label2id
-with open("configs/datasets/imagenet-1k-id2label.json", 'r') as json_file:
-    # Load the JSON data
-    id2label = json.load(json_file)
-
-
-with open("configs/datasets/imagenet-1k-label2id.json", 'r') as json_file:
-    # Load the JSON data
-    label2id = json.load(json_file)
-
-config["id2label"] = id2label
-config["label2id"] = label2id
-
-
-
-model = AutoModelForImageClassification(config)
-
-image_processor = AutoImageProcessor.from_json_file('./config.json')
 
 
 

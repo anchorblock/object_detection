@@ -13,5 +13,7 @@
       0.225
     ],
     "resample": 3,
-    "size": 224
+    "size": {
+      "shortest_edge": 224
+    }
   }
