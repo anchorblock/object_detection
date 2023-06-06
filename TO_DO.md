@@ -4,19 +4,40 @@
 
 #### Train Backbones with ImageNet-1k (Partial)
 
-- [x] Repository organization
-- [x] writing download script: imagenet_1k_download.sh, imagenet_1k_extract.sh
-- [x] writing utils/imagenet_1k_dataset_script.py similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format
-- [x] general config and preprocess_config backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
-- [x] scripts/raw_to_parquet_imagenet.py for faster saving and loading
+- [x] Repository organization for training both with imagenet and coco for multiple backbone classifiers and panoptic segmentation models
 
-<br>
+```
+    .
+    ├── configs/
+    │   ├── architectures/
+    │   ├── backbones/
+    │   └── datasets/
+    ├── data/
+    │   ├── coco_datasets/
+    │   ├── imagenet_1k/
+    ├── dev/
+    ├── formatted_data/
+    │   ├── coco_panoptic/
+    │   └── imagenet_1k/
+    ├── models_panoptic/
+    ├── outputs/
+    ├── README.md
+    ├── requirements.txt
+    ├── scripts
+    ├── temp.txt
+    ├── TO_DO.md
+    └── utils/
+```
 
-### Future Releases
+- [x] writing download script: [imagenet_1k_download.sh](./data/imagenet_1k_download.sh), [imagenet_1k_extract.sh](./data/imagenet_1k_extract.sh)
+- [x] writing [utils/imagenet_1k_dataset_script.py](./utils/imagenet_1k_dataset_script.py) similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format. Sample:  ```{"image": <PIL Image>, "label": 6}```
+- [x] prepared imagenet label files and fixed label-related bugs: [configs/datasets/imagenet-1k-id2label.json](./configs/datasets/imagenet-1k-id2label.json), [configs/datasets/imagenet-1k-label2id.json](./configs/datasets/imagenet-1k-label2id.json)
+- [x] general [config](./configs/backbones) and [preprocess_config](./configs/backbones) backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
+- [x] [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart).
 
-#### Train Backbones with ImageNet-1k (remaining)
 
-- [ ] Augmentation script utils/augmentations.py according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations using timm library
+
+- [ ] Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations using timm library
 
     | Parameter                      | Value     |
     |-------------------------------|----------|
@@ -28,8 +49,15 @@
     | Cutmix α                      | 0.8      |
     | Mixup Probability             | 1.0      |
     | Mixup Switch Probability      | 0.5      |
-    | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
     | Label Smoothing               | 0.1      |
+
+
+
+<br>
+
+### Future Releases
+
+#### Train Backbones with ImageNet-1k (remaining)
 
 
 - [ ] scripts/train_backbone_classifier.py (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
@@ -40,13 +68,17 @@
     | Base Learning Rate            | 1e-3     |
     | Learning Rate Scheduler       | Cosine   |
     | Minimum Learning Rate         | 1e-5     |
-    | Training Epochs               | 300      |
     | Warm-up Epochs                | 20       |
+    | Training Epochs               | 300      |
+    | Finetuning Epochs             | 30       |
     | Warm-up Schedule              | Linear   |
     | Warm-up Learning Rate         | 1e-6     |
     | Optimizer                     | AdamW    |
+    | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
     | Gradient Clip                 | 5.0      |
     | Weight Decay                  | 0.05     |
+
+    During fine-tuning, cutmix and mixup have to be disabled.
 
 
 - [ ] inference_script_backbone_classifier.ipynb
