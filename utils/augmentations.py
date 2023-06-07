@@ -15,7 +15,26 @@ from types import SimpleNamespace
 
 
 
-### FROM FOCALNET PAPER, IMAGENET AUGMENTAION:
+def generate_transform_function(image_processor, augmentation_config_path, return_mixup_cutmix_fn = False):
+    """
+    Generate a transformation function for image processing.
+
+    Args:
+        image_processor (ImageProcessor): An instance of the ImageProcessor class that contains image processing methods.
+        augmentation_config_path (str): The path to the configuration json file for augmentation.
+        return_mixup_cutmix_fn (bool, optional): Whether to return the mixup_cutmix_fn along with the transforms.
+                                                 Defaults to False.
+
+    Returns:
+        transforms (callable): The transformation function that applies image processing and augmentation.
+        
+    If return_mixup_cutmix_fn is True:
+        Returns:
+            transforms (callable): The transformation function that applies image processing and augmentation.
+            mixup_cutmix_fn (callable): The mixup_cutmix_fn function for applying mixup and cutmix augmentation.
+
+            
+    ImageNet Augmentation Details (from focalnet paper):
 
     # | Color Jitter Factor           | 0.4      | 
     # | Auto-augmentation             | rand-m9-mstd0.5-inc1 | 
@@ -28,9 +47,7 @@ from types import SimpleNamespace
     # | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
     # | Label Smoothing               | 0.1      |
 
-
-
-def generate_transform_function(image_processor, augmentation_config_path, return_mixup_cutmix_fn = False):
+    """
 
     with open(augmentation_config_path, 'r') as json_file:
         # Load the JSON data
@@ -96,19 +113,19 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
     from transformers import AutoImageProcessor
 
+    # read image
     IMG_URL = "https://t4.ftcdn.net/jpg/05/68/28/05/360_F_568280532_Bvxwd66M3Y22vVeJ3VRqHRAqrdNfJo7o.jpg"
 
     response = requests.get(IMG_URL)
     image = Image.open(BytesIO(response.content))
 
-
-
+    # load image processor and augmentation config
     image_processor = AutoImageProcessor.from_pretrained("configs/backbones/focalnet/preprocessor_config.json")
     augmentation_config_path = "configs/augmentation_config_imagenet.json"
 
 
     transforms_fn = generate_transform_function(image_processor, augmentation_config_path)
+
+    # transform, and show image
     img_aug = transforms_fn(image)
-
-
     plt.imshow(img_aug.permute(1, 2, 0))

@@ -1,59 +1,8 @@
-## To-Do
+# To-Do
 
-### Pre-Alpha Release 0.1.0
+## Future Releases
 
-#### Train Backbones with ImageNet-1k (Partial)
-
-- [x] Repository organization for training both with imagenet and coco for multiple backbone classifiers and panoptic segmentation models
-
-```
-    .
-    ├── configs/
-    │   ├── architectures/
-    │   ├── backbones/
-    │   └── datasets/
-    ├── data/
-    │   ├── coco_datasets/
-    │   ├── imagenet_1k/
-    ├── dev/
-    ├── formatted_data/
-    │   ├── coco_panoptic/
-    │   └── imagenet_1k/
-    ├── models_panoptic/
-    ├── outputs/
-    ├── README.md
-    ├── requirements.txt
-    ├── scripts
-    ├── temp.txt
-    ├── TO_DO.md
-    └── utils/
-```
-
-- [x] writing download script: [imagenet_1k_download.sh](./data/imagenet_1k_download.sh), [imagenet_1k_extract.sh](./data/imagenet_1k_extract.sh)
-- [x] writing [utils/imagenet_1k_dataset_script.py](./utils/imagenet_1k_dataset_script.py) similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format. Sample:  ```{"image": <PIL Image>, "label": 6}```
-- [x] prepared imagenet label files and fixed label-related bugs: [configs/datasets/imagenet-1k-id2label.json](./configs/datasets/imagenet-1k-id2label.json), [configs/datasets/imagenet-1k-label2id.json](./configs/datasets/imagenet-1k-label2id.json)
-- [x] general [config](./configs/backbones) and [preprocess_config](./configs/backbones) backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
-- [x] [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart).
-- [x] Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations
-
-    | Parameter                      | Value     |
-    |-------------------------------|----------|
-    | Color Jitter Factor           | 0.4      |
-    | Auto-augmentation             | rand-m9-mstd0.5-inc1 |
-    | Random Erasing Probability    | 0.25     |
-    | Random Erasing Mode           | Pixel    |
-    | Mixup α                       | 0.8      |
-    | Cutmix α                      | 0.8      |
-    | Mixup Probability             | 1.0      |
-    | Mixup Switch Probability      | 0.5      |
-    | Label Smoothing               | 0.1      |
-
-
-<br>
-
-### Future Releases
-
-#### Train Backbones with ImageNet-1k (remaining)
+### Train Backbones with ImageNet-1k (remaining)
 
 - [ ] Evaluation Metrics script [utils/evaluation_metrics.py](./utils/evaluation_metrics.py) for popular evaluation metrics used for ImageNet-1K:
 
@@ -91,7 +40,7 @@
 - [ ] inference_imagenet_1k bash command --> README.md
 
 
-#### Train Models with COCO_panoptic using imagenet-pretrained backbones
+### Train Models with COCO_panoptic using imagenet-pretrained backbones
 
 - [x] writing download script: coco_datasets_download_and_extract.sh
 - [ ] general config and preprocess_config architectures: DeTR
@@ -107,4 +56,46 @@
 - [ ] inference_script_coco_panoptic.ipynb
 - [ ] training_coco_panoptic bash command (readme, trial)
 - [ ] inference_coco_panoptic (readme, trial)
+
+
+
+<br>
+
+## Pre-Alpha Release 0.1.0
+
+### Train Backbones with ImageNet-1k (Partial)
+
+- [x] Repository organization for training both with imagenet and coco for multiple backbone classifiers and panoptic segmentation models
+
+    ```
+        .
+        ├── configs/
+        ├── data/
+        ├── dev/
+        ├── formatted_data/
+        ├── models_panoptic/
+        ├── outputs/
+        ├── scripts/
+        └── utils/
+    ```
+
+- [x] writing download script: [imagenet_1k_download.sh](./data/imagenet_1k_download.sh), [imagenet_1k_extract.sh](./data/imagenet_1k_extract.sh)
+- [x] writing [utils/imagenet_1k_dataset_script.py](./utils/imagenet_1k_dataset_script.py) similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format. Sample:  ```{"image": <PIL Image>, "label": 6}```
+- [x] prepared imagenet label files and fixed label-related bugs: [configs/datasets/imagenet-1k-id2label.json](./configs/datasets/imagenet-1k-id2label.json), [configs/datasets/imagenet-1k-label2id.json](./configs/datasets/imagenet-1k-label2id.json)
+- [x] general [config](./configs/backbones) and [preprocess_config](./configs/backbones) backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
+- [x] [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart).
+- [x] Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations
+
+    | Parameter                      | Value     |
+    |-------------------------------|----------|
+    | Color Jitter Factor           | 0.4      |
+    | Auto-augmentation             | rand-m9-mstd0.5-inc1 |
+    | Random Erasing Probability    | 0.25     |
+    | Random Erasing Mode           | Pixel    |
+    | Mixup α                       | 0.8      |
+    | Cutmix α                      | 0.8      |
+    | Mixup Probability             | 1.0      |
+    | Mixup Switch Probability      | 0.5      |
+    | Label Smoothing               | 0.1      |
+
 
