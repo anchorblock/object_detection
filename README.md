@@ -217,7 +217,7 @@ torchrun --standalone --nproc_per_node=$n_gpu z05_training_fp16_DDP_A100.py \
 
 <br>
 
-## 💡 Panoptic Segemntation Training Pipelines
+## 💡 Panoptic Segmentation Training Pipelines
 
 This repository supports training the following architectures with the COCO dataset:
 
