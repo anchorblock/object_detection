@@ -114,7 +114,6 @@ And these are the popular evaluation metrics used for ImageNet-1K:
 - Precision
 - Recall
 - F1-Score
-- Confusion Matrix
 - Mean Average Precision (mAP)
 ```
 

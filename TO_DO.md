@@ -11,7 +11,6 @@
     - Precision
     - Recall
     - F1-Score
-    - Confusion Matrix
     - Mean Average Precision (mAP)
 
 - [ ] scripts/train_backbone_classifier.py (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
