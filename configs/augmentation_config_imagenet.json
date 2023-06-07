@@ -1,0 +1,15 @@
+{
+    "color_jitter_factor": 0.4,
+    "auto_augmentation_policy": "rand-m9-mstd0.5-inc1",
+    "translate_const": 117,
+    "PIL_img_mean": [124, 116, 104],
+    "random_erasing_probability": 0.25,
+    "random_erasing_mode": "pixel",
+    "mixup_alpha": 0.8,
+    "cutmix_alpha": 0.8,
+    "mixup_probability": 1.0,
+    "mixup_switch_probability": 0.5,
+    "label_smoothing": 0.1,
+    "num_classes": 1000
+  }
+  
