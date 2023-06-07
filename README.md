@@ -61,10 +61,7 @@ An example output:
 {'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=500x375 at 0x7F15A02B0B50>, 'label': 118}
 ```
 
-
-### Train backbones using ImageNet-1k and config files
-
-convert all raw data to huggingface image classification data format and save to parquet for faster loading:
+Now, convert all raw data to huggingface image classification data format and save to parquet for faster loading:
 
 ```bash
 python scripts/raw_to_parquet_imagenet.py \
@@ -72,7 +69,8 @@ python scripts/raw_to_parquet_imagenet.py \
     --save_path="formatted_data/imagenet_1k"
 ```
 
-train classifier:
+
+### Train backbones using ImageNet-1k and config files
 
 default hyperparameters for training (from [FocalNet paper](https://arxiv.org/abs/2203.11926)):
 
@@ -100,6 +98,18 @@ default hyperparameters for training (from [FocalNet paper](https://arxiv.org/ab
 | Label Smoothing               | 0.1      |
 | Gradient Clip                 | 5.0      |
 | Weight Decay                  | 0.05     |
+
+
+These are the popular evaluation metrics used for ImageNet-1K:
+
+- Top-1 Accuracy
+- Top-5 Accuracy
+- Precision
+- Recall
+- F1-Score
+- Confusion Matrix
+- Mean Average Precision (mAP)
+
 
 
 

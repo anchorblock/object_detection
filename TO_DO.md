@@ -34,10 +34,7 @@
 - [x] prepared imagenet label files and fixed label-related bugs: [configs/datasets/imagenet-1k-id2label.json](./configs/datasets/imagenet-1k-id2label.json), [configs/datasets/imagenet-1k-label2id.json](./configs/datasets/imagenet-1k-label2id.json)
 - [x] general [config](./configs/backbones) and [preprocess_config](./configs/backbones) backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
 - [x] [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart).
-
-
-
-- [ ] Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations using timm library
+- [x] Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations
 
     | Parameter                      | Value     |
     |-------------------------------|----------|
@@ -52,13 +49,21 @@
     | Label Smoothing               | 0.1      |
 
 
-
 <br>
 
 ### Future Releases
 
 #### Train Backbones with ImageNet-1k (remaining)
 
+- [ ] Evaluation Metrics script [utils/evaluation_metrics.py](./utils/evaluation_metrics.py) for popular evaluation metrics used for ImageNet-1K:
+
+    - Top-1 Accuracy
+    - Top-5 Accuracy
+    - Precision
+    - Recall
+    - F1-Score
+    - Confusion Matrix
+    - Mean Average Precision (mAP)
 
 - [ ] scripts/train_backbone_classifier.py (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
 

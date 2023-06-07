@@ -22,12 +22,19 @@ from transformers import (
     AutoConfig, 
     AutoImageProcessor,
     AutoModelForImageClassification,
+    DefaultDataCollator,
     TrainingArguments,
     Trainer
 )
 import random
 import time
 import warnings
+
+from utils.augmentations import generate_transform_function
+
+import evaluate
+
+
 
 
 def speed_up():
@@ -111,6 +118,10 @@ def main():
                         default=f'configs/backbones/{type_args.model_type}/preprocessor_config.json',  # Set the default value to 'processor_config.json'
                         help='Specify the path to the processor_config.json file (optional if model_type is given)')
 
+    parser.add_argument('--augmentation_config_path', type=str,
+                        default='configs/augmentation_config_imagenet.json',
+                        help='Specify the path to the augmentation_config.json file')
+
 
     parser.add_argument('--train_data_path', type=str, default='formatted_data/imagenet_1k/train.parquet',
                         help='Path to the training data parquet file')
@@ -131,6 +142,11 @@ def main():
                         help='Specify the path to the label2id.json file (optional)')
 
 
+
+    # parser add: do_mixup_cutmix = bool
+    # parser add: 
+
+
     args = parser.parse_args()
 
     ### LOAD DATA
@@ -147,7 +163,7 @@ def main():
     # TODO : **************
     ### LOAD CONFIG, BUILD MODEL AND LOAD PROCESSORS
 
-    config = AutoConfig.from_json_file(args.config_path)
+    config = AutoConfig.from_pretrained(args.config_path)
 
     # read id2label
     with open(args.id2label, 'r') as json_file:
@@ -166,7 +182,7 @@ def main():
 
     model = AutoModelForImageClassification.from_config(config)
 
-    image_processor = AutoImageProcessor.from_json_file(args.processor_config_path)
+    image_processor = AutoImageProcessor.from_pretrained(args.processor_config_path)
 
 
     # | Color Jitter Factor           | 0.4      | d
@@ -181,42 +197,40 @@ def main():
     # | Label Smoothing               | 0.1      |
 
 
-
-    normalize = Normalize(mean=image_processor.image_mean, std=image_processor.image_std)
-    size = (
-        (image_processor.size["shortest_edge"], image_processor.size["shortest_edge"])
-        if "shortest_edge" in image_processor.size
-        else (image_processor.size["height"], image_processor.size["width"])
-    )
-    _transforms = Compose([
-        RandomResizedCrop(size), 
-        ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.4),
-        PILToTensor(),
-        ConvertImageDtype(torch.float32),
-        normalize,
+    _transforms, mixup_cutmix_fn = generate_transform_function(
+                        augmentation_config_path=args.augmentation_config_path, 
+                        return_mixup_cutmix_fn=True
+                        )
 
 
-        RandomErasing(p=0.25, value='random', inplace=False),
-        AugMix()
-        ])
+    def transforms(examples):
+        examples["pixel_values"] = [_transforms(img.convert("RGB")) for img in examples["image"]]
+        del examples["image"]
+        return examples
+    
+
+    imagenet_dataset = imagenet_dataset.with_transform(transforms)
 
 
+    data_collator = DefaultDataCollator()
 
 
-# # Define augmentation transforms
-# transforms = Compose([
-
-
-#     RandomErasing(p=0.25, scale=(0.02, 0.33), ratio=(0.3, 3.3), value='random', inplace=False)
-# ])
-
-# # Example usage
-# image = Image.open('example_image.jpg')
-# augmented_image = transforms(image)
+    ## EVALUATION METRICS
 
 
 
 
+
+    accuracy = evaluate.load("accuracy")
+
+
+
+
+
+    def compute_metrics(eval_pred):
+        predictions, labels = eval_pred
+        predictions = np.argmax(predictions, axis=1)
+        return accuracy.compute(predictions=predictions, references=labels)
 
 
 
@@ -225,44 +239,6 @@ def main():
 
 
 
-
-
-
-
-
-
-
-
-
-
-def transforms(examples):
-    examples["pixel_values"] = [_transforms(img.convert("RGB")) for img in examples["image"]]
-    del examples["image"]
-    return examples
-
-
-food = food.with_transform(transforms)
-
-
-from transformers import DefaultDataCollator
-
-data_collator = DefaultDataCollator()
-
-
-## EVALUATION
-
-import evaluate
-
-accuracy = evaluate.load("accuracy")
-
-
-import numpy as np
-
-
-def compute_metrics(eval_pred):
-    predictions, labels = eval_pred
-    predictions = np.argmax(predictions, axis=1)
-    return accuracy.compute(predictions=predictions, references=labels)
 
 
 
@@ -493,7 +469,7 @@ classifier(image)
     # Train model
     trainer.train()
 
-    # Evaluate model
+    # Evaluate model (follow new DDP script)
     eval_result = trainer.evaluate(eval_dataset=mlm_datasets["validation"])
 
     with open(os.path.join(args.save_directory, "eval_results.txt"), "w") as writer:
@@ -589,36 +565,3 @@ if __name__=="__main__":
     --resume_from_checkpoint="./DeBERTaV3" \
     --gradient_checkpointing=true
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-id2label
-
-
-label2id
-
-
-
-
-
-
-    # Define the command-line arguments
-    parser.add_argument("--train_parquet_data_file", type=str, default="./mlm_processed_bn_data/train_data.parquet", help="Path to the training dataset file (parquet)")
-    parser.add_argument("--test_parquet_data_file", type=str, default="./mlm_processed_bn_data/validation_data.parquet", help="Path to the test dataset file (parquet)")
