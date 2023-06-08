@@ -1,7 +1,5 @@
-### INCOMPLETE SCRIPT
-### WILL PUBLISH IN NEXT RELEASE
-
-
+import sys
+sys.path.append('./')
 
 import argparse
 import datetime
@@ -48,7 +46,7 @@ def speed_up():
     4. Disables emitting NVTX markers for autograd profiling in PyTorch.
     5. Disables emitting ITT markers for autograd profiling in PyTorch.
     6. Sets the CuDNN determinism mode to False for improved performance in CV training tasks.
-    7. Disables CuDNN benchmarking mode for improved performance in CV training tasks.
+    7. Enables CuDNN benchmarking mode for improved performance in CV training tasks.
 
     Note:
     It is important to understand the implications of disabling these debugging features. Disabling
@@ -63,9 +61,9 @@ def speed_up():
     torch.autograd.profiler.emit_nvtx(False)
     torch.autograd.profiler.emit_itt(False)
     
-    # Training task is CV variable image size; so setting false
+    # Training task is CV fixed image size; so setting true to benchmark
     torch.backends.cudnn.deterministic = False
-    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.benchmark = True
 
 
 
@@ -122,7 +120,6 @@ def main():
                         default='configs/augmentation_config_imagenet.json',
                         help='Specify the path to the augmentation_config.json file')
 
-
     parser.add_argument('--train_data_path', type=str, default='formatted_data/imagenet_1k/train.parquet',
                         help='Path to the training data parquet file')
     
@@ -141,10 +138,8 @@ def main():
                         default='configs/datasets/imagenet-1k-label2id.json',  # Set the default value to 'configs/datasets/imagenet-1k-label2id.json'
                         help='Specify the path to the label2id.json file (optional)')
 
+    parser.add_argument('--do_mixup_cutmix', type=bool, default=True, help='Specify whether to perform mixup and cutmix')
 
-
-    # parser add: do_mixup_cutmix = bool
-    # parser add: 
 
 
     args = parser.parse_args()
@@ -185,31 +180,30 @@ def main():
     image_processor = AutoImageProcessor.from_pretrained(args.processor_config_path)
 
 
-    # | Color Jitter Factor           | 0.4      | d
-    # | Auto-augmentation             | rand-m9-mstd0.5-inc1 | d
-    # | Random Erasing Probability    | 0.25     | d
-    # | Random Erasing Mode           | Pixel    | d
-    # | Mixup α                       | 0.8      |
-    # | Cutmix α                      | 0.8      |
-    # | Mixup Probability             | 1.0      |
-    # | Mixup Switch Probability      | 0.5      |
-    # | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
-    # | Label Smoothing               | 0.1      |
-
-
-    _transforms, mixup_cutmix_fn = generate_transform_function(
+    _transforms_train, mixup_cutmix_fn = generate_transform_function(
                         augmentation_config_path=args.augmentation_config_path, 
-                        return_mixup_cutmix_fn=True
+                        return_mixup_cutmix_fn=True, is_validation = False
                         )
+    
+    _transforms_valid = generate_transform_function(
+                        augmentation_config_path=args.augmentation_config_path, 
+                        return_mixup_cutmix_fn=False, is_validation = True
+                        )
+    
 
-
-    def transforms(examples):
-        examples["pixel_values"] = [_transforms(img.convert("RGB")) for img in examples["image"]]
+    def transforms_train_data(examples):
+        examples["pixel_values"] = [_transforms_train(img.convert("RGB")) for img in examples["image"]]
+        del examples["image"]
+        return examples
+    
+    def transforms_valid_data(examples):
+        examples["pixel_values"] = [_transforms_valid(img.convert("RGB")) for img in examples["image"]]
         del examples["image"]
         return examples
     
 
-    imagenet_dataset = imagenet_dataset.with_transform(transforms)
+    imagenet_dataset["train"] = imagenet_dataset["train"].with_transform(transforms_train_data)
+    imagenet_dataset["validation"] = imagenet_dataset["validation"].with_transform(transforms_valid_data)
 
 
     data_collator = DefaultDataCollator()
@@ -217,50 +211,40 @@ def main():
 
     ## EVALUATION METRICS
 
-
-
-
-
     accuracy = evaluate.load("accuracy")
-
-
-
 
 
     def compute_metrics(eval_pred):
         predictions, labels = eval_pred
+
         predictions = np.argmax(predictions, axis=1)
         return accuracy.compute(predictions=predictions, references=labels)
 
 
+    ### TRAIN
 
 
 
 
+    # ```
+    # | Parameter                      | Value     |
+    # |-------------------------------|----------|
+    # | Batch Size                    | 1024     |
+    # | Base Learning Rate            | 1e-3     |
+    # | Learning Rate Scheduler       | Cosine   |
+    # | Minimum Learning Rate         | 1e-5     |
+    # | Training Epochs               | 300      |
+    # | Warm-up Epochs                | 20       |
+    # | Warm-up Schedule              | Linear   |
+    # | Warm-up Learning Rate         | 1e-6     |
+    # | Optimizer                     | AdamW    |
+    # | Stochastic Drop Path Rate     | 0.2      |
+    # | Gradient Clip                 | 5.0      |
+    # | Weight Decay                  | 0.05     |
+    # ```
 
 
-
-
-
-
-
-### TRAIN
-
-
-
-from transformers import AutoModelForImageClassification, TrainingArguments, Trainer
-
-model = AutoModelForImageClassification.from_pretrained(
-    checkpoint,
-    num_labels=len(labels),
-    id2label=id2label,
-    label2id=label2id,
-)
-
-
-
-
-
+# custom learning rate schedular likhte hobe (for base and minimum lr)
 
 training_args = TrainingArguments(
     output_dir="my_awesome_food_model",
@@ -293,8 +277,6 @@ trainer.train()
 
 
 
-
-trainer.push_to_hub()
 
 
 
@@ -348,6 +330,7 @@ classifier(image)
 
 
     parser.add_argument("--per_device_train_batch_size", type=int, default=8, help="Batch size per device")
+    parser.add_argument("--per_device_eval_batch_size", type=int, default=8, help="Batch size per device")
     parser.add_argument("--gradient_accumulation_steps", type=int, default=4, help="Number of gradient accumulation steps")
     parser.add_argument("--learning_rate", type=float, default=3e-4, help="Maximum learning rate")
     parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
@@ -386,7 +369,7 @@ classifier(image)
     training_args = TrainingArguments(
         output_dir = args.save_directory,
         overwrite_output_dir = False,
-        evaluation_strategy = "steps",
+        evaluation_strategy = "epoch",
         prediction_loss_only = False,
         per_device_train_batch_size = args.per_device_train_batch_size,
         per_device_eval_batch_size = args.per_device_train_batch_size,
@@ -399,11 +382,11 @@ classifier(image)
         lr_scheduler_type = "linear",
         warmup_steps = args.warmup_steps,
         logging_dir = args.logging_dir,
-        logging_strategy = "steps",
+        logging_strategy = "epoch",
         logging_first_step = True,
         logging_steps = args.logging_steps,
         logging_nan_inf_filter = True,
-        save_strategy = "steps",
+        save_strategy = "epoch",
         save_steps = args.save_steps,
         seed = 42,
         data_seed = 42,
@@ -428,7 +411,7 @@ classifier(image)
     loss_func = nn.CrossEntropyLoss()
     
 
-    def compute_metrics(pred):
+    def compute_metrics(pred): # do only topk 1 while on the fly
         """
         Compute metrics for binary classification.
 
@@ -469,14 +452,7 @@ classifier(image)
     # Train model
     trainer.train()
 
-    # Evaluate model (follow new DDP script)
-    eval_result = trainer.evaluate(eval_dataset=mlm_datasets["validation"])
 
-    with open(os.path.join(args.save_directory, "eval_results.txt"), "w") as writer:
-        print(f"***** Writing Eval Results *****")
-        for key, value in sorted(eval_result.items()):
-            print(f"{key} = {value}")
-            writer.write(f"{key} = {value}\n")
 
     # Save the model
     trainer.save_model(args.save_directory)

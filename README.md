@@ -97,7 +97,7 @@ The default hyperparameters for training, as specified in the [FocalNet paper](h
 | Cutmix α                      | 0.8      |
 | Mixup Probability             | 1.0      |
 | Mixup Switch Probability      | 0.5      |
-| Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
+| Stochastic Drop Path Rate     | 0.2      |
 | Label Smoothing               | 0.1      |
 | Gradient Clip                 | 5.0      |
 | Weight Decay                  | 0.05     |

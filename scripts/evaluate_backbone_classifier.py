@@ -116,18 +116,6 @@ def main():
     image_processor = AutoImageProcessor.from_pretrained("microsoft/focalnet-tiny")
 
 
-    # | Color Jitter Factor           | 0.4      | d
-    # | Auto-augmentation             | rand-m9-mstd0.5-inc1 | d
-    # | Random Erasing Probability    | 0.25     | d
-    # | Random Erasing Mode           | Pixel    | d
-    # | Mixup α                       | 0.8      |
-    # | Cutmix α                      | 0.8      |
-    # | Mixup Probability             | 1.0      |
-    # | Mixup Switch Probability      | 0.5      |
-    # | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
-    # | Label Smoothing               | 0.1      |
-
-
     _transforms, mixup_cutmix_fn = generate_transform_function(
                         image_processor = image_processor,
                         augmentation_config_path="configs/augmentation_config_imagenet.json", 

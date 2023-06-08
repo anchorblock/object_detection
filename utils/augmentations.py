@@ -38,16 +38,15 @@ def generate_transform_function(image_processor, augmentation_config_path, retur
             
     ImageNet Augmentation Details (from focalnet paper):
 
-    # | Color Jitter Factor           | 0.4      | 
-    # | Auto-augmentation             | rand-m9-mstd0.5-inc1 | 
-    # | Random Erasing Probability    | 0.25     | 
-    # | Random Erasing Mode           | Pixel    | 
-    # | Mixup α                       | 0.8      |
-    # | Cutmix α                      | 0.8      |
-    # | Mixup Probability             | 1.0      |
-    # | Mixup Switch Probability      | 0.5      |
-    # | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
-    # | Label Smoothing               | 0.1      |
+     | Color Jitter Factor           | 0.4      | 
+     | Auto-augmentation             | rand-m9-mstd0.5-inc1 | 
+     | Random Erasing Probability    | 0.25     | 
+     | Random Erasing Mode           | Pixel    | 
+     | Mixup α                       | 0.8      |
+     | Cutmix α                      | 0.8      |
+     | Mixup Probability             | 1.0      |
+     | Mixup Switch Probability      | 0.5      |
+     | Label Smoothing               | 0.1      |
 
     """
 

@@ -4,7 +4,7 @@
 
 ### Train Backbones with ImageNet-1k (remaining)
 
-- [ ] Evaluation Metrics script [utils/evaluation_metrics.py](./utils/evaluation_metrics.py) for popular evaluation metrics used for ImageNet-1K:
+- [x] Evaluation Metrics script [utils/evaluation.py](./utils/evaluation.py) for popular evaluation metrics used for ImageNet-1K:
 
     - Top-1 Accuracy
     - Top-5 Accuracy
@@ -13,7 +13,7 @@
     - F1-Score
     - Mean Average Precision (mAP)
 
-- [ ] scripts/train_backbone_classifier.py (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
+- [ ] [scripts/train_backbone_classifier.py](./scripts/train_backbone_classifier.py) (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
 
     | Parameter                      | Value     |
     |-------------------------------|----------|
@@ -34,9 +34,13 @@
     During fine-tuning, cutmix and mixup have to be disabled.
 
 
+- [ ] [scripts/evaluate_backbone_classifier.py](./scripts/evaluate_backbone_classifier.py) evaluation for imagenet validation data
+
+
 - [ ] inference_script_backbone_classifier.ipynb
 - [ ] training_imagenet_1k bash command --> README.md
-- [ ] inference_imagenet_1k bash command --> README.md
+- [ ] evaluation_imagenet_1k bash command --> README.md
+- [ ] inference python command --> README.md
 
 
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones
@@ -96,4 +100,10 @@
     | Mixup Switch Probability      | 0.5      |
     | Label Smoothing               | 0.1      |
 
+
+<br>
+
+## Pre-Alpha Release 0.2.0
+
+### Train Backbones with ImageNet-1k (Partial)
 
