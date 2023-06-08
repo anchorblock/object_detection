@@ -2,6 +2,8 @@ import torch
 from torchvision.transforms import (
     ColorJitter,
     RandomErasing,
+    RandomResizedCrop,
+    Resize,
     Normalize,
     Compose,
     PILToTensor,
@@ -15,7 +17,7 @@ from types import SimpleNamespace
 
 
 
-def generate_transform_function(image_processor, augmentation_config_path, return_mixup_cutmix_fn = False):
+def generate_transform_function(image_processor, augmentation_config_path, return_mixup_cutmix_fn = False, is_validation = False):
     """
     Generate a transformation function for image processing.
 
@@ -54,6 +56,16 @@ def generate_transform_function(image_processor, augmentation_config_path, retur
         config = json.load(json_file)
         config = SimpleNamespace(**config)
     
+    # random_resized_crop
+    size = (
+        (image_processor.size["shortest_edge"], image_processor.size["shortest_edge"])
+        if "shortest_edge" in image_processor.size
+        else (image_processor.size["height"], image_processor.size["width"])
+    )
+    random_resized_crop = RandomResizedCrop(size)
+    resize = Resize(size)
+
+
     # color jitter
     color_jitter = ColorJitter(brightness=config.color_jitter_factor, 
                                         contrast=config.color_jitter_factor,
@@ -90,6 +102,7 @@ def generate_transform_function(image_processor, augmentation_config_path, retur
 
 
     _transforms = Compose([
+        random_resized_crop,
         color_jitter,
         auto_augment,
         PILToTensor(),
@@ -98,9 +111,17 @@ def generate_transform_function(image_processor, augmentation_config_path, retur
         random_erasing
         ])
 
-
+    if is_validation:
+        _transforms = Compose([
+            resize,
+            PILToTensor(),
+            ConvertImageDtype(torch.float32),
+            normalize
+            ])
+        
     if return_mixup_cutmix_fn:
         return _transforms, mixup_cutmix_fn
+    
     
     return _transforms
 
