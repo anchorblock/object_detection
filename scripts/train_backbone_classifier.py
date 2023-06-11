@@ -269,6 +269,8 @@ def main():
 
 
     # all params for epochs
+    if not os.path.exists(args.save_directory):
+        os.makedirs(args.save_directory)
 
     training_args = TrainingArguments(
         output_dir = args.save_directory,

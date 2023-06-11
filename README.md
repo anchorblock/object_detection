@@ -106,17 +106,6 @@ The default hyperparameters for training, as specified in the [FocalNet paper](h
 <br>
 
 
-And these are the popular evaluation metrics used for ImageNet-1K:
-
-```
-- Top-1 Accuracy
-- Top-5 Accuracy
-- Precision
-- Recall
-- F1-Score
-- Mean Average Precision (mAP)
-```
-
 For training, run:
 
 ```bash
@@ -150,41 +139,71 @@ torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.
     --tf32 False
 ```
 
+### 📊 Evaluate Backbones with ImageNet-1k validation data
+
+These are the popular evaluation metrics used for ImageNet-1K:
+
+```
+- Top-1 Accuracy
+- Top-5 Accuracy
+- Precision
+- Recall
+- F1-Score
+- Mean Average Precision (mAP)
+```
+
+
 Now, evaluate the model with imagenet validation data:
 
 ```bash
 export model_type="focalnet"
 
 python scripts/evaluate_backbone_classifier.py \
-    --pretrained_model_name_or_path="outputs/backbone/$model_type"
+    --pretrained_model_name_or_path="outputs/backbone/$model_type" \
+    --results_dir="outputs/backbone/$model_type"
 ```
 
 You can also directly evaluate a huggingface's classifier model pretrained with imagenet:
 
 ```bash
 python scripts/evaluate_backbone_classifier.py \
-    --pretrained_model_name_or_path="microsoft/focalnet-tiny"
+    --pretrained_model_name_or_path="microsoft/focalnet-tiny" \
+    --results_dir="outputs"
 ```
 
 
+### 💡 Inference with Backbones
 
+An example inference code:
 
+```python
+from PIL import Image
+import requests
+from io import BytesIO
+import matplotlib.pyplot as plt
 
+from transformers import AutoImageProcessor, pipeline
+from utils.augmentations import generate_transform_function
 
+# picture of a baby golden retriver
+IMG_URL = "https://t4.ftcdn.net/jpg/05/68/28/05/360_F_568280532_Bvxwd66M3Y22vVeJ3VRqHRAqrdNfJo7o.jpg" # change
 
+pretrained_model_name_or_path = "microsoft/focalnet-tiny" # change
 
+response = requests.get(IMG_URL)
+image = Image.open(BytesIO(response.content))
 
+classifier = pipeline("image-classification", model=pretrained_model_name_or_path)
 
+classifier(image)
 
-
-
-
-
-
-
-
-
-
+# output:
+# [{'score': 0.9616713523864746, 'label': 'golden retriever'},
+#  {'score': 0.004097872879356146, 'label': 'Labrador retriever'},
+#  {'score': 0.001239714794792235, 'label': 'flat-coated retriever'},
+#  {'score': 0.0010671772761270404, 'label': 'tennis ball'},
+#  {'score': 0.0008922729175537825, 'label': 'kuvasz'}]
+```
 
 
 <br>

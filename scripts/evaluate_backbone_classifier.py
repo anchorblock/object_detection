@@ -96,6 +96,8 @@ def main():
     parser = argparse.ArgumentParser(description='Evaluate pretrained model with imagenet-1k validation datasets.')
     parser.add_argument('pretrained_model_name_or_path', type=str, default = "microsoft/focalnet-tiny", help='Name or path of the pretrained model')
     parser.add_argument('validation_dataset', type=str, default = "formatted_data/imagenet_1k/validation.parquet", help = "validation datasets (imagenet, parquet format)")
+    parser.add_argument('results_dir', type=str, default = "outputs", help='result directories')
+
     args = parser.parse_args()
 
 
@@ -114,10 +116,10 @@ def main():
     image_processor = AutoImageProcessor.from_pretrained(args.pretrained_model_name_or_path)
 
 
-    _transforms, mixup_cutmix_fn = generate_transform_function(
+    _transforms = generate_transform_function(
                         image_processor = image_processor,
                         augmentation_config_path="configs/augmentation_config_imagenet.json", 
-                        return_mixup_cutmix_fn=True, is_validation = True
+                        return_mixup_cutmix_fn=False, is_validation = True
                         )
 
 
@@ -190,8 +192,24 @@ def main():
 
     print(f"top_1_accuracy = {top_1_accuracy}\ntop_5_accuracy = {top_5_accuracy}\nprecision = {precision}\nrecall = {recall}\nf1 = {f1}\nmAP = {mAP}")
 
+    # Create a dictionary to store the evaluation results
+    results = {
+        "top_1_accuracy": top_1_accuracy,
+        "top_5_accuracy": top_5_accuracy,
+        "precision": precision,
+        "recall": recall,
+        "f1": f1,
+        "mAP": mAP
+    }
 
+    # Save the results to a JSON file
+    if not os.path.exists(args.results_dir):
+        os.makedirs(args.results_dir)
 
+    with open(f"{args.results_dir}/imagenet_eval_results.json", "w") as file:
+        json.dump(results, file, indent=4)
+
+    print("\nEvaluation results saved successfully.")
 
 
 
