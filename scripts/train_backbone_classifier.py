@@ -1,16 +1,13 @@
 import sys
+sys.setrecursionlimit(10000)
 sys.path.append('./')
 
 import argparse
 import datetime
-import sys
-sys.setrecursionlimit(10000)
-import argparse
 import torch
-import torch.nn as nn
-import torchvision.transforms as transforms
+import math
+from torch.optim.lr_scheduler import LambdaLR
 
-from PIL import Image
 import numpy as np
 import math
 import os
@@ -25,14 +22,12 @@ from transformers import (
     Trainer
 )
 import random
-import time
-import warnings
-
 from utils.augmentations import generate_transform_function
-
 import evaluate
 
 
+now = datetime.datetime.now()
+date_time_str = now.strftime("%Y_%m_%d__%H_%M_%S")
 
 
 def speed_up():
@@ -90,59 +85,66 @@ def set_seeds(seed = 12345):
     torch.cuda.manual_seed(seed)
 
 
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(description='ImageNet Classifier (backbone) Training')
+
+    # Model arguments
+    parser.add_argument('--model_type', type=str, choices=['bit', 'convnext', 'convnextv2', 'dinat', 'focalnet', 'nat', 'resnet', 'swin'], default='resnet', help='Specify the model type (optional if config_path and processor_config_path are given)')
+
+    type_args = parser.parse_args()
+
+    parser.add_argument('--config_path', type=str, default=f'configs/backbones/{type_args.model_type}/config.json', help='Specify the path to the model config.json file (optional if model_type is given)')
+    parser.add_argument('--processor_config_path', type=str, default=f'configs/backbones/{type_args.model_type}/preprocessor_config.json', help='Specify the path to the processor_config.json file (optional if model_type is given)')
+    parser.add_argument('--augmentation_config_path', type=str, default='configs/augmentation/augmentation_config_imagenet.json', help='Path to the augmentation config file')
+
+    # Data paths
+    parser.add_argument('--train_data_path', type=str, default='formatted_data/imagenet_1k/train.parquet', help='Path to the training data (parquet file)')
+    parser.add_argument('--validation_data_path', type=str, default='formatted_data/imagenet_1k/validation.parquet', help='Path to the validation data (parquet file)')
+    parser.add_argument('--test_data_path', type=str, default='formatted_data/imagenet_1k/test.parquet', help='Path to the test data (parquet file)')
+    parser.add_argument('--id2label', type=str, default='configs/datasets/imagenet-1k-id2label.json', help='Path to the ID to label mapping file')
+    parser.add_argument('--label2id', type=str, default='configs/datasets/imagenet-1k-label2id.json', help='Path to the label to ID mapping file')
+
+    # Training options
+    parser.add_argument('--do_mixup_cutmix', type=bool, default=True, help='Whether to perform mixup and cutmix during training')
+    parser.add_argument('--per_device_train_batch_size', type=int, default=1024, help='Batch size for training on each device')
+    parser.add_argument('--per_device_eval_batch_size', type=int, default=1024, help='Batch size for evaluation on each device')
+    parser.add_argument('--gradient_accumulation_steps', type=int, default=1, help='Number of gradient accumulation steps')
+    parser.add_argument('--learning_rate', type=float, default=1e-3, help='Learning rate')
+    parser.add_argument('--learning_rate_scheduler', type=str, default='cosine', help='Learning rate scheduler')
+    parser.add_argument('--minimum_learning_rate', type=float, default=1e-5, help='Minimum learning rate')
+    parser.add_argument('--weight_decay', type=float, default=0.05, help='Weight decay')
+    parser.add_argument('--training_epochs', type=int, default=300, help='Number of training epochs')
+    parser.add_argument('--warmup_epochs', type=int, default=20, help='Number of warmup epochs')
+    parser.add_argument('--warmup_schedule', type=str, default='custom_cosine', help='Warmup schedule')
+    parser.add_argument('--warmup_learning_rate', type=float, default=1e-6, help='Warmup learning rate')
+    parser.add_argument('--logging_dir', type=str, default='./logs/{date_time_str}', help='Directory to save logs')
+    parser.add_argument('--optimizer', type=str, default='adamw_torch', help='optimier type')
+
+
+    parser.add_argument('--stochastic_drop_path_rate', type=float, default=0.2, help='Rate of stochastic drop path')
+    parser.add_argument('--gradient_clip', type=float, default=5.0, help='Gradient clipping value')
+    parser.add_argument('--save_directory', type=str, default=f"outputs/backbone/{type_args.model_type}", help='Directory to save the trained model')
+    parser.add_argument('--resume_from_checkpoint', type=str, default=None, help='Path to a checkpoint to resume training from')
+    parser.add_argument('--gradient_checkpointing', type=bool, default=False, help='Whether to use gradient checkpointing')
+    parser.add_argument('--fp16', type=bool, default=True, help='Whether to use mixed precision training with FP16')
+    parser.add_argument('--tf32', type=bool, default=False, help='Whether to use mixed precision training with TF32')
+
+    args = parser.parse_args()
+    return args
+
+
+
 def main():
     
     speed_up()
     set_seeds(seed = 42)
 
-    now = datetime.datetime.now()
-    date_time_str = now.strftime("%Y_%m_%d__%H_%M_%S")
-
-    # Create the argument parser
-    parser = argparse.ArgumentParser(description="ImageNet Classifier (backbone) Training")
 
 
-    parser.add_argument('--model_type', type=str, choices=['bit', 'convnext', 'convnextv2', 'dinat', 'focalnet', 'nat', 'resnet', 'swin'],
-                        default='resnet',  # Set the default value to 'resnet'
-                        help='Specify the model type (optional if config_path and processor_config_path are given)')
+    # parser arguments
+    args = parse_arguments()
 
-    type_args = parser.parse_args()
-
-    parser.add_argument('--config_path', type=str,
-                        default=f'configs/backbones/{type_args.model_type}/config.json',  # Set the default value to 'config.json'
-                        help='Specify the path to the model config.json file (optional if model_type is given)')
-
-    parser.add_argument('--processor_config_path', type=str,
-                        default=f'configs/backbones/{type_args.model_type}/preprocessor_config.json',  # Set the default value to 'processor_config.json'
-                        help='Specify the path to the processor_config.json file (optional if model_type is given)')
-
-    parser.add_argument('--augmentation_config_path', type=str,
-                        default='configs/augmentation_config_imagenet.json',
-                        help='Specify the path to the augmentation_config.json file')
-
-    parser.add_argument('--train_data_path', type=str, default='formatted_data/imagenet_1k/train.parquet',
-                        help='Path to the training data parquet file')
-    
-    parser.add_argument('--validation_data_path', type=str, default='formatted_data/imagenet_1k/validation.parquet',
-                        help='Path to the validation data parquet file')
-    
-    parser.add_argument('--test_data_path', type=str, default='formatted_data/imagenet_1k/test.parquet',
-                        help='Path to the test data parquet file')
-
-
-    parser.add_argument('--id2label', type=str,
-                        default='configs/datasets/imagenet-1k-id2label.json',  # Set the default value to 'configs/datasets/imagenet-1k-id2label.json'
-                        help='Specify the path to the id2label.json file (optional)')
-
-    parser.add_argument('--label2id', type=str,
-                        default='configs/datasets/imagenet-1k-label2id.json',  # Set the default value to 'configs/datasets/imagenet-1k-label2id.json'
-                        help='Specify the path to the label2id.json file (optional)')
-
-    parser.add_argument('--do_mixup_cutmix', type=bool, default=True, help='Specify whether to perform mixup and cutmix')
-
-
-
-    args = parser.parse_args()
 
     ### LOAD DATA
     disable_caching()
@@ -155,7 +157,6 @@ def main():
         cache_dir=".cache")
         
 
-    # TODO : **************
     ### LOAD CONFIG, BUILD MODEL AND LOAD PROCESSORS
 
     config = AutoConfig.from_pretrained(args.config_path)
@@ -173,6 +174,8 @@ def main():
     config.id2label = id2label
     config.label2id = label2id
     config.num_labels = len(label2id.keys())
+    config.drop_path_rate = args.stochastic_drop_path_rate
+
 
 
     model = AutoModelForImageClassification.from_config(config)
@@ -181,11 +184,13 @@ def main():
 
 
     _transforms_train, mixup_cutmix_fn = generate_transform_function(
+                        image_processor=image_processor,
                         augmentation_config_path=args.augmentation_config_path, 
                         return_mixup_cutmix_fn=True, is_validation = False
                         )
     
     _transforms_valid = generate_transform_function(
+                        image_processor=image_processor,
                         augmentation_config_path=args.augmentation_config_path, 
                         return_mixup_cutmix_fn=False, is_validation = True
                         )
@@ -213,7 +218,6 @@ def main():
 
     accuracy = evaluate.load("accuracy")
 
-
     def compute_metrics(eval_pred):
         predictions, labels = eval_pred
 
@@ -224,179 +228,77 @@ def main():
     ### TRAIN
 
 
+    class BackboneTrainer(Trainer):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
 
 
-    # ```
-    # | Parameter                      | Value     |
-    # |-------------------------------|----------|
-    # | Batch Size                    | 1024     |
-    # | Base Learning Rate            | 1e-3     |
-    # | Learning Rate Scheduler       | Cosine   |
-    # | Minimum Learning Rate         | 1e-5     |
-    # | Training Epochs               | 300      |
-    # | Warm-up Epochs                | 20       |
-    # | Warm-up Schedule              | Linear   |
-    # | Warm-up Learning Rate         | 1e-6     |
-    # | Optimizer                     | AdamW    |
-    # | Stochastic Drop Path Rate     | 0.2      |
-    # | Gradient Clip                 | 5.0      |
-    # | Weight Decay                  | 0.05     |
-    # ```
+        def compute_loss(self, model, inputs, return_outputs=False):
+
+            # mixup cutmix
+            if args.do_mixup_cutmix:
+                inputs["pixel_values"], inputs["labels"] = mixup_cutmix_fn(inputs["pixel_values"], inputs["labels"])
+
+            # forward pass
+            outputs = model(**inputs)
+
+            # compute custom loss
+            loss = outputs["loss"] if isinstance(outputs, dict) else outputs[0]
+
+            return (loss, outputs) if return_outputs else loss
 
 
-# custom learning rate schedular likhte hobe (for base and minimum lr)
+        def create_scheduler(self, num_training_steps: int, optimizer: torch.optim.Optimizer = None):
 
-training_args = TrainingArguments(
-    output_dir="my_awesome_food_model",
-    remove_unused_columns=False,
-    evaluation_strategy="epoch",
-    save_strategy="epoch",
-    learning_rate=5e-5,
-    per_device_train_batch_size=16,
-    gradient_accumulation_steps=4,
-    per_device_eval_batch_size=16,
-    num_train_epochs=3,
-    warmup_ratio=0.1,
-    logging_steps=10,
-    load_best_model_at_end=True,
-    metric_for_best_model="accuracy",
-    push_to_hub=True,
-)
+            def lr_lambda(current_step):
+                if current_step < self.args.get_warmup_steps(num_training_steps):
+                    # Linear warmup phase
+                    return (self.args.learning_rate - args.warmup_learning_rate) / self.args.get_warmup_steps(num_training_steps) * current_step + args.warmup_learning_rate
+                else:
+                    # Cosine annealing phase
+                    return args.minimum_learning_rate + 0.5 * (self.args.learning_rate - args.minimum_learning_rate) * (1 + math.cos(math.pi * (current_step - self.args.get_warmup_steps(num_training_steps)) / (num_training_steps - self.args.get_warmup_steps(num_training_steps))))
+            
+            scheduler = LambdaLR(
+                optimizer=self.optimizer if optimizer is None else optimizer,
+                lr_lambda=lr_lambda
+            )
 
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    data_collator=data_collator,
-    train_dataset=food["train"],
-    eval_dataset=food["test"],
-    tokenizer=image_processor,
-    compute_metrics=compute_metrics,
-)
+            self.lr_scheduler = scheduler
 
-trainer.train()
+            return self.lr_scheduler
 
 
+    # all params for epochs
 
-
-
-
-#### Inference
-
-
-ds = load_dataset("food101", split="validation[:10]")
-image = ds["image"][0]
-
-
-from transformers import pipeline
-
-classifier = pipeline("image-classification", model="my_awesome_food_model") # must pre-loaded id2label, label2id
-classifier(image)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    parser.add_argument("--per_device_train_batch_size", type=int, default=8, help="Batch size per device")
-    parser.add_argument("--per_device_eval_batch_size", type=int, default=8, help="Batch size per device")
-    parser.add_argument("--gradient_accumulation_steps", type=int, default=4, help="Number of gradient accumulation steps")
-    parser.add_argument("--learning_rate", type=float, default=3e-4, help="Maximum learning rate")
-    parser.add_argument("--weight_decay", type=float, default=0.01, help="Weight decay")
-    parser.add_argument("--warmup_steps", type=int, default=10000, help="Number of warmup steps")
-    parser.add_argument("--max_steps", type=int, default=1000000, help="Number of training iterations")
-    parser.add_argument("--logging_dir", type=str, default=f"./logs/{date_time_str}", help="Directory for logging")
-    parser.add_argument("--logging_steps", type=int, default=100, help="Logging interval")
-    parser.add_argument("--eval_steps", type=int, default=2000, help="Validate loss every n steps")
-    parser.add_argument("--save_steps", type=int, default=2000, help="Save weights every n steps")
-    parser.add_argument("--max_grad_norm", type=float, default=1.0, help="Gradient clipping norm")
-    parser.add_argument("--init_model_directory", type=str, default="./DeBERTaV3", help="Directory for initializing the model")
-    parser.add_argument("--save_directory", type=str, default="./DeBERTaV3_trained_bn", help="Directory for saving weights")
-    parser.add_argument("--resume_from_checkpoint", type=str, default="./DeBERTaV3", help="Continue path from")
-    parser.add_argument("--gradient_checkpointing",type=bool, default=False, help="Enable or disable gradient checkpointing (default: False)")
-    
-    # Parse the command-line arguments
-    args = parser.parse_args()
-
-
-    # load parquet datasets
-
-    disable_caching() # disabling caching for less storage and speedups
-
-    mlm_datasets = load_dataset("parquet", data_files={"train": args.train_parquet_data_file, "validation": args.test_parquet_data_file})
-    
-    # load tokenizer, model-config, and model
-    tokenizer = DebertaV2TokenizerFast.from_pretrained(args.init_model_directory)
-    config = DebertaV2Config.from_pretrained(args.init_model_directory)
-    model = DebertaV2ForMaskedLM.from_pretrained(args.init_model_directory)
-
-    # data collator
-    data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
-
-
-    # training arguments
     training_args = TrainingArguments(
         output_dir = args.save_directory,
         overwrite_output_dir = False,
         evaluation_strategy = "epoch",
         prediction_loss_only = False,
         per_device_train_batch_size = args.per_device_train_batch_size,
-        per_device_eval_batch_size = args.per_device_train_batch_size,
+        per_device_eval_batch_size = args.per_device_eval_batch_size,
         gradient_accumulation_steps = args.gradient_accumulation_steps,
         eval_accumulation_steps = args.gradient_accumulation_steps,
         learning_rate = args.learning_rate,
         weight_decay = args.weight_decay,
-        max_grad_norm = args.max_grad_norm,
-        max_steps = args.max_steps,
-        lr_scheduler_type = "linear",
-        warmup_steps = args.warmup_steps,
+        max_grad_norm = args.gradient_clip,
+        lr_scheduler_type = args.learning_rate_scheduler,
+        num_train_epochs = args.training_epochs,
+        warmup_ratio = args.warmup_epochs / args.training_epochs,
         logging_dir = args.logging_dir,
         logging_strategy = "epoch",
         logging_first_step = True,
-        logging_steps = args.logging_steps,
         logging_nan_inf_filter = True,
         save_strategy = "epoch",
-        save_steps = args.save_steps,
+        save_total_limit = 10,
         seed = 42,
         data_seed = 42,
-        fp16 = True,
-        half_precision_backend="auto", #"cuda_amp",
-        tf32 = False,
+        fp16 = args.fp16,
+        half_precision_backend="auto",
+        tf32 = args.tf32,
         local_rank = os.environ["LOCAL_RANK"],
         ddp_backend="nccl",
         ddp_find_unused_parameters=False,
-        eval_steps = args.eval_steps,
         dataloader_num_workers = 2,
         disable_tqdm = False,
         ignore_data_skip = False,
@@ -408,50 +310,21 @@ classifier(image)
     )
 
 
-    loss_func = nn.CrossEntropyLoss()
-    
-
-    def compute_metrics(pred): # do only topk 1 while on the fly
-        """
-        Compute metrics for binary classification.
-
-        Args:
-            pred (object): An object containing prediction information.
-
-        Returns:
-            dict: A dictionary containing the computed metrics.
-                - perplexity (float): The perplexity value computed based on the predictions.
-        """
-        labels = pred.label_ids
-        preds = pred.predictions #.argmax(-1)
-        
-        labels_tensor = torch.from_numpy(labels).to(torch.float32)
-        preds_tensor = torch.from_numpy(preds).to(torch.float32)
-
-        loss = loss_func(preds_tensor.view(-1, config.vocab_size), labels_tensor.view(-1).long())
-
-        try:
-            perplexity = math.exp(loss)
-        except OverflowError:
-            perplexity = float("inf")
-
-        return {"perplexity": perplexity}
-
-
     # trainer
-    trainer = Trainer(
+
+    trainer = BackboneTrainer(
         model=model,
         args=training_args,
-        train_dataset=mlm_datasets["train"],
-        eval_dataset=mlm_datasets["validation"],
-        compute_metrics=compute_metrics,
         data_collator=data_collator,
-        tokenizer=tokenizer,
+        train_dataset=imagenet_dataset["train"],
+        eval_dataset=imagenet_dataset["validation"],
+        tokenizer=image_processor,
+        compute_metrics=compute_metrics,
     )
+
 
     # Train model
     trainer.train()
-
 
 
     # Save the model
@@ -464,80 +337,4 @@ if __name__=="__main__":
     main()
     
     print("Training has been completed.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    --per_device_train_batch_size=32 \
-    --gradient_accumulation_steps=64 \
-    --learning_rate=5e-4 \
-    --warmup_steps=10000 \
-    --max_steps=1250000 \
-    --logging_steps=500 \
-    --eval_steps=100000 \
-    --save_steps=10000 \
-    --init_model_directory="./DeBERTaV3" \
-    --save_directory="./DeBERTaV3_trained_bn" \
-    --resume_from_checkpoint="./DeBERTaV3" \
-    --gradient_checkpointing=true
 

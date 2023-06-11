@@ -117,92 +117,53 @@ And these are the popular evaluation metrics used for ImageNet-1K:
 - Mean Average Precision (mAP)
 ```
 
-Training and inference script will be published in next release.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-
+For training, run:
 
 ```bash
 export OMP_NUM_THREADS=4
 export n_gpu=1
+export model_type="focalnet"
 
-torchrun --standalone --nproc_per_node=$n_gpu z05_training_fp16_DDP_A100.py \
-    --train_parquet_data_file="./mlm_processed_bn_data/train_data.parquet" \
-    --test_parquet_data_file="./mlm_processed_bn_data/validation_data.parquet" \
-    --per_device_train_batch_size=32 \
-    --gradient_accumulation_steps=64 \
-    --learning_rate=5e-4 \
-    --warmup_steps=10000 \
-    --max_steps=1250000 \
-    --logging_steps=500 \
-    --eval_steps=100000 \
-    --save_steps=10000 \
-    --init_model_directory="./DeBERTaV3" \
-    --save_directory="./DeBERTaV3_trained_bn" \
-    --resume_from_checkpoint="./DeBERTaV3" \
-    --gradient_checkpointing=true
-
+torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.py \
+    --model_type resnet \
+    --config_path "configs/backbones/$model_type/config.json" \
+    --processor_config_path "configs/backbones/$model_type/preprocessor_config.json" \
+    --do_mixup_cutmix True \
+    --per_device_train_batch_size 1024 \
+    --per_device_eval_batch_size 1024 \
+    --gradient_accumulation_steps 1 \
+    --learning_rate 1e-3 \
+    --learning_rate_scheduler cosine \
+    --minimum_learning_rate 1e-5 \
+    --weight_decay 0.05 \
+    --training_epochs 300 \
+    --warmup_epochs 20 \
+    --warmup_schedule custom_cosine \
+    --warmup_learning_rate 1e-6 \
+    --optimizer adamw_torch \
+    --stochastic_drop_path_rate 0.2 \
+    --gradient_clip 5.0 \
+    --save_directory "outputs/backbone/$model_type" \
+    --resume_from_checkpoint None \
+    --gradient_checkpointing False \
+    --fp16 True \
+    --tf32 False
 ```
 
-SNIPPET !
-
-export OMP_NUM_THREADS=4
-export n_gpu=1
-
-# Create a config file
-cat << EOF > config.yaml
-train_parquet_data_file: "./mlm_processed_bn_data/train_data.parquet"
-test_parquet_data_file: "./mlm_processed_bn_data/validation_data.parquet"
-per_device_train_batch_size: 32
-gradient_accumulation_steps: 64
-learning_rate: 5e-4
-warmup_steps: 10000
-max_steps: 1250000
-logging_steps: 500
-eval_steps: 100000
-save_steps: 10000
-init_model_directory: "./DeBERTaV3"
-save_directory: "./DeBERTaV3_trained_bn"
-resume_from_checkpoint: "./DeBERTaV3"
-gradient_checkpointing: true
-EOF
-
-# Pass the arguments mentioned in the config file
-torchrun --standalone --nproc_per_node=$n_gpu z05_training_fp16_DDP_A100.py \
-    --config config.yaml
 
 
 
- -->
+
+
+
+
+
+
+
+
+
+
+
 
 
 

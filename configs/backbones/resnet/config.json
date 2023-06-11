@@ -8,6 +8,7 @@
       2,
       2
     ],
+    "drop_path_rate": 0.0,
     "downsample_in_first_stage": false,
     "embedding_size": 64,
     "hidden_act": "relu",
