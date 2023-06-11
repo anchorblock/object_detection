@@ -74,6 +74,7 @@ class COCODataset(datasets.GeneratorBasedBuilder):
 
         feature_dict = {
             "image_id": datasets.Value("int64"),
+            "image": datasets.Image(),
             "caption_id": datasets.Value("int64"),
             "caption": datasets.Value("string"),
             "height": datasets.Value("int64"),
@@ -81,6 +82,7 @@ class COCODataset(datasets.GeneratorBasedBuilder):
             "file_name": datasets.Value("string"),
             "coco_url": datasets.Value("string"),
             "image_path": datasets.Value("string"),
+            
         }
 
         features = datasets.Features(feature_dict)

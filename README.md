@@ -262,6 +262,29 @@ ds = datasets.load_dataset("utils/coco_dataset_script.py", "2017", data_dir=COCO
 ds["train"][0]
 ```
 
+An train output:
+
+```python
+>>> ds["validation"][5678]
+{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=500x375 at 0x7F15A02B0B50>, 'label': 118}
+```
+
+Now, convert all raw data to huggingface image classification data format and save to parquet for faster loading:
+
+```bash
+python scripts/raw_to_parquet_imagenet.py \
+    --imagenet_dir="data/imagenet_1k" \
+    --save_path="formatted_data/imagenet_1k"
+```
+
+<br>
+
+
+
+
+
+
+
 
 
 

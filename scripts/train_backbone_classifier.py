@@ -331,6 +331,7 @@ def main():
 
     # Save the model
     trainer.save_model(args.save_directory)
+    image_processor.save_pretrained(args.save_directory)
 
 
 
