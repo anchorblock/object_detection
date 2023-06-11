@@ -150,9 +150,21 @@ torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.
     --tf32 False
 ```
 
+Now, evaluate the model with imagenet validation data:
 
+```bash
+export model_type="focalnet"
 
+python scripts/evaluate_backbone_classifier.py \
+    --pretrained_model_name_or_path="outputs/backbone/$model_type"
+```
 
+You can also directly evaluate a huggingface's classifier model pretrained with imagenet:
+
+```bash
+python scripts/evaluate_backbone_classifier.py \
+    --pretrained_model_name_or_path="microsoft/focalnet-tiny"
+```
 
 
 

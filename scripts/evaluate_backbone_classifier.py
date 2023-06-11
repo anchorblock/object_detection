@@ -33,9 +33,6 @@ from utils.augmentations import generate_transform_function
 
 
 
-
-
-
 def speed_up():
     """
     Speeds up the code execution by disabling certain debugging features and setting specific configurations.
@@ -96,8 +93,10 @@ def main():
     speed_up()
     set_seeds(seed = 42)
 
-    now = datetime.datetime.now()
-    date_time_str = now.strftime("%Y_%m_%d__%H_%M_%S")
+    parser = argparse.ArgumentParser(description='Evaluate pretrained model with imagenet-1k validation datasets.')
+    parser.add_argument('pretrained_model_name_or_path', type=str, default = "microsoft/focalnet-tiny", help='Name or path of the pretrained model')
+    parser.add_argument('validation_dataset', type=str, default = "formatted_data/imagenet_1k/validation.parquet", help = "validation datasets (imagenet, parquet format)")
+    args = parser.parse_args()
 
 
     ### LOAD DATA
@@ -105,15 +104,14 @@ def main():
 
     imagenet_dataset = load_dataset(
         "parquet", 
-        data_files={"validation": "formatted_data/imagenet_1k/validation.parquet"},
+        data_files={"validation": args.validation_dataset},
         cache_dir=".cache")
         
 
-    # TODO : **************
     ### LOAD CONFIG, BUILD MODEL AND LOAD PROCESSORS
 
-    model = AutoModelForImageClassification.from_pretrained("microsoft/focalnet-tiny")
-    image_processor = AutoImageProcessor.from_pretrained("microsoft/focalnet-tiny")
+    model = AutoModelForImageClassification.from_pretrained(args.pretrained_model_name_or_path)
+    image_processor = AutoImageProcessor.from_pretrained(args.pretrained_model_name_or_path)
 
 
     _transforms, mixup_cutmix_fn = generate_transform_function(
@@ -143,10 +141,6 @@ def main():
     from torch.utils.data import DataLoader
 
     dataset_shuffled = imagenet_dataset["validation"].shuffle()
-
-    dataset_shuffled = dataset_shuffled.select(range(200))
-
-
 
     eval_dataloader = DataLoader(
         dataset_shuffled, 
