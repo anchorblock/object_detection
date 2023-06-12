@@ -2,45 +2,6 @@
 
 ## Future Releases
 
-### Train Backbones with ImageNet-1k (remaining)
-
-- [x] Evaluation Metrics script [utils/evaluation.py](./utils/evaluation.py) for popular evaluation metrics used for ImageNet-1K:
-
-    - Top-1 Accuracy
-    - Top-5 Accuracy
-    - Precision
-    - Recall
-    - F1-Score
-    - Mean Average Precision (mAP)
-
-- [x] [scripts/train_backbone_classifier.py](./scripts/train_backbone_classifier.py) (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
-
-    | Parameter                      | Value     |
-    |-------------------------------|----------|
-    | Batch Size                    | 1024     |
-    | Base Learning Rate            | 1e-3     |
-    | Learning Rate Scheduler       | Cosine   |
-    | Minimum Learning Rate         | 1e-5     |
-    | Warm-up Epochs                | 20       |
-    | Training Epochs               | 300      |
-    | Finetuning Epochs             | 30       |
-    | Warm-up Schedule              | Linear   |
-    | Warm-up Learning Rate         | 1e-6     |
-    | Optimizer                     | AdamW    |
-    | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
-    | Gradient Clip                 | 5.0      |
-    | Weight Decay                  | 0.05     |
-
-    During fine-tuning, cutmix and mixup have to be disabled.
-
-
-- [x] [scripts/evaluate_backbone_classifier.py](./scripts/evaluate_backbone_classifier.py) evaluation for imagenet validation data
-
-- [x] training_imagenet_1k bash command --> [README.md](./README.md#🚀-training-backbones-with-imagenet-1k-and-config-files)
-- [x] evaluation_imagenet_1k bash command --> [README.md](./README.md#📊-evaluate-backbones-with-imagenet-1k-validation-data)
-- [x] inference python command --> [README.md](./README.md#💡-inference-with-backbones)
-
-
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones
 
 - [x] writing download script:  [coco_datasets_download.sh](./data/coco_datasets_download.sh), [coco_datasets_extract.sh](./data/coco_datasets_extract.sh)
@@ -115,5 +76,48 @@
 
 ## Pre-Alpha Release 0.2.0
 
-### Train Backbones with ImageNet-1k (Partial)
+### Train Backbones with ImageNet-1k (Remaining)
+
+
+- [x] Evaluation Metrics script [utils/evaluation.py](./utils/evaluation.py) for popular evaluation metrics used for ImageNet-1K:
+
+    - Top-1 Accuracy
+    - Top-5 Accuracy
+    - Precision
+    - Recall
+    - F1-Score
+    - Mean Average Precision (mAP)
+
+- [x] [scripts/train_backbone_classifier.py](./scripts/train_backbone_classifier.py) (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
+
+    | Parameter                      | Value     |
+    |-------------------------------|----------|
+    | Batch Size                    | 1024     |
+    | Base Learning Rate            | 1e-3     |
+    | Learning Rate Scheduler       | Cosine   |
+    | Minimum Learning Rate         | 1e-5     |
+    | Warm-up Epochs                | 20       |
+    | Training Epochs               | 300      |
+    | Finetuning Epochs             | 30       |
+    | Warm-up Schedule              | Linear   |
+    | Warm-up Learning Rate         | 1e-6     |
+    | Optimizer                     | AdamW    |
+    | Stochastic Drop Path Rate     | 0.2/0.3/0.5 |
+    | Gradient Clip                 | 5.0      |
+    | Weight Decay                  | 0.05     |
+
+    During fine-tuning, cutmix and mixup have to be disabled.
+
+
+- [x] [scripts/evaluate_backbone_classifier.py](./scripts/evaluate_backbone_classifier.py) evaluation for imagenet validation data
+
+- [x] training_imagenet_1k bash command --> [README.md](./README.md#🚀-training-backbones-with-imagenet-1k-and-config-files)
+- [x] evaluation_imagenet_1k bash command --> [README.md](./README.md#📊-evaluate-backbones-with-imagenet-1k-validation-data)
+- [x] inference python command --> [README.md](./README.md#💡-inference-with-backbones)
+
+
+
+
+
+
 

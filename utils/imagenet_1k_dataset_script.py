@@ -47,7 +47,7 @@ class Imagenet1k(datasets.GeneratorBasedBuilder):
             features=datasets.Features(
                 {
                     "image": datasets.Image(),
-                    "label": datasets.ClassLabel(names=list(IMAGENET2012_CLASSES.values())),
+                    "label": datasets.Value("int64"),
                 }
             ),
             homepage=_HOMEPAGE,

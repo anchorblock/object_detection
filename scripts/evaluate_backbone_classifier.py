@@ -1,13 +1,12 @@
 ### INCOMPLETE SCRIPT
 ### WILL PUBLISH IN NEXT RELEASE
 
-import sys
-sys.path.append('./')
 
 import argparse
 import datetime
 import sys
 sys.setrecursionlimit(10000)
+sys.path.append('./')
 import argparse
 import torch
 
@@ -30,8 +29,6 @@ import time
 import warnings
 
 from utils.augmentations import generate_transform_function
-
-
 
 def speed_up():
     """
@@ -93,10 +90,12 @@ def main():
     speed_up()
     set_seeds(seed = 42)
 
+
     parser = argparse.ArgumentParser(description='Evaluate pretrained model with imagenet-1k validation datasets.')
-    parser.add_argument('pretrained_model_name_or_path', type=str, default = "microsoft/focalnet-tiny", help='Name or path of the pretrained model')
-    parser.add_argument('validation_dataset', type=str, default = "formatted_data/imagenet_1k/validation.parquet", help = "validation datasets (imagenet, parquet format)")
-    parser.add_argument('results_dir', type=str, default = "outputs", help='result directories')
+
+    parser.add_argument('--pretrained_model_name_or_path', type=str, default = "microsoft/focalnet-tiny", help='Name or path of the pretrained model')
+    parser.add_argument('--validation_dataset', type=str, default = "formatted_data/imagenet_1k/validation.parquet", help = "validation datasets (imagenet, parquet format)")
+    parser.add_argument('--results_dir', type=str, default = "outputs", help='result directories')
 
     args = parser.parse_args()
 
