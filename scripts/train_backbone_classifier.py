@@ -19,7 +19,8 @@ from transformers import (
     AutoModelForImageClassification,
     DefaultDataCollator,
     TrainingArguments,
-    Trainer
+    Trainer,
+    TrainerCallback
 )
 import random
 from utils.augmentations import generate_transform_function
@@ -114,10 +115,11 @@ def parse_arguments():
     parser.add_argument('--learning_rate_scheduler', type=str, default='cosine', help='Learning rate scheduler')
     parser.add_argument('--minimum_learning_rate', type=float, default=1e-5, help='Minimum learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.05, help='Weight decay')
-    parser.add_argument('--training_epochs', type=int, default=300, help='Number of training epochs')
+    parser.add_argument('--training_epochs', type=int, default=350, help='Number of training epochs')
     parser.add_argument('--warmup_epochs', type=int, default=20, help='Number of warmup epochs')
     parser.add_argument('--warmup_schedule', type=str, default='custom_cosine', help='Warmup schedule')
     parser.add_argument('--warmup_learning_rate', type=float, default=1e-6, help='Warmup learning rate')
+    parser.add_argument('--finetune_epochs', type=int, default=30, help='Number of finetune epochs')
     parser.add_argument('--logging_dir', type=str, default='./logs/{date_time_str}', help='Directory to save logs')
     parser.add_argument('--optimizer', type=str, default='adamw_torch', help='optimier type')
 
@@ -236,8 +238,9 @@ def main():
         def compute_loss(self, model, inputs, return_outputs=False):
 
             # mixup cutmix
-            if args.do_mixup_cutmix:
-                inputs["pixel_values"], inputs["labels"] = mixup_cutmix_fn(inputs["pixel_values"], inputs["labels"])
+            if self.current_epoch < (args.training_epochs - args.finetune_epoch):
+                if args.do_mixup_cutmix:
+                    inputs["pixel_values"], inputs["labels"] = mixup_cutmix_fn(inputs["pixel_values"], inputs["labels"])
 
             # forward pass
             outputs = model(**inputs)
@@ -311,6 +314,20 @@ def main():
         gradient_checkpointing = args.gradient_checkpointing,
     )
 
+    # Custom Trainer Callback
+
+    class EpochCallback(TrainerCallback):
+        def __init__(self):
+            super().__init__()
+            self.current_epoch = 0
+
+        def on_epoch_begin(self, args, state, control, **kwargs):
+            self.current_epoch = state.epoch
+
+    # Create an instance of your custom callback
+    epoch_callback = EpochCallback()
+
+
 
     # trainer
 
@@ -322,6 +339,7 @@ def main():
         eval_dataset=imagenet_dataset["validation"],
         tokenizer=image_processor,
         compute_metrics=compute_metrics,
+        callbacks=[epoch_callback],
     )
 
 
