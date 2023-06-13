@@ -40,5 +40,6 @@ if __name__ == "__main__":
     coco_dataset["validation"].to_parquet(f"{args.save_path}/validation.parquet") 
     print(f"{args.save_path}/validation.parquet has been saved. ")
 
-    coco_dataset["test"].to_parquet(f"{args.save_path}/test.parquet") 
-    print(f"{args.save_path}/test.parquet has been saved. ")
+    if "test" in coco_dataset:
+        coco_dataset["test"].to_parquet(f"{args.save_path}/test.parquet") 
+        print(f"{args.save_path}/test.parquet has been saved. ")

@@ -11,8 +11,6 @@ import datasets
 import copy
 
 
-from .coco_classes import CAT, CAT_PANOPTIC, SUPER_CAT, SUPER_CAT_PANOPTIC, CAT2SUPER_CAT
-
 logger = logging.getLogger(__name__)
 
 _VERSION = datasets.Version("1.0.0", "")
@@ -252,12 +250,6 @@ class Coco(datasets.GeneratorBasedBuilder):
                   annotations='panoptic_annotations_trainval2017',
                   annotation_type=AnnotationType.PANOPTIC,
               ),
-              Split(
-                  name=datasets.Split.TEST,
-                  images='test2017',
-                  annotations='image_info_test2017',
-                  annotation_type=AnnotationType.NONE,
-              ),
           ],
       ),
       CocoConfig(
@@ -306,12 +298,6 @@ class Coco(datasets.GeneratorBasedBuilder):
                   images='val2017',
                   annotations='panoptic_annotations_trainval2017',
                   annotation_type=AnnotationType.PANOPTIC,
-              ),
-              Split(
-                  name=datasets.Split.TEST,
-                  images='test2017',
-                  annotations='image_info_test2017',
-                  annotation_type=AnnotationType.NONE,
               ),
           ],
       ),
@@ -527,7 +513,6 @@ class Coco(datasets.GeneratorBasedBuilder):
                 panoptic_filename = panoptic_annotation['file_name']
                 example['panoptic_image'] = Image.open(os.path.join(panoptic_dir, panoptic_filename))
                 example['panoptic_image/filename'] = panoptic_filename
-
 
             yield idx, example
             idx += 1
