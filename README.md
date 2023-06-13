@@ -11,6 +11,19 @@ Check out our releases and refer to the [TO_DO.md](./TO_DO.md) file for the arch
 
 To set up and install the required dependencies, please follow the instructions in the [INSTALL.md](./INSTALL.md) file.
 
+### ⚙️📥 Download all processed data at once from s3 bucket
+
+If you want to download all our processed data at once without downloading imagenet and coco data manually, use this commands to download and extract all the formatted data:
+
+```bash
+mkdir formatted_data
+cd formatted_data
+wget https://object-detection-anchorblock.s3.ap-south-1.amazonaws.com/data/formatted_data.zip
+unzip formatted_data.zip
+rm -rf formatted_data.zip
+cd ..
+```
+
 
 ## 💡 Backbones Training Pipelines
 
@@ -73,7 +86,7 @@ python scripts/raw_to_parquet_imagenet.py \
 
 <br>
 
-### 🚀 Training Backbones with ImageNet-1k and Config Files
+### 🚀 Training and Finetuning Backbones with ImageNet-1k and Config Files
 
 The default hyperparameters for training, as specified in the [FocalNet paper](https://arxiv.org/abs/2203.11926), are as follows:
 
@@ -84,8 +97,9 @@ The default hyperparameters for training, as specified in the [FocalNet paper](h
 | Base Learning Rate            | 1e-3     |
 | Learning Rate Scheduler       | Cosine   |
 | Minimum Learning Rate         | 1e-5     |
-| Training Epochs               | 300      |
 | Warm-up Epochs                | 20       |
+| Training Epochs               | 300      |
+| Finetuning Epochs             | 30       |
 | Warm-up Schedule              | Linear   |
 | Warm-up Learning Rate         | 1e-6     |
 | Optimizer                     | AdamW    |
@@ -106,7 +120,7 @@ The default hyperparameters for training, as specified in the [FocalNet paper](h
 <br>
 
 
-For training, run:
+For training and finetuning, run:
 
 ```bash
 export OMP_NUM_THREADS=4
@@ -114,30 +128,34 @@ export n_gpu=1
 export model_type="focalnet"
 
 torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.py \
-    --model_type resnet \
-    --config_path "configs/backbones/$model_type/config.json" \
-    --processor_config_path "configs/backbones/$model_type/preprocessor_config.json" \
-    --do_mixup_cutmix True \
-    --per_device_train_batch_size 1024 \
-    --per_device_eval_batch_size 1024 \
-    --gradient_accumulation_steps 1 \
-    --learning_rate 1e-3 \
-    --learning_rate_scheduler cosine \
-    --minimum_learning_rate 1e-5 \
-    --weight_decay 0.05 \
-    --training_epochs 300 \
-    --warmup_epochs 20 \
-    --warmup_schedule custom_cosine \
-    --warmup_learning_rate 1e-6 \
-    --optimizer adamw_torch \
-    --stochastic_drop_path_rate 0.2 \
-    --gradient_clip 5.0 \
-    --save_directory "outputs/backbone/$model_type" \
-    --resume_from_checkpoint None \
-    --gradient_checkpointing False \
-    --fp16 True \
-    --tf32 False
+    --model_type="resnet" \
+    --config_path="configs/backbones/$model_type/config.json" \
+    --processor_config_path="configs/backbones/$model_type/preprocessor_config.json" \
+    --do_mixup_cutmix=true \
+    --per_device_train_batch_size=1024 \
+    --per_device_eval_batch_size=1024 \
+    --gradient_accumulation_steps=1 \
+    --learning_rate=1e-3 \
+    --learning_rate_scheduler="cosine" \
+    --minimum_learning_rate=1e-5 \
+    --weight_decay=0.05 \
+    --training_epochs=350 \
+    --warmup_epochs=20 \
+    --warmup_schedule="custom_cosine" \
+    --warmup_learning_rate=1e-6 \
+    --finetune_epochs=30 \
+    --optimizer="adamw_torch" \
+    --stochastic_drop_path_rate=0.2 \
+    --gradient_clip=5.0 \
+    --save_directory="outputs/backbone/$model_type" \
+    --resume_from_checkpoint=None \
+    --gradient_checkpointing=false \
+    --fp16=true \
+    --tf32=false
 ```
+
+
+
 
 ### 📊 Evaluate Backbones with ImageNet-1k validation data
 
@@ -212,12 +230,41 @@ classifier(image)
 
 This repository supports training the following architectures with the COCO dataset:
 
+Architectures:
+
 ```
 - DeTR
 - mask2former
 - maskformer
 - oneformer
 ```
+
+### 🔥 Supported Backbones for Panoptic Segmentation Architectures
+
+💪 The following list represents the supported backbones for Panoptic Segmentation Architectures:
+```
+- `bit`
+- `convnext`
+- `convnextv2`
+- `dinat`
+- `focalnet`
+- `nat`
+- `resnet`
+- `swin`
+```
+
+Please note the following important details about default huggingface object detection/ panoptic segmentation models:
+
+- ⚠️ **maskformer, mask2former** are currently only supporting swin-transformer as backbone (facebook). Any change in maskformer/mask2former backbone requires new architecture design.
+- ✅ **oneformer** supports only above mentioned backbones/ classifiers.
+- ✅ **DeTR** supports only above mentioned backbones/ classifiers.
+
+So, to enable support for all types of pretrained backbones in **maskformer** and **mask2former**, this repository includes our customized model classes for both **maskformer** and **mask2former**. Check this out! 🎉
+
+- 👉 [models_panoptic/maskformer.py](./models_panoptic/maskformer.py)
+- 👉 [models_panoptic/mask2former.py](./models_panoptic/mask2former.py)
+
+
 
 ### 📥 Downloading and Formatting the COCO dataset (2017)
 
@@ -271,38 +318,11 @@ ds["train"][0]
 An example output:
 
 ```python
->>> ds["train"][487]
-{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x478 at 0x7FD929B20D30>, 'image/filename': '000000002411.jpg', 'image/id': 2411, 'panoptic_objects': [{'id': 9932455, 'area': 4684, 'bbox': [215, 195, 264, 411], 'is_crowd': False, 'category_id': 48, 'category_name': 'fork', 'supercategory_id': 6, 'supercategory_name': 'kitchen', 'is_thing': True}, {'id': 13417409, 'area': 1397, 'bbox': [1, 0, 70, 85], 'is_crowd': False, 'category_id': 48, 'category_name': 'fork', 'supercategory_id': 6, 'supercategory_name': 'kitchen', 'is_thing': True}, {'id': 14934497, 'area': 2039, 'bbox': [18, 1, 125, 131], 'is_crowd': False, 'category_id': 49, 'category_name': 'knife', 'supercategory_id': 6, 'supercategory_name': 'kitchen', 'is_thing': True}, {'id': 1250080, 'area': 25083, 'bbox': [361, 44, 575, 233], 'is_crowd': False, 'category_id': 61, 'category_name': 'cake', 'supercategory_id': 7, 'supercategory_name': 'food', 'is_thing': True}, {'id': 7899816, 'area': 24821, 'bbox': [24, 133, 184, 375], 'is_crowd': False, 'category_id': 61, 'category_name': 'cake', 'supercategory_id': 7, 'supercategory_name': 'food', 'is_thing': True}, {'id': 3686496, 'area': 168296, 'bbox': [3, 4, 637, 472], 'is_crowd': False, 'category_id': 67, 'category_name': 'dining table', 'supercategory_id': 8, 'supercategory_name': 'furniture', 'is_thing': True}, {'id': 3817822, 'area': 14004, 'bbox': [0, 0, 640, 478], 'is_crowd': False, 'category_id': 189, 'category_name': 'table-merged', 'supercategory_id': 15, 'supercategory_name': 'furniture-stuff', 'is_thing': False}, {'id': 12036280, 'area': 48564, 'bbox': [0, 0, 369, 478], 'is_crowd': False, 'category_id': 195, 'category_name': 'paper-merged', 'supercategory_id': 14, 'supercategory_name': 'raw-material', 'is_thing': False}], 'panoptic_image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x478 at 0x7FD929B20B20>, 'panoptic_image/filename': '000000002411.png'}
+>>> ds["train"][3]
+{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x425 at 0x7F35BE2EA5B0>, 'image/filename': '000000000034.jpg', 'image/id': 34, 'panoptic_objects': [{'id': 5069153, 'area': 92893, 'bbox': [1, 20, 442, 399], 'is_crowd': False, 'category_id': 24, 'category_name': 'zebra', 'supercategory_id': 3, 'supercategory_name': 'animal', 'is_thing': True}, {'id': 2589299, 'area': 177587, 'bbox': [0, 0, 640, 425], 'is_crowd': False, 'category_id': 193, 'category_name': 'grass-merged', 'supercategory_id': 17, 'supercategory_name': 'plant', 'is_thing': False}], 'panoptic_image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x425 at 0x7F35BE2EA730>, 'panoptic_image/filename': '000000000034.png'}
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Now, convert all raw data to huggingface object detection/ panoptic segmentation data format and save to parquet for faster loading. Do for all variants: 
+Now, convert all raw data to huggingface object detection/ panoptic segmentation data format and save to parquet for faster loading. You can do for all variants: 
 
 1. 2017_panoptic:
 
@@ -355,39 +375,43 @@ python scripts/raw_to_parquet_coco.py \
 <br>
 
 
-
-
-
-
-
-
-
-
-### 🔥 Supported Backbones for Panoptic Segmentation Architectures
-
-💪 The following list represents the supported backbones for Panoptic Segmentation Architectures:
-```
-- `bit`
-- `convnext`
-- `convnextv2`
-- `dinat`
-- `focalnet`
-- `nat`
-- `resnet`
-- `swin`
-```
-
-⚠️ Please note the following important details:
-
-- **maskformer, mask2former** only supporting detr object detection architecture as decoder.
-- **maskformer, mask2former** are currently only supporting swin-transformer as backbone (facebook). Any change in maskformer/mask2former backbone requires new architecture design.
-- **oneformer** supports only above mentioned backbones/ classifiers.
-- **DeTR** supports only above mentioned backbones/ classifiers.
-
-
-### 🚀 Train different models for different backbones
+### 🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones
 
 🚧 Training different models for different backbones will be added in a future release. Stay tuned!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

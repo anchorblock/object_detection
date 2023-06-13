@@ -2,44 +2,51 @@
 
 ## Future Releases
 
-### Train Models with COCO_panoptic using imagenet-pretrained backbones
-
-- [x] writing download script:  [coco_datasets_download.sh](./data/coco_datasets_download.sh), [coco_datasets_extract.sh](./data/coco_datasets_extract.sh)
-
-- [ ] COCO label files preparation: [configs/datasets/coco-panoptic-id2label.json](./configs/datasets/coco-panoptic-id2label.json), [configs/datasets/coco-panoptic-label2id.json](./configs/datasets/coco-panoptic-label2id.json)
+### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
 
 
-- [ ] Raw data to Huggingface format script: writing [utils/coco_dataset_script.py](./utils/coco_dataset_script.py) for working with local COCO datasets files for getting data as huggingface datasets format. 
+- [ ] architecture: [DeTR.py](./models_panoptic/DeTR.py) custom model class script
+- [ ] architecture: [maskformer.py](./models_panoptic/maskformer.py) custom model class script
+- [ ] architecture: [mask2former.py](./models_panoptic/mask2former.py) custom model class script
+- [ ] architecture: [oneformer.py](./models_panoptic/oneformer.py) custom model class script
 
-    Sample:  {'image_id': 491000, 'caption_id': 3753, 'caption': 'Pedestrians walking down a sidewalk next to a small street.', 'height': 429, 'width': 640, 'file_name': '000000491000.jpg', 'coco_url': 'http://images.cocodataset.org/train2017/000000491000.jpg', 'image_path': 'data/coco_datasets/train2017/000000491000.jpg'}
+- [ ] writing automodel_panoptic.py for working will automodel class for customly defined modules
+- [ ] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules (AutoModel)
 
+- [ ] general config and preprocess_config architectures: [DeTR](./configs/architectures/DeTR), [maskformer](./configs/architectures/maskformer), [mask2former](./configs/architectures/mask2former), [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
 
+- [ ] writing [augmentation script](./utils/augmentations.py) for COCO panoptic task
+- [ ] writing [evaluation script](./utils/evaluation.py) for COCO panoptic task
 
-- [ ] COCO data compression script
+- [ ] training and finetuning script: writing train_panoptic_seg.py for training with suitable hyperparameters
+- [ ] writing evaluate_panoptic_seg.py for evaluation
 
-<!-- [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart). -->
+- [ ] training_coco_panoptic bash command --> README.md
+- [ ] evaluating_coco_panoptic bash command --> README.md
+- [ ] inference_coco_panoptic bash command --> README.md
 
+### Debugging training scripts with GPU
 
-- [ ] general config and preprocess_config architectures: DeTR, maskformer, mask2former, oneformer
-- [ ] raw model architecture script: DeTR.py
-- [ ] raw model architecture script: maskformer.py
-- [ ] raw model architecture script: mask2former.py
-- [ ] raw model architecture script: oneformer.py
-
-- [ ] training_script_coco_panoptic.py (load config from dict path, pretrained_weight_backbone_load_path, save_path (temporary))
-- [ ] inference_script_coco_panoptic.ipynb
-- [ ] training_coco_panoptic bash command (readme, trial)
-- [ ] inference_coco_panoptic (readme, trial)
-
-
+- [x] create all processed parquet data of imagenet and coco in zip format, upload in s3 and add download refernce in README.md
+- [ ] test imagenet training script with the presence of GPU, debug and fix error
+- [ ] test COCO panoptic training script with the presence of GPU, debug and fix error
 
 <br>
+
+
+
+
+
+
+
+
+
 
 ## Pre-Alpha Release 0.1.0
 
 ### Train Backbones with ImageNet-1k (Partial)
 
-- **Repo organization:** Repository organization for training both with imagenet and coco for multiple backbone classifiers and panoptic segmentation models
+- [x] **Repo organization:** Repository organization for training both with imagenet and coco for multiple backbone classifiers and panoptic segmentation models
 
     ```
         .
@@ -52,12 +59,12 @@
         ├── scripts/
         └── utils/
     ```
-- **Imagenet scripts (download & extract):** writing script: [imagenet_1k_download.sh](./data/imagenet_1k_download.sh), [imagenet_1k_extract.sh](./data/imagenet_1k_extract.sh)
-- **Raw data to Huggingface format:** writing [utils/imagenet_1k_dataset_script.py](./utils/imagenet_1k_dataset_script.py) similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format. Sample:  ```{"image": <PIL Image>, "label": 6}```
-- **Imagenet label files preparation:** prepared imagenet label files and fixed label-related bugs: [configs/datasets/imagenet-1k-id2label.json](./configs/datasets/imagenet-1k-id2label.json), [configs/datasets/imagenet-1k-label2id.json](./configs/datasets/imagenet-1k-label2id.json)
-- **backbone models' configs:** general [config](./configs/backbones) and [preprocess_config](./configs/backbones) backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
-- **Imagenet compression:** [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart).
-- **Augmentation script** Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations
+- [x] **Imagenet scripts (download & extract):** writing script: [imagenet_1k_download.sh](./data/imagenet_1k_download.sh), [imagenet_1k_extract.sh](./data/imagenet_1k_extract.sh)
+- [x] **Raw data to Huggingface format:** writing [utils/imagenet_1k_dataset_script.py](./utils/imagenet_1k_dataset_script.py) similar to coco_script availale online for working with local imagenet files for getting image as huggingface datasets format. Sample:  ```{"image": <PIL Image>, "label": 6}```
+- [x] **Imagenet label files preparation:** prepared imagenet label files and fixed label-related bugs: [configs/datasets/imagenet-1k-id2label.json](./configs/datasets/imagenet-1k-id2label.json), [configs/datasets/imagenet-1k-label2id.json](./configs/datasets/imagenet-1k-label2id.json)
+- [x] **backbone models' configs:** general [config](./configs/backbones) and [preprocess_config](./configs/backbones) backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
+- [x] **Imagenet compression:** [scripts/raw_to_parquet_imagenet.py](./scripts/raw_to_parquet_imagenet.py) for faster saving and loading in parquet format (compressed ~147 GB imagenet data to ~11 MB by saving image in Pillow format inside parquet chart).
+- [x] **Augmentation script** Augmentation script [utils/augmentations.py](./utils/augmentations.py) according to [FocalNet paper](https://arxiv.org/abs/2203.11926) imagenet augmentations
 
     | Parameter                      | Value     |
     |-------------------------------|----------|
@@ -106,7 +113,7 @@
     | Gradient Clip                 | 5.0      |
     | Weight Decay                  | 0.05     |
 
-    During fine-tuning, cutmix and mixup have to be disabled.
+    During fine-tuning epochs, cutmix and mixup will be disabled automatically, and it will be handleed with custom callback class.
 
 
 - [x] [scripts/evaluate_backbone_classifier.py](./scripts/evaluate_backbone_classifier.py) evaluation for imagenet validation data
@@ -116,8 +123,23 @@
 - [x] inference python command --> [README.md](./README.md#💡-inference-with-backbones)
 
 
+### Train Models with COCO_panoptic using imagenet-pretrained backbones (Partial)
+
+- [x] writing download script:  [coco_datasets_download.sh](./data/coco_datasets_download.sh), [coco_datasets_extract.sh](./data/coco_datasets_extract.sh)
+
+- [x] COCO label files preparation: 
+    - [x] [configs/datasets/coco-detection-id2label.json](./configs/datasets/coco-detection-id2label.json)
+    - [x] [configs/datasets/coco-detection-label2id.json](./configs/datasets/coco-detection-label2id.json)
+    - [x] [configs/datasets/coco-panoptic-id2label.json](./configs/datasets/coco-panoptic-id2label.json)
+    - [x] [configs/datasets/coco-panoptic-label2id.json](./configs/datasets/coco-panoptic-label2id.json)
 
 
+- [x] Huggingface builder script: writing [utils/coco_dataset_script.py](./utils/coco_dataset_script.py) dynamic Builder Classes for working with local COCO datasets files for getting data as huggingface datasets format. This script is dynamic; following types of COCO data can be built with this script: "2017_detection", "2017_panoptic", "2017_detection_skip", "2017_panoptic_skip". 
+
+    Sample:  {'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x425 at 0x7F35BE2EA5B0>, 'image/filename': '000000000034.jpg', 'image/id': 34, 'panoptic_objects': [{'id': 5069153, 'area': 92893, 'bbox': [1, 20, 442, 399], 'is_crowd': False, 'category_id': 24, 'category_name': 'zebra', 'supercategory_id': 3, 'supercategory_name': 'animal', 'is_thing': True}, {'id': 2589299, 'area': 177587, 'bbox': [0, 0, 640, 425], 'is_crowd': False, 'category_id': 193, 'category_name': 'grass-merged', 'supercategory_id': 17, 'supercategory_name': 'plant', 'is_thing': False}], 'panoptic_image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x425 at 0x7F35BE2EA730>, 'panoptic_image/filename': '000000000034.png'}
+
+
+- [x] COCO data compression script: [scripts/raw_to_parquet_coco.py](./scripts/raw_to_parquet_coco.py) for faster saving and loading in parquet format (compressed full ~28.2 GB COCO data to total ~133 MB by saving images in Pillow format inside parquet chart).
 
 
 
