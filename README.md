@@ -259,49 +259,97 @@ import datasets
 COCO_DIR = "data/coco_datasets"
 
 # bbox_mode = one of ["corners", "height_width"]
-# splits: list = ["train", "validation", "test"]
-# data_variant = one of ["2017", "2017_panoptic", "2017_skip", "2017_panoptic_skip"]
+# data_variant = one of ["2017_detection", "2017_panoptic", "2017_detection_skip", "2017_panoptic_skip"]
 
 bbox_mode = "corners"
-
 data_variant = "2017_panoptic"
 
 ds = datasets.load_dataset("utils/coco_dataset_script.py", data_variant, bbox_mode = bbox_mode, data_dir=COCO_DIR)
 ds["train"][0]
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-An train output:
+An example output:
 
 ```python
->>> ds["validation"][5678]
-{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=500x375 at 0x7F15A02B0B50>, 'label': 118}
+>>> ds["train"][487]
+{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x478 at 0x7FD929B20D30>, 'image/filename': '000000002411.jpg', 'image/id': 2411, 'panoptic_objects': [{'id': 9932455, 'area': 4684, 'bbox': [215, 195, 264, 411], 'is_crowd': False, 'category_id': 48, 'category_name': 'fork', 'supercategory_id': 6, 'supercategory_name': 'kitchen', 'is_thing': True}, {'id': 13417409, 'area': 1397, 'bbox': [1, 0, 70, 85], 'is_crowd': False, 'category_id': 48, 'category_name': 'fork', 'supercategory_id': 6, 'supercategory_name': 'kitchen', 'is_thing': True}, {'id': 14934497, 'area': 2039, 'bbox': [18, 1, 125, 131], 'is_crowd': False, 'category_id': 49, 'category_name': 'knife', 'supercategory_id': 6, 'supercategory_name': 'kitchen', 'is_thing': True}, {'id': 1250080, 'area': 25083, 'bbox': [361, 44, 575, 233], 'is_crowd': False, 'category_id': 61, 'category_name': 'cake', 'supercategory_id': 7, 'supercategory_name': 'food', 'is_thing': True}, {'id': 7899816, 'area': 24821, 'bbox': [24, 133, 184, 375], 'is_crowd': False, 'category_id': 61, 'category_name': 'cake', 'supercategory_id': 7, 'supercategory_name': 'food', 'is_thing': True}, {'id': 3686496, 'area': 168296, 'bbox': [3, 4, 637, 472], 'is_crowd': False, 'category_id': 67, 'category_name': 'dining table', 'supercategory_id': 8, 'supercategory_name': 'furniture', 'is_thing': True}, {'id': 3817822, 'area': 14004, 'bbox': [0, 0, 640, 478], 'is_crowd': False, 'category_id': 189, 'category_name': 'table-merged', 'supercategory_id': 15, 'supercategory_name': 'furniture-stuff', 'is_thing': False}, {'id': 12036280, 'area': 48564, 'bbox': [0, 0, 369, 478], 'is_crowd': False, 'category_id': 195, 'category_name': 'paper-merged', 'supercategory_id': 14, 'supercategory_name': 'raw-material', 'is_thing': False}], 'panoptic_image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x478 at 0x7FD929B20B20>, 'panoptic_image/filename': '000000002411.png'}
 ```
 
-Now, convert all raw data to huggingface image classification data format and save to parquet for faster loading:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Now, convert all raw data to huggingface object detection/ panoptic segmentation data format and save to parquet for faster loading. Do for all variants: 
+
+1. 2017_panoptic:
 
 ```bash
-python scripts/raw_to_parquet_imagenet.py \
-    --imagenet_dir="data/imagenet_1k" \
-    --save_path="formatted_data/imagenet_1k"
+export data_variant="2017_panoptic"
+
+python scripts/raw_to_parquet_coco.py \
+    --coco_dir="data/coco_datasets" \
+    --bbox_mode="corners" \
+    --data_variant="$data_variant" \
+    --save_path="formatted_data/coco_$data_variant"
+```
+
+2. 2017_panoptic_skip:
+
+```bash
+export data_variant="2017_panoptic_skip"
+
+python scripts/raw_to_parquet_coco.py \
+    --coco_dir="data/coco_datasets" \
+    --bbox_mode="corners" \
+    --data_variant="$data_variant" \
+    --save_path="formatted_data/coco_$data_variant"
+```
+
+3. 2017_detection:
+
+```bash
+export data_variant="2017_detection"
+
+python scripts/raw_to_parquet_coco.py \
+    --coco_dir="data/coco_datasets" \
+    --bbox_mode="corners" \
+    --data_variant="$data_variant" \
+    --save_path="formatted_data/coco_$data_variant"
+```
+
+4. 2017_detection_skip:
+
+```bash
+export data_variant="2017_detection_skip"
+
+python scripts/raw_to_parquet_coco.py \
+    --coco_dir="data/coco_datasets" \
+    --bbox_mode="corners" \
+    --data_variant="$data_variant" \
+    --save_path="formatted_data/coco_$data_variant"
 ```
 
 <br>

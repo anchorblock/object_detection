@@ -191,7 +191,7 @@ PANOPTIC_FEATURE = datasets.Features(
 class CocoConfig(datasets.BuilderConfig):
   """BuilderConfig for CocoConfig."""
 
-  def __init__(self, features, splits=None, has_panoptic=False, skip_empty_annotations=False, bbox_mode="corners", **kwargs):
+  def __init__(self, features, splits= None, has_panoptic=False, skip_empty_annotations=False, bbox_mode="corners", **kwargs):
     super(CocoConfig, self).__init__(
         **kwargs
     )
@@ -208,7 +208,7 @@ class Coco(datasets.GeneratorBasedBuilder):
 
     BUILDER_CONFIGS = [
       CocoConfig(
-          name='2017',
+          name='2017_detection',
           features=DETECTION_FEATURE,
           description=_CONFIG_DESCRIPTION.format(year=2017),
           version=_VERSION,
@@ -261,7 +261,7 @@ class Coco(datasets.GeneratorBasedBuilder):
           ],
       ),
       CocoConfig(
-          name='2017_skip',
+          name='2017_detection_skip',
           features=DETECTION_FEATURE,
           description=_CONFIG_DESCRIPTION.format(year=2017),
           version=_VERSION,
@@ -439,7 +439,6 @@ class Coco(datasets.GeneratorBasedBuilder):
             category_id = category["id"]
             categories_dict[category_id] = category
 
-        print(categories_dict)
 
         if self.config.has_panoptic:
             objects_key = 'panoptic_objects'
@@ -528,6 +527,7 @@ class Coco(datasets.GeneratorBasedBuilder):
                 panoptic_filename = panoptic_annotation['file_name']
                 example['panoptic_image'] = Image.open(os.path.join(panoptic_dir, panoptic_filename))
                 example['panoptic_image/filename'] = panoptic_filename
+
 
             yield idx, example
             idx += 1
