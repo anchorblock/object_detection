@@ -4,7 +4,6 @@
 
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
 
-- [ ] writing automodel_panoptic.py for customly defined modules for working will automodel class "AutoModelForPanopticSegmentation"
 
 - [ ] general config and preprocess_config architectures: [DeTR](./configs/architectures/DeTR), [maskformer](./configs/architectures/maskformer), [mask2former](./configs/architectures/mask2former), [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
 
@@ -16,13 +15,16 @@
 
 - [ ] training_coco_panoptic bash command --> README.md
 - [ ] evaluating_coco_panoptic bash command --> README.md
-- [ ] inference_coco_panoptic bash command --> README.md
+- [x] inference_coco_panoptic bash command --> README.md
+
+
 
 ### Debugging training scripts with GPU
 
 - [x] create all processed parquet data of imagenet and coco in zip format, upload in s3 and add download refernce in README.md
 - [ ] test imagenet training script with the presence of GPU, debug and fix error
 - [ ] test COCO panoptic training script with the presence of GPU, debug and fix error
+
 
 
 ### Making Pretrained Backbone and Panoptic Segmentation models more dynamic
@@ -162,3 +164,4 @@
 
 - [x] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules
 
+- [x] writing [models/automodel_panoptic.py](./models/automodel_panoptic.py) for customly defined modules for working will automodel class "AutoModelForPanopticSegmentation"

@@ -1,25 +1,46 @@
 import sys
 sys.path.append('./')
 
-from transformers import MaskFormerImageProcessor #, AutoModelForUniversalSegmentation
+from transformers import MaskFormerImageProcessor
+
+from transformers import MaskFormerForInstanceSegmentation, MaskFormerConfig, MaskFormerModel, DetrConfig, DetrForObjectDetection, FocalNetConfig, FocalNetModel, FocalNetForImageClassification, MaskFormerConfig
+
 from PIL import Image, ImageDraw
 import numpy as np
 import requests
 import torch
-from models import AutoModelForPanopticSegmentation
+from models import AutoModelForPanopticSegmentation, CustomMask2FormerConfig
+
+from models.automodel_panoptic import AutoPanopticConfig
+
+
+import torch
+import json
+
+focal_config = FocalNetConfig()
+
+model_configuration = CustomMask2FormerConfig(use_timm_backbone = False,
+                           backbone_config=FocalNetConfig())
+
+print(model_configuration.model_type)
+
+
+print(AutoModelForPanopticSegmentation)
+model = AutoModelForPanopticSegmentation.from_config(model_configuration)
+
 
 
 # load MaskFormer fine-tuned on COCO panoptic segmentation
-feature_extractor = MaskFormerImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
-model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
+feature_extractor = MaskFormerImageProcessor.from_pretrained("facebook/mask2former-swin-tiny-coco-panoptic")
+
+
+# model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
 
 url = "http://images.cocodataset.org/val2017/000000039769.jpg"
 image = Image.open(requests.get(url, stream=True).raw)
 inputs = feature_extractor(images=image, return_tensors="pt")
 
 outputs = model(**inputs)
-
-
 
 # model predicts class_queries_logits of shape `(batch_size, num_queries)`
 # and masks_queries_logits of shape `(batch_size, num_queries, height, width)`
@@ -78,3 +99,4 @@ for segment in segments_info:
 
 # Save the image
 image.save('predicted_panoptic_map.png')
+
