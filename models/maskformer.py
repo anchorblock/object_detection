@@ -1,7 +1,8 @@
 from transformers.models.maskformer.modeling_maskformer import *
 
 
-class CustomMaskFormerPixelLevelModule(nn.Module):
+class CustomMaskFormerPixelLevelModule(MaskFormerPixelLevelModule):
+
     def __init__(self, config: MaskFormerConfig):
         """
         Pixel Level Module proposed in [Per-Pixel Classification is Not All You Need for Semantic
@@ -12,7 +13,7 @@ class CustomMaskFormerPixelLevelModule(nn.Module):
             config ([`MaskFormerConfig`]):
                 The configuration used to instantiate this model.
         """
-        super().__init__()
+        super().__init__(config)
 
         # TODD: add method to load pretrained weights of backbone
         backbone_config = config.backbone_config
@@ -30,8 +31,20 @@ class CustomMaskFormerPixelLevelModule(nn.Module):
             lateral_widths=feature_channels[:-1],
         )
 
+    def forward(self, pixel_values: Tensor, output_hidden_states: bool = False) -> MaskFormerPixelLevelModuleOutput:
+        features = self.encoder(pixel_values).feature_maps
+        decoder_output = self.decoder(features, output_hidden_states)
+        return MaskFormerPixelLevelModuleOutput(
+            # the last feature is actually the output from the last layer
+            encoder_last_hidden_state=features[-1],
+            decoder_last_hidden_state=decoder_output.last_hidden_state,
+            encoder_hidden_states=tuple(features) if output_hidden_states else (),
+            decoder_hidden_states=decoder_output.hidden_states if output_hidden_states else (),
+        )
 
-class CustomMaskFormerModel(MaskFormerPreTrainedModel):
+
+class CustomMaskFormerModel(MaskFormerModel):
+
     def __init__(self, config: MaskFormerConfig):
         super().__init__(config)
         self.pixel_level_module = CustomMaskFormerPixelLevelModule(config)
@@ -42,7 +55,8 @@ class CustomMaskFormerModel(MaskFormerPreTrainedModel):
         self.post_init()
 
 
-class CustomMaskFormerForInstanceSegmentation(MaskFormerPreTrainedModel):
+class CustomMaskFormerForInstanceSegmentation(MaskFormerForInstanceSegmentation):
+
     def __init__(self, config: MaskFormerConfig):
         super().__init__(config)
         self.model = CustomMaskFormerModel(config)

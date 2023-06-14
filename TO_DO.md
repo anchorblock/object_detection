@@ -4,14 +4,7 @@
 
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
 
-
-- [ ] architecture: [DeTR.py](./models_panoptic/DeTR.py) custom model class script
-- [ ] architecture: [maskformer.py](./models_panoptic/maskformer.py) custom model class script
-- [ ] architecture: [mask2former.py](./models_panoptic/mask2former.py) custom model class script
-- [ ] architecture: [oneformer.py](./models_panoptic/oneformer.py) custom model class script
-
-- [ ] writing automodel_panoptic.py for working will automodel class for customly defined modules
-- [ ] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules (AutoModel)
+- [ ] writing automodel_panoptic.py for customly defined modules for working will automodel class "AutoModelForPanopticSegmentation"
 
 - [ ] general config and preprocess_config architectures: [DeTR](./configs/architectures/DeTR), [maskformer](./configs/architectures/maskformer), [mask2former](./configs/architectures/mask2former), [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
 
@@ -30,6 +23,25 @@
 - [x] create all processed parquet data of imagenet and coco in zip format, upload in s3 and add download refernce in README.md
 - [ ] test imagenet training script with the presence of GPU, debug and fix error
 - [ ] test COCO panoptic training script with the presence of GPU, debug and fix error
+
+
+### Making Pretrained Backbone and Panoptic Segmentation models more dynamic
+
+- [ ] modify backbone training pipeline for working with -
+    - [ ] any huggingface model hub or local model path
+    - [ ] any custom pytorch model
+- [ ] modify panoptic training pipeline for working with -
+    - [ ] any huggingface model hub or local model path
+    - [ ] any newly defined / customized huggingface model child class
+    - [ ] any custom pytorch model
+
+<br>
+
+
+ ----------------------------
+
+
+
 
 <br>
 
@@ -80,6 +92,7 @@
 
 
 <br>
+
 
 ## Pre-Alpha Release 0.2.0
 
@@ -142,4 +155,10 @@
 - [x] COCO data compression script: [scripts/raw_to_parquet_coco.py](./scripts/raw_to_parquet_coco.py) for faster saving and loading in parquet format (compressed full ~28.2 GB COCO data to total ~133 MB by saving images in Pillow format inside parquet chart).
 
 
+- [x] architecture: [DeTR.py](./models_panoptic/DeTR.py) custom model class script
+- [x] architecture: [maskformer.py](./models_panoptic/maskformer.py) custom model class script
+- [x] architecture: [mask2former.py](./models_panoptic/mask2former.py) custom model class script
+- [x] architecture: [oneformer.py](./models_panoptic/oneformer.py) custom model class script
+
+- [x] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules
 

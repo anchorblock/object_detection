@@ -10,4 +10,5 @@ scipy==1.10.1
 requests==2.25.1
 ipykernel==6.23.1
 scikit-learn==1.2.2 
+matplotlib==3.7.1
 # pip install trectools
