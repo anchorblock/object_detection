@@ -8,7 +8,7 @@ MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING_NAMES = OrderedDict(
         # Model for Universal Segmentation mapping
         ("detr", "DetrForSegmentation"),
         ("mask2former", "CustomMask2FormerForUniversalSegmentation"),
-        ("maskformer", "MaskFormerForInstanceSegmentation"),
+        ("maskformer", "CustomMaskFormerForInstanceSegmentation"),
         ("oneformer", "OneFormerForUniversalSegmentation"),
     ]
 )
