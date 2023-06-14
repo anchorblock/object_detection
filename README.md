@@ -4,9 +4,37 @@ Welcome to the object detection benchmarking repository! Here, we train and eval
 
 
 <div style="display: flex;">
-  <img src="./assets/000000039769.jpg" alt="Image 1" style="width: 50%">
-  <img src="./assets/predicted_panoptic_map.png" alt="Image 2" style="width: 50%">
+  <img src="./assets/000000039769.jpg" alt="Image 1" style="width: 45%">
+  <img src="./assets/predicted_panoptic_map.png" alt="Image 2" style="width: 45%">
 </div>
+
+<br>
+
+
+The later image is generated using this repo's code: [Check the Inference Command](./README.md#💡-inference-with-panoptic-segmentation-model)
+
+
+## 📖 Table of Contents
+
+Check this out!
+
+- [Object Detection 🕵️‍♂️](#object-detection-🕵️‍♂️)
+  - [📖 Table of Contents](#📖-table-of-contents)
+    - [🛠️ Installation](#🛠️-installation)
+    - [⚙️📥 Download all processed data at once from s3 bucket](#⚙️📥-download-all-processed-data-at-once-from-s3-bucket)
+  - [💡 Backbones Training Pipelines](#💡-backbones-training-pipelines)
+    - [📥 Downloading and Formatting the ImageNet Dataset](#📥-downloading-and-formatting-the-imagenet-dataset)
+    - [🚀 Training and Finetuning Backbones with ImageNet-1k and Config Files](#🚀-training-and-finetuning-backbones-with-imagenet-1k-and-config-files)
+    - [📊 Evaluate Backbones with ImageNet-1k validation data](#📊-evaluate-backbones-with-imagenet-1k-validation-data)
+    - [💡 Inference with Backbones](#💡-inference-with-backbones)
+  - [💡 Panoptic Segmentation Training Pipelines](#💡-panoptic-segmentation-training-pipelines)
+    - [🔥 Supported Backbones for Panoptic Segmentation Architectures](#🔥-supported-backbones-for-panoptic-segmentation-architectures)
+    - [📥 Downloading and Formatting the COCO dataset (2017)](#📥-downloading-and-formatting-the-coco-dataset-2017)
+    - [🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones](#🚀-training-and-finetuning-different-panoptic-segmentation-architecture-models-for-any-backbones)
+    - [📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data](#📊-evaluate-different-panoptic-segmentation-architecture-models-with-coco-panoptic-validation-data)
+    - [💡 Inference with Panoptic Segmentation Model](#💡-inference-with-panoptic-segmentation-model)
+  - [📚 References & Citations](#📚-references--citations)
+
 
 <br>
 
@@ -388,13 +416,15 @@ python scripts/raw_to_parquet_coco.py \
 
 🚧 Training different models for different backbones will be added in a future release. Stay tuned!
 
+<br>
 
 
+### 📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data
 
 
+🚧 Evalution module for panoptic segmentation will be added in a future release. Stay tuned!
 
-
-
+<br>
 
 
 
