@@ -1,0 +1,1 @@
+from transformers.models.detr.modeling_detr import *
