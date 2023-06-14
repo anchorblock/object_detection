@@ -272,6 +272,8 @@ Architectures:
 - DeTR
 - mask2former
 - maskformer
+- custom_mask2former
+- custom_maskformer
 - oneformer
 ```
 
@@ -295,13 +297,13 @@ Please note the following important details about default huggingface object det
 - ✅ **oneformer** supports only above mentioned backbones/ classifiers.
 - ✅ **DeTR** supports only above mentioned backbones/ classifiers.
 
-So, to enable support for all types of pretrained backbones in **maskformer** and **mask2former**, this repository includes our customized model classes for both **maskformer** and **mask2former**. Check this out! 🎉
+So, to enable support for all types of pretrained backbones with **maskformer** and **mask2former**, this repository includes our customized model classes for both **maskformer** and **mask2former**. Check this out! 🎉
 
 - 👉 [models/custom_maskformer.py](./models/custom_maskformer.py)
 - 👉 [models/custom_mask2former.py](./models/custom_mask2former.py)
 
 
-
+<br>
 
 ### 📥 Downloading and Formatting the COCO dataset (2017)
 
@@ -414,7 +416,7 @@ python scripts/raw_to_parquet_coco.py \
 
 ### 🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones
 
-🚧 Training different models for different backbones will be added in a future release. Stay tuned!
+🚧 Training different models for different backbones will be added in future release. Stay tuned!
 
 <br>
 
@@ -422,7 +424,7 @@ python scripts/raw_to_parquet_coco.py \
 ### 📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data
 
 
-🚧 Evalution module for panoptic segmentation will be added in a future release. Stay tuned!
+🚧 Evaluation module for panoptic segmentation will be added in future release. Stay tuned!
 
 <br>
 

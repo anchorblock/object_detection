@@ -5,7 +5,13 @@
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
 
 
-- [ ] general config and preprocess_config architectures: [DeTR](./configs/architectures/DeTR), [maskformer](./configs/architectures/maskformer), [mask2former](./configs/architectures/mask2former), [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
+- [ ] general config and preprocess_config architectures: 
+    - [ ] [DeTR](./configs/architectures/DeTR), 
+    - [ ] [maskformer](./configs/architectures/maskformer), 
+    - [ ] [mask2former](./configs/architectures/mask2former),
+    - [ ] [custom_maskformer](./configs/architectures/custom_maskformer),
+    - [ ] [custom_mask2former](./configs/architectures/custom_mask2former),
+    - [ ] [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
 
 - [ ] writing [augmentation script](./utils/augmentations.py) for COCO panoptic task
 - [ ] writing [evaluation script](./utils/evaluation.py) for COCO panoptic task
@@ -21,7 +27,7 @@
 
 ### Debugging training scripts with GPU
 
-- [x] create all processed parquet data of imagenet and coco in zip format, upload in s3 and add download refernce in README.md
+- [x] create all processed parquet data of imagenet and coco in zip format, upload in s3
 - [ ] test imagenet training script with the presence of GPU, debug and fix error
 - [ ] test COCO panoptic training script with the presence of GPU, debug and fix error
 
@@ -45,16 +51,16 @@
 
 
 
+
+
+
+
+
+
+
+
+
 <br>
-
-
-
-
-
-
-
-
-
 
 ## Pre-Alpha Release 0.1.0
 
@@ -157,10 +163,14 @@
 - [x] COCO data compression script: [scripts/raw_to_parquet_coco.py](./scripts/raw_to_parquet_coco.py) for faster saving and loading in parquet format (compressed full ~28.2 GB COCO data to total ~133 MB by saving images in Pillow format inside parquet chart).
 
 
-- [x] architecture: [DeTR.py](./models_panoptic/DeTR.py) custom model class script
-- [x] architecture: [maskformer.py](./models_panoptic/maskformer.py) custom model class script
-- [x] architecture: [mask2former.py](./models_panoptic/mask2former.py) custom model class script
-- [x] architecture: [oneformer.py](./models_panoptic/oneformer.py) custom model class script
+- [x] panoptic model architectures: 
+    - [x] [detr.py](./models_panoptic/detr.py) custom model class script
+    - [x] [maskformer.py](./models_panoptic/maskformer.py) custom model class script
+    - [x] [mask2former.py](./models_panoptic/mask2former.py) custom model class script
+    - [x] [custom_maskformer.py](./models_panoptic/custom_maskformer.py) custom model class script
+    - [x] [custom_mask2former.py](./models_panoptic/custom_mask2former.py) custom model class script
+    - [x] [oneformer.py](./models_panoptic/oneformer.py) custom model class script
+
 
 - [x] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules
 
