@@ -1,5 +1,5 @@
-from .DeTR import DetrForSegmentation
-from .mask2former import CustomMask2FormerForUniversalSegmentation
-from .maskformer import CustomMaskFormerForInstanceSegmentation
+from .detr import DetrForSegmentation
+from .custom_mask2former import CustomMask2FormerConfig, CustomMask2FormerForUniversalSegmentation
+from .custom_maskformer import CustomMaskFormerConfig, CustomMaskFormerForInstanceSegmentation
 from .oneformer import OneFormerForUniversalSegmentation
 from .automodel_panoptic import AutoModelForPanopticSegmentation
