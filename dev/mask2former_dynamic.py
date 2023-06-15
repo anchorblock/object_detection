@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw
 import numpy as np
 import requests
 import torch
-from models import AutoModelForPanopticSegmentation, CustomMask2FormerConfig
+from models import AutoModelForPanopticSegmentation, CustomMask2FormerConfig, AutoPanopticConfig
 
 
 import torch
@@ -21,10 +21,11 @@ backbone_config = AutoConfig.from_pretrained(model_name)
 
 # generate model config **dict
 
-
-model_configuration = CustomMask2FormerConfig(backbone_config=backbone_config)
-
 backbone = AutoModel.from_pretrained(model_name)
+model_configuration = AutoPanopticConfig(model_type = "custom_mask2former", backbone_config=backbone.config)
+
+print(model_configuration)
+
 
 model = AutoModelForPanopticSegmentation.from_config(model_configuration, backbone = backbone)
 

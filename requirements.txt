@@ -11,5 +11,5 @@ requests==2.25.1
 ipykernel==6.23.1
 scikit-learn==1.2.2 
 matplotlib==3.7.1
-natten
+natten==0.14.6
 # pip install trectools

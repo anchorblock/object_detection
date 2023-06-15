@@ -37,7 +37,7 @@ class _CustomLazyAutoMapping(_LazyAutoMapping):
 
 PANOPTIC_CONFIG_MAPPING_NAMES = OrderedDict(
     [
-        # Model for Universal Segmentation mapping
+        # Model for Panoptic Segmentation mapping
         ("detr", "DetrConfig"),
         ("maskformer", "MaskFormerConfig"),
         ("mask2former", "Mask2FormerConfig"),
@@ -50,7 +50,7 @@ PANOPTIC_CONFIG_MAPPING_NAMES = OrderedDict(
 
 MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING_NAMES = OrderedDict(
     [
-        # Model for Universal Segmentation mapping
+        # Model for Panoptic Segmentation mapping
         ("detr", "ModifiedDetrForSegmentation"),
         ("maskformer", "ModifiedMaskFormerForInstanceSegmentation"),
         ("mask2former", "ModifiedMask2FormerForUniversalSegmentation"),
