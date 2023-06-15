@@ -3,28 +3,17 @@
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
 
 
-<div style="display: flex; flex-wrap: wrap;">
-  <div style="flex-basis: 45%; padding: 5px;">
-    <img src="./assets/000000039769.jpg" alt="Image 1" style="width: 100%;">
-    <p style="text-align: center;">Original Image</p>
-  </div>
-  <div style="flex-basis: 45%; padding: 5px;">
-    <img src="./assets/predicted_detection_map.png" alt="Image 2" style="width: 100%;">
-    <p style="text-align: center;">Bounding Box Detection</p>
-  </div>
-  <div style="flex-basis: 45%; padding: 5px;">
-    <img src="./assets/predicted_semantic_map.png" alt="Image 3" style="width: 100%;">
-    <p style="text-align: center;">Semantic Segmentation</p>
-  </div>
-  <div style="flex-basis: 45%; padding: 5px;">
-    <img src="./assets/predicted_inference_map.png" alt="Image 4" style="width: 100%;">
-    <p style="text-align: center;">Inference Segmentation</p>
-  </div>
-  <div style="flex-basis: 45%; padding: 5px;">
-    <img src="./assets/predicted_panoptic_map.png" alt="Image 5" style="width: 100%;">
-    <p style="text-align: center;">Panoptic Segmentation</p>
-  </div>
-</div>
+| Original Image                          | Bounding Box Detection                 |
+| --------------------------------------- | -------------------------------------- |
+| ![Image 1](./assets/000000039769.jpg)    | ![Image 2](./assets/predicted_detection_map.png) |
+| Original Image                          | Semantic Segmentation                  |
+| ![Image 1](./assets/000000039769.jpg)    | ![Image 3](./assets/predicted_semantic_map.png) |
+| Original Image                          | Inference Segmentation                 |
+| ![Image 1](./assets/000000039769.jpg)    | ![Image 4](./assets/predicted_inference_map.png) |
+| Original Image                          | Panoptic Segmentation                  |
+| ![Image 1](./assets/000000039769.jpg)    | ![Image 5](./assets/predicted_panoptic_map.png) |
+
+Note: Replace `./assets/000000039769.jpg` with the appropriate path to your original image file, and ensure that the other image paths are correct as well.
 
 <br>
 
