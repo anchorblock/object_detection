@@ -1,4 +1,4 @@
-# Object Detection 🕵️‍♂️
+# Object Detection
 
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
 
@@ -11,43 +11,43 @@ Welcome to the object detection benchmarking repository! Here, we train and eval
 <br>
 
 
-The later image is generated using this repo's code: [Check the Inference Command](./README.md#💡-inference-with-panoptic-segmentation-model)
+The later image is generated using this repo's code: [Check the Inference Command](./README.md#inference-with-panoptic-segmentation-model)
 
 
-## 📖 Table of Contents
+## Table of Contents
 
 Check this out!
 
-- [Object Detection 🕵️‍♂️](#object-detection-🕵️‍♂️)
-  - [📖 Table of Contents](#📖-table-of-contents)
-    - [🛠️ Installation](#🛠️-installation)
-    - [⚙️📥 Download all processed data at once from s3 bucket](#⚙️📥-download-all-processed-data-at-once-from-s3-bucket)
-  - [💡 Backbones Training Pipelines](#💡-backbones-training-pipelines)
-    - [📥 Downloading and Formatting the ImageNet Dataset](#📥-downloading-and-formatting-the-imagenet-dataset)
-    - [🚀 Training and Finetuning Backbones with ImageNet-1k and Config Files](#🚀-training-and-finetuning-backbones-with-imagenet-1k-and-config-files)
-    - [📊 Evaluate Backbones with ImageNet-1k validation data](#📊-evaluate-backbones-with-imagenet-1k-validation-data)
-    - [💡 Inference with Backbones](#💡-inference-with-backbones)
-  - [💡 Panoptic Segmentation Training Pipelines](#💡-panoptic-segmentation-training-pipelines)
-    - [🔥 Supported Backbones for Panoptic Segmentation Architectures](#🔥-supported-backbones-for-panoptic-segmentation-architectures)
-    - [📥 Downloading and Formatting the COCO dataset (2017)](#📥-downloading-and-formatting-the-coco-dataset-2017)
-    - [🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones](#🚀-training-and-finetuning-different-panoptic-segmentation-architecture-models-for-any-backbones)
-    - [📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data](#📊-evaluate-different-panoptic-segmentation-architecture-models-with-coco-panoptic-validation-data)
-    - [💡 Inference with Panoptic Segmentation Model](#💡-inference-with-panoptic-segmentation-model)
-  - [📚 References & Citations](#📚-references--citations)
+- [Object Detection 🕵️‍♂️](#object-detection)
+  - [📖 Table of Contents](#table-of-contents)
+    - [🛠️ Installation](#installation)
+    - [⚙️📥 Download all processed data at once from s3 bucket](#download-all-processed-data-at-once-from-s3-bucket)
+  - [💡 Backbones Training Pipelines](#backbones-training-pipelines)
+    - [📥 Downloading and Formatting the ImageNet Dataset](#downloading-and-formatting-the-imagenet-dataset)
+    - [🚀 Training and Finetuning Backbones with ImageNet-1k and Config Files](#training-and-finetuning-backbones-with-imagenet-1k-and-config-files)
+    - [📊 Evaluate Backbones with ImageNet-1k validation data](#evaluate-backbones-with-imagenet-1k-validation-data)
+    - [💡 Inference with Backbones](#inference-with-backbones)
+  - [💡 Panoptic Segmentation Training Pipelines](#panoptic-segmentation-training-pipelines)
+    - [🔥 Supported Backbones for Panoptic Segmentation Architectures](#supported-backbones-for-panoptic-segmentation-architectures)
+    - [📥 Downloading and Formatting the COCO dataset (2017)](#downloading-and-formatting-the-coco-dataset-2017)
+    - [🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones](#training-and-finetuning-different-panoptic-segmentation-architecture-models-for-any-backbones)
+    - [📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data](#evaluate-different-panoptic-segmentation-architecture-models-with-coco-panoptic-validation-data)
+    - [💡 Inference with Panoptic Segmentation Model](#inference-with-panoptic-segmentation-model)
+  - [📚 References & Citations](#references--citations)
 
 
 <br>
 
-### 📝 To-Do
+### To-Do
 
 Check out our releases and refer to the [TO_DO.md](./TO_DO.md) file for the archived To-Do list.
 
 
-### 🛠️ Installation
+### Installation
 
 To set up and install the required dependencies, please follow the instructions in the [INSTALL.md](./INSTALL.md) file.
 
-### ⚙️📥 Download all processed data at once from s3 bucket
+### Download all processed data at once from s3 bucket
 
 If you want to download all our processed data at once without downloading imagenet and coco data manually, use this commands to download and extract all the formatted data:
 
@@ -61,7 +61,7 @@ cd ..
 ```
 
 
-## 💡 Backbones Training Pipelines
+## Backbones Training Pipelines
 
 This repository supports training the following backbones with the imagenet-1k dataset:
 
@@ -79,7 +79,7 @@ Backbones:
 ```
 
 
-### 📥 Downloading and Formatting the ImageNet Dataset
+### Downloading and Formatting the ImageNet Dataset
 
 To use the ImageNet-1k dataset (2012), you need to manually download, extract, and organize it. Follow these steps:
 
@@ -122,7 +122,7 @@ python scripts/raw_to_parquet_imagenet.py \
 
 <br>
 
-### 🚀 Training and Finetuning Backbones with ImageNet-1k and Config Files
+### Training and Finetuning Backbones with ImageNet-1k and Config Files
 
 The default hyperparameters for training, as specified in the [FocalNet paper](https://arxiv.org/abs/2203.11926), are as follows:
 
@@ -193,7 +193,7 @@ torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.
 
 
 
-### 📊 Evaluate Backbones with ImageNet-1k validation data
+### Evaluate Backbones with ImageNet-1k validation data
 
 These are the popular evaluation metrics used for ImageNet-1K:
 
@@ -226,7 +226,7 @@ python scripts/evaluate_backbone_classifier.py \
 ```
 
 
-### 💡 Inference with Backbones
+### Inference with Backbones
 
 An example inference code:
 
@@ -262,7 +262,7 @@ classifier(image)
 
 <br>
 
-## 💡 Panoptic Segmentation Training Pipelines
+## Panoptic Segmentation Training Pipelines
 
 This repository supports training the following architectures with the COCO dataset:
 
@@ -277,7 +277,7 @@ Architectures:
 - oneformer
 ```
 
-### 🔥 Supported Backbones for Panoptic Segmentation Architectures
+### Supported Backbones for Panoptic Segmentation Architectures
 
 💪 The following list represents the supported backbones for Panoptic Segmentation Architectures:
 ```
@@ -305,7 +305,7 @@ So, to enable support for all types of pretrained backbones with **maskformer** 
 
 <br>
 
-### 📥 Downloading and Formatting the COCO dataset (2017)
+### Downloading and Formatting the COCO dataset (2017)
 
 
 For using the COCO dataset (2017), you need to download and extract it manually first:
@@ -414,14 +414,14 @@ python scripts/raw_to_parquet_coco.py \
 <br>
 
 
-### 🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones
+### Training and Finetuning different Panoptic Segmentation architecture models for any backbones
 
 🚧 Training different models for different backbones will be added in future release. Stay tuned!
 
 <br>
 
 
-### 📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data
+### Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data
 
 
 🚧 Evaluation module for panoptic segmentation will be added in future release. Stay tuned!
@@ -434,7 +434,7 @@ python scripts/raw_to_parquet_coco.py \
 
 
 
-### 💡 Inference with Panoptic Segmentation Model
+### Inference with Panoptic Segmentation Model
 
 An example inference code:
 
@@ -536,7 +536,7 @@ image.save('predicted_panoptic_map.png')
 
 
 
-## 📚 References & Citations
+## References & Citations
 
 **ImageNet Datasets:**
 
