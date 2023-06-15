@@ -3,13 +3,30 @@
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
 
 
-<div style="display: flex;">
-  <img src="./assets/000000039769.jpg" alt="Image 1" style="width: 45%">
-  <img src="./assets/predicted_panoptic_map.png" alt="Image 2" style="width: 45%">
+<div style="display: flex; flex-wrap: wrap;">
+  <div style="flex-basis: 45%; padding: 5px;">
+    <img src="./assets/000000039769.jpg" alt="Image 1" style="width: 100%;">
+    <p style="text-align: center;">Original Image</p>
+  </div>
+  <div style="flex-basis: 45%; padding: 5px;">
+    <img src="./assets/predicted_detection_map.png" alt="Image 2" style="width: 100%;">
+    <p style="text-align: center;">Bounding Box Detection</p>
+  </div>
+  <div style="flex-basis: 45%; padding: 5px;">
+    <img src="./assets/predicted_semantic_map.png" alt="Image 3" style="width: 100%;">
+    <p style="text-align: center;">Semantic Segmentation</p>
+  </div>
+  <div style="flex-basis: 45%; padding: 5px;">
+    <img src="./assets/predicted_inference_map.png" alt="Image 4" style="width: 100%;">
+    <p style="text-align: center;">Inference Segmentation</p>
+  </div>
+  <div style="flex-basis: 45%; padding: 5px;">
+    <img src="./assets/predicted_panoptic_map.png" alt="Image 5" style="width: 100%;">
+    <p style="text-align: center;">Panoptic Segmentation</p>
+  </div>
 </div>
 
 <br>
-
 
 The later image is generated using this repo's code: [Check the Inference Command](./README.md#inference-with-panoptic-segmentation-model)
 
@@ -429,12 +446,18 @@ python scripts/raw_to_parquet_coco.py \
 <br>
 
 
-
-
-
-
-
 ### Inference with Panoptic Segmentation Model
+
+You can infer as four types of vision tasks!
+1. Bounding Box Detection
+2. Panoptic Segmentation
+3. Instance Segmentation
+4. Semantic Segmentation
+
+<br>
+
+
+#### Inferenece 1: Bounding Box Detection
 
 An example inference code:
 
@@ -481,7 +504,7 @@ normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_ar
 uint8_array = normalized_array.astype(np.uint8)
 
 # Create a PIL image from the uint8 array
-image = Image.fromarray(uint8_array)
+image_gen_mask = Image.fromarray(uint8_array)
 
 # Load the labels dictionary from the model configuration (model.config.id2label)
 id2label = model.config.id2label
@@ -495,7 +518,7 @@ for segment in segments_info:
     segment_id = segment['id']
     label_id = segment['label_id']
     label = id2label[label_id]
-    if label > 79:
+    if int(label_id) > 79:
         continue
     score = segment['score']
     
@@ -513,27 +536,193 @@ for segment in segments_info:
 
 
 # Save the image
-image.save('predicted_panoptic_map.png')
+image.save('predicted_detection_map.png')
+
 ```
 
+<br>
+
+#### Inferenece 2: Panoptic Segmentation
+
+An example inference code:
+
+```python
+import sys
+sys.path.append('./')
+
+from transformers import AutoImageProcessor
+from PIL import Image, ImageDraw
+import numpy as np
+import requests
+import torch
+from models import AutoModelForPanopticSegmentation
+
+
+# load MaskFormer fine-tuned on COCO panoptic segmentation
+feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
+model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
+
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+image = Image.open(requests.get(url, stream=True).raw)
+inputs = feature_extractor(images=image, return_tensors="pt")
+
+outputs = model(**inputs)
+
+# you can pass them to feature_extractor for postprocessing
+result = feature_extractor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
+# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
+
+
+predicted_panoptic_map = result["segmentation"]
+
+# Get segments_info
+segments_info = result['segments_info']
+
+
+# Convert the tensor to numpy
+image_array = predicted_panoptic_map.numpy()
+
+# Normalize the array to the range 0-255
+normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
+
+# Convert the array to uint8 data type
+uint8_array = normalized_array.astype(np.uint8)
+
+# Create a PIL image from the uint8 array
+image_gen_mask = Image.fromarray(uint8_array)
+
+# Load the labels dictionary from the model configuration (model.config.id2label)
+id2label = model.config.id2label
 
 
 
+# Save the image
+image_gen_mask.save('predicted_panoptic_map.png')
+
+```
+
+<br>
+
+
+#### Inferenece 3: Instance Segmentation
+
+An example inference code:
+
+```python
+import sys
+sys.path.append('./')
+
+from transformers import AutoImageProcessor
+from PIL import Image, ImageDraw
+import numpy as np
+import requests
+import torch
+from models import AutoModelForPanopticSegmentation
+
+
+# load MaskFormer fine-tuned on COCO panoptic segmentation
+feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
+model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
+
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+image = Image.open(requests.get(url, stream=True).raw)
+inputs = feature_extractor(images=image, return_tensors="pt")
+
+outputs = model(**inputs)
+
+# you can pass them to feature_extractor for postprocessing
+result = feature_extractor.post_process_instance_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
+# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
+
+
+predicted_panoptic_map = result["segmentation"]
+
+# Get segments_info
+segments_info = result['segments_info']
+
+
+# Convert the tensor to numpy
+image_array = predicted_panoptic_map.numpy()
+
+# Normalize the array to the range 0-255
+normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
+
+# Convert the array to uint8 data type
+uint8_array = normalized_array.astype(np.uint8)
+
+# Create a PIL image from the uint8 array
+image_gen_mask = Image.fromarray(uint8_array)
+
+# Load the labels dictionary from the model configuration (model.config.id2label)
+id2label = model.config.id2label
+
+
+# Save the image
+image_gen_mask.save('predicted_inference_map.png')
+
+```
+
+<br>
+
+
+#### Inferenece 4: Semantic Segmentation
+
+An example inference code:
+
+```python
+import sys
+sys.path.append('./')
+
+from transformers import AutoImageProcessor
+from PIL import Image, ImageDraw
+import numpy as np
+import requests
+import torch
+from models import AutoModelForPanopticSegmentation
+
+
+# load MaskFormer fine-tuned on COCO panoptic segmentation
+feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
+model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
+
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+image = Image.open(requests.get(url, stream=True).raw)
+inputs = feature_extractor(images=image, return_tensors="pt")
+
+outputs = model(**inputs)
+
+# you can pass them to feature_extractor for postprocessing
+result = feature_extractor.post_process_semantic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
+# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
+
+
+# predicted_panoptic_map = result["segmentation"]
+
+# # Get segments_info
+# segments_info = result['segments_info']
+
+
+# Convert the tensor to numpy
+image_array = result.numpy()
+
+# Normalize the array to the range 0-255
+normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
+
+# Convert the array to uint8 data type
+uint8_array = normalized_array.astype(np.uint8)
+
+# Create a PIL image from the uint8 array
+image_gen_mask = Image.fromarray(uint8_array)
+
+# Load the labels dictionary from the model configuration (model.config.id2label)
+id2label = model.config.id2label
 
 
 
+# Save the image
+image_gen_mask.save('predicted_semantic_map.png')
 
-
-
-
-
-
-
-
-
-
-
-
+```
 
 
 ## References & Citations
