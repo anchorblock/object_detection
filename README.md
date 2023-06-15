@@ -8,12 +8,12 @@ Welcome to the object detection benchmarking repository! Here, we train and eval
 | ![Image 1](./assets/000000039769.jpg)    | ![Image 2](./assets/predicted_detection_map.png) |
 | Original Image                          | Semantic Segmentation                  |
 | ![Image 1](./assets/000000039769.jpg)    | ![Image 3](./assets/predicted_semantic_map.png) |
-| Original Image                          | Inference Segmentation                 |
+| Original Image                          | Instance Segmentation                 |
 | ![Image 1](./assets/000000039769.jpg)    | ![Image 4](./assets/predicted_inference_map.png) |
 | Original Image                          | Panoptic Segmentation                  |
 | ![Image 1](./assets/000000039769.jpg)    | ![Image 5](./assets/predicted_panoptic_map.png) |
 
-Note: Replace `./assets/000000039769.jpg` with the appropriate path to your original image file, and ensure that the other image paths are correct as well.
+
 
 <br>
 
