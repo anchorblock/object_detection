@@ -27,6 +27,7 @@ class CustomMask2FormerPixelLevelModule(Mask2FormerPixelLevelModule):
         if backbone_config.model_type == "swin":
             # for backwards compatibility
             backbone_config = MaskFormerSwinConfig.from_dict(backbone_config.to_dict())
+            
             backbone_config.out_features = ["stage1", "stage2", "stage3", "stage4"]
 
         backbone_config.out_features = ["stage1", "stage2", "stage3", "stage4"]
@@ -50,7 +51,7 @@ class CustomMask2FormerModel(Mask2FormerModel):
 class CustomMask2FormerForUniversalSegmentation(Mask2FormerForUniversalSegmentation):
     main_input_name = "pixel_values"
 
-    def __init__(self, config: CustomMask2FormerConfig):
+    def __init__(self, config: CustomMask2FormerConfig, backbone = None):
         super().__init__(config)
         self.model = CustomMask2FormerModel(config)
 
@@ -63,5 +64,9 @@ class CustomMask2FormerForUniversalSegmentation(Mask2FormerForUniversalSegmentat
         self.class_predictor = nn.Linear(config.hidden_dim, config.num_labels + 1)
 
         self.criterion = Mask2FormerLoss(config=config, weight_dict=self.weight_dict)
+
         self.post_init()
+
+        if backbone is not None:
+            self.model.pixel_level_module.encoder.load_state_dict(backbone.state_dict(), strict=False)
 

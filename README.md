@@ -495,6 +495,8 @@ for segment in segments_info:
     segment_id = segment['id']
     label_id = segment['label_id']
     label = id2label[label_id]
+    if label > 79:
+        continue
     score = segment['score']
     
     # Get the bounding box coordinates for the segment

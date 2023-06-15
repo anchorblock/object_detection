@@ -67,7 +67,7 @@ class CustomMaskFormerModel(MaskFormerModel):
 
 class CustomMaskFormerForInstanceSegmentation(MaskFormerForInstanceSegmentation):
 
-    def __init__(self, config: CustomMaskFormerConfig):
+    def __init__(self, config: CustomMaskFormerConfig, backbone = None):
         super().__init__(config)
         self.model = CustomMaskFormerModel(config)
         hidden_size = config.decoder_config.hidden_size
@@ -93,3 +93,6 @@ class CustomMaskFormerForInstanceSegmentation(MaskFormerForInstanceSegmentation)
         )
 
         self.post_init()
+
+        if backbone is not None:
+            self.model.pixel_level_module.encoder.load_state_dict(backbone.state_dict(), strict=False)

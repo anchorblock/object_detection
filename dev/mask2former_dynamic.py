@@ -3,7 +3,7 @@ sys.path.append('./')
 
 from transformers import MaskFormerImageProcessor
 
-from transformers import MaskFormerForInstanceSegmentation, MaskFormerConfig, MaskFormerModel, DetrConfig, DetrForObjectDetection, FocalNetConfig, FocalNetModel, FocalNetForImageClassification, MaskFormerConfig
+from transformers import MaskFormerForInstanceSegmentation, MaskFormerConfig, MaskFormerModel, DetrConfig, DetrForObjectDetection, FocalNetConfig, FocalNetModel, FocalNetForImageClassification, MaskFormerConfig, AutoBackbone, Mask2FormerConfig, AutoConfig, AutoModel
 
 from PIL import Image, ImageDraw
 import numpy as np
@@ -11,23 +11,22 @@ import requests
 import torch
 from models import AutoModelForPanopticSegmentation, CustomMask2FormerConfig
 
-from models.automodel_panoptic import AutoPanopticConfig
-
 
 import torch
 import json
 
-focal_config = FocalNetConfig()
+model_name = "facebook/convnext-large-224"
 
-model_configuration = CustomMask2FormerConfig(use_timm_backbone = False,
-                           backbone_config=FocalNetConfig())
+backbone_config = AutoConfig.from_pretrained(model_name)
 
-print(model_configuration.model_type)
+# generate model config **dict
 
 
-print(AutoModelForPanopticSegmentation)
-model = AutoModelForPanopticSegmentation.from_config(model_configuration)
+model_configuration = CustomMask2FormerConfig(backbone_config=backbone_config)
 
+backbone = AutoModel.from_pretrained(model_name)
+
+model = AutoModelForPanopticSegmentation.from_config(model_configuration, backbone = backbone)
 
 
 # load MaskFormer fine-tuned on COCO panoptic segmentation
@@ -62,7 +61,14 @@ segments_info = result['segments_info']
 image_array = predicted_panoptic_map.numpy()
 
 # Normalize the array to the range 0-255
-normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
+min_value = np.min(image_array)
+max_value = np.max(image_array)
+
+if min_value == max_value:
+    normalized_array = np.zeros_like(image_array)
+else:
+    normalized_array = (image_array - min_value) * (255 / (max_value - min_value))
+
 
 # Convert the array to uint8 data type
 uint8_array = normalized_array.astype(np.uint8)

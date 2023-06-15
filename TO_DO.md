@@ -46,7 +46,6 @@
 <br>
 
 
- ----------------------------
 
 
 # Finished
@@ -63,7 +62,7 @@
         ├── data/
         ├── dev/
         ├── formatted_data/
-        ├── models_panoptic/
+        ├── models/
         ├── outputs/
         ├── scripts/
         └── utils/

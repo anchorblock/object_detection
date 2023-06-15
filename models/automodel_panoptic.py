@@ -51,12 +51,12 @@ PANOPTIC_CONFIG_MAPPING_NAMES = OrderedDict(
 MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING_NAMES = OrderedDict(
     [
         # Model for Universal Segmentation mapping
-        ("detr", "DetrForSegmentation"),
-        ("maskformer", "MaskFormerForInstanceSegmentation"),
-        ("mask2former", "Mask2FormerForUniversalSegmentation"),
+        ("detr", "ModifiedDetrForSegmentation"),
+        ("maskformer", "ModifiedMaskFormerForInstanceSegmentation"),
+        ("mask2former", "ModifiedMask2FormerForUniversalSegmentation"),
         ("custom_mask2former", "CustomMask2FormerForUniversalSegmentation"),
         ("custom_maskformer", "CustomMaskFormerForInstanceSegmentation"),
-        ("oneformer", "OneFormerForUniversalSegmentation"),
+        ("oneformer", "ModifiedOneFormerForUniversalSegmentation"),
     ]
 )
 
