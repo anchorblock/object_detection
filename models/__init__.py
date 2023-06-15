@@ -5,3 +5,4 @@ from .custom_mask2former import CustomMask2FormerConfig, CustomMask2FormerForUni
 from .custom_maskformer import CustomMaskFormerConfig, CustomMaskFormerForInstanceSegmentation
 from .oneformer import ModifiedOneFormerForUniversalSegmentation
 from .automodel_panoptic import AutoModelForPanopticSegmentation
+from .autoconfig_panoptic import AutoPanopticConfig

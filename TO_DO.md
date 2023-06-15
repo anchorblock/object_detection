@@ -151,7 +151,7 @@
 - [x] COCO data compression script: [scripts/raw_to_parquet_coco.py](./scripts/raw_to_parquet_coco.py) for faster saving and loading in parquet format (compressed full ~28.2 GB COCO data to total ~133 MB by saving images in Pillow format inside parquet chart).
 
 
-- [x] panoptic model architectures: 
+- [x] panoptic model architectures: pretrained backbone weight can be loaded, and supported for these backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin
     - [x] [detr.py](./models_panoptic/detr.py) custom model class script
     - [x] [maskformer.py](./models_panoptic/maskformer.py) custom model class script
     - [x] [mask2former.py](./models_panoptic/mask2former.py) custom model class script
@@ -162,4 +162,6 @@
 
 - [x] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules
 
-- [x] writing [models/automodel_panoptic.py](./models/automodel_panoptic.py) for customly defined modules for working will automodel class "AutoModelForPanopticSegmentation"
+- [x] writing [models/automodel_panoptic.py](./models/automodel_panoptic.py) for customly defined modules for working with automodel class "AutoModelForPanopticSegmentation"
+
+- [x] writing [models/autoconfig_panoptic.py](./models/autoconfig_panoptic.py) for customly defined modules for working with all customized panoptic config classs: "AutoPanopticConfig"

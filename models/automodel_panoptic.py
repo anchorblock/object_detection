@@ -69,6 +69,7 @@ class AutoModelForPanopticSegmentation(_BaseAutoModelClass):
 
 
 
+
 AutoModelForPanopticSegmentation = auto_class_update(
     AutoModelForPanopticSegmentation, head_doc="panoptic segmentation"
 )
