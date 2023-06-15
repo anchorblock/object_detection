@@ -4,22 +4,6 @@
 
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
 
-- [ ] writing [models/autoconfig_panoptic.py](./models/autoconfig_panoptic.py) for customly defined modules for working with all customized panoptic config classs: "AutoPanopticConfig"
-
-
-- [ ] general config and preprocess_config architectures: 
-    - [ ] [DeTR](./configs/architectures/DeTR), 
-    - [ ] [maskformer](./configs/architectures/maskformer), 
-    - [ ] [mask2former](./configs/architectures/mask2former),
-    - [ ] [custom_maskformer](./configs/architectures/custom_maskformer),
-    - [ ] [custom_mask2former](./configs/architectures/custom_mask2former),
-    - [ ] [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
-
-
-
-
-
-
 - [ ] writing [augmentation script](./utils/augmentations.py) for COCO panoptic task
 - [ ] writing [evaluation script](./utils/evaluation.py) for COCO panoptic task
 
@@ -170,4 +154,15 @@
 - [x] writing [models_panoptic/__init__.py](./models_panoptic/__init__.py) for importing modules
 
 - [x] writing [models/automodel_panoptic.py](./models/automodel_panoptic.py) for customly defined modules for working with automodel class "AutoModelForPanopticSegmentation"
+
+- [x] writing [models/autoconfig_panoptic.py](./models/autoconfig_panoptic.py) for customly defined modules for working with all customized panoptic config classs: "AutoPanopticConfig"
+
+
+- [x] general config and preprocess_config architectures: 
+    - [x] [DeTR](./configs/architectures/detr), 
+    - [x] [maskformer](./configs/architectures/maskformer), 
+    - [x] [mask2former](./configs/architectures/mask2former),
+    - [x] [custom_maskformer](./configs/architectures/custom_maskformer),
+    - [x] [custom_mask2former](./configs/architectures/custom_mask2former),
+    - [x] [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
 

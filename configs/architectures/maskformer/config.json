@@ -1,6 +1,6 @@
 {
     "architectures": [
-      "MaskFormerForInstanceSegmentation"
+      "ModifiedMaskFormerForInstanceSegmentation"
     ],
     "backbone_config": null,
     "ce_weight": 1.0,
@@ -12,6 +12,8 @@
     "init_xavier_std": 1.0,
     "mask_feature_size": 256,
     "mask_weight": 20.0,
+    "id2label": null,
+    "label2id": null,
     "model_type": "maskformer",
     "no_object_weight": 0.1,
     "num_attention_heads": 8,

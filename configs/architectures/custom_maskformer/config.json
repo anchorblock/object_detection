@@ -1,0 +1,24 @@
+{
+    "architectures": [
+      "CustomMaskFormerForInstanceSegmentation"
+    ],
+    "backbone_config": null,
+    "ce_weight": 1.0,
+    "cross_entropy_weight": 1.0,
+    "decoder_config": null,
+    "dice_weight": 1.0,
+    "fpn_feature_size": 256,
+    "init_std": 0.02,
+    "init_xavier_std": 1.0,
+    "mask_feature_size": 256,
+    "mask_weight": 20.0,
+    "model_type": "custom_maskformer",
+    "no_object_weight": 0.1,
+    "num_attention_heads": 8,
+    "num_hidden_layers": 6,
+    "num_queries": 100,
+    "torch_dtype": "float32",
+    "transformers_version": "4.29.2",
+    "use_auxiliary_loss": false
+  }
+  

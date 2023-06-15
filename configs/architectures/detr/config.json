@@ -2,7 +2,7 @@
     "activation_dropout": 0.0,
     "activation_function": "relu",
     "architectures": [
-      "DetrForSegmentation"
+      "ModifiedDetrForSegmentation"
     ],
     "attention_dropout": 0.0,
     "auxiliary_loss": false,
