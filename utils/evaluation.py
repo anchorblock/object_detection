@@ -7,6 +7,7 @@ from sklearn.metrics import top_k_accuracy_score, precision_score, recall_score,
 
 def top_k_function(predictions, references):
     """Returns the accuracy at k"""
+
     if isinstance(predictions, list):
         accuracyk = sum(
             [reference in kpredictions for kpredictions, reference in zip(predictions, references)]
@@ -19,7 +20,24 @@ def top_k_function(predictions, references):
 
 
 def compute_metrics_imagenet1k(predictions, references):
+    """
+    Computes various evaluation metrics for ImageNet-1K predictions.
 
+    Args:
+        predictions (list): A list of predicted labels for ImageNet-1K dataset.
+        references (list): A list of reference labels for ImageNet-1K dataset.
+
+    Returns:
+        dict: A dictionary containing the computed evaluation metrics. All are returning as raw value (sum and num_samples)
+            - 'top1_accuracy_raw' (float): Top-k accuracy, which is the proportion of correctly predicted labels among all samples.
+            - 'top5_accuracy_raw' (float): Top-5 accuracy, which is the proportion of samples where the correct label is within the top 5 predicted labels.
+            - 'n_samples' (int)
+            - 'precision_raw' (float): Precision, which is the proportion of true positive predictions out of all positive predictions. (sum, as per class)
+            - 'recall_raw' (float): Recall, which is the proportion of true positive predictions out of all actual positive samples. (sum, as per class)
+            - 'f1_raw' (float): F1-score, which is the harmonic mean of precision and recall. (sum, as per class)
+            - 'mAP_raw' (float): Mean Average Precision (mAP) (sum, as per class)
+            - 'n_samples_per_class' (int)
+    """
     predictions = predictions.numpy()
     references = references.numpy()
 

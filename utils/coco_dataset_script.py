@@ -64,6 +64,7 @@ Split = collections.namedtuple(
 )
 
 
+
 class AnnotationType(object):
     """Enum of the annotation format types.
     Splits are annotated with different formats.
@@ -72,6 +73,8 @@ class AnnotationType(object):
     BBOXES = 'bboxes'
     PANOPTIC = 'panoptic'
     NONE = 'none'
+
+
 
 class CocoAnnotation(object):
   """Coco annotation helper class."""
@@ -96,6 +99,7 @@ class CocoAnnotation(object):
     raise NotImplementedError  # AnotationType.NONE don't have annotations
 
 
+
 class CocoAnnotationBBoxes(CocoAnnotation):
   """Coco annotation helper class."""
 
@@ -116,6 +120,7 @@ class CocoAnnotationBBoxes(CocoAnnotation):
     return self._img_id2annotations.get(img_id, [])
 
 
+
 class CocoAnnotationPanoptic(CocoAnnotation):
   """Coco annotation helper class."""
 
@@ -130,11 +135,13 @@ class CocoAnnotationPanoptic(CocoAnnotation):
     return self._img_id2annotations[img_id]
 
 
+
 ANNOTATION_CLS = {
     AnnotationType.NONE: CocoAnnotation,
     AnnotationType.BBOXES: CocoAnnotationBBoxes,
     AnnotationType.PANOPTIC: CocoAnnotationPanoptic,
 }
+
 
 
 DETECTION_FEATURE = datasets.Features(
@@ -157,6 +164,7 @@ DETECTION_FEATURE = datasets.Features(
         })),
     }
 )
+
 
 PANOPTIC_FEATURE = datasets.Features(
     {
@@ -200,7 +208,8 @@ class CocoConfig(datasets.BuilderConfig):
     self.bbox_mode = bbox_mode
 
 
-# Copied from https://github.com/tensorflow/datasets/blob/master/tensorflow_datasets/object_detection/coco.py
+
+# Modified from https://github.com/tensorflow/datasets/blob/master/tensorflow_datasets/object_detection/coco.py
 class Coco(datasets.GeneratorBasedBuilder):
     """Base MS Coco dataset."""
 

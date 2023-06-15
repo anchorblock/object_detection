@@ -23,5 +23,6 @@ class ModifiedDetrForSegmentation(DetrForSegmentation):
         # Initialize weights and apply final processing
         self.post_init()
 
+        # loading pretrained backbone weights
         if backbone is not None:
             self.detr.model.backbone.model.load_state_dict(backbone.state_dict(), strict=False)

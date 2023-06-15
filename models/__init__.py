@@ -1,3 +1,5 @@
+# importing specific modules
+
 from .detr import DetrConfig, ModifiedDetrForSegmentation
 from .mask2former import Mask2FormerConfig, ModifiedMask2FormerForUniversalSegmentation
 from .maskformer import MaskFormerConfig, ModifiedMaskFormerForInstanceSegmentation

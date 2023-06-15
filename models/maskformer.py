@@ -30,5 +30,6 @@ class ModifiedMaskFormerForInstanceSegmentation(MaskFormerForInstanceSegmentatio
 
         self.post_init()
 
+        # loading pretrained backbone weights
         if backbone is not None:
             self.model.pixel_level_module.encoder.load_state_dict(backbone.state_dict(), strict=False)

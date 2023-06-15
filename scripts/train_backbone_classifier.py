@@ -314,8 +314,8 @@ def main():
         gradient_checkpointing = args.gradient_checkpointing,
     )
 
-    # Custom Trainer Callback
 
+    # Custom Trainer Callback
     class EpochCallback(TrainerCallback):
         def __init__(self):
             super().__init__()
@@ -324,7 +324,8 @@ def main():
         def on_epoch_begin(self, args, state, control, **kwargs):
             self.current_epoch = state.epoch
 
-    # Create an instance of your custom callback
+
+    # Create an instance of custom callback
     epoch_callback = EpochCallback()
 
 

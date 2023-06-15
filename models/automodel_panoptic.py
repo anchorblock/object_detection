@@ -3,6 +3,8 @@ from transformers.models.auto.auto_factory import _LazyAutoMapping, _BaseAutoMod
 import importlib
 
 
+
+# editing huggingface's transformers source code for supporting modules from .models
 def custom_getattribute_from_module(module, attr):
     if attr is None:
         return None
@@ -24,6 +26,7 @@ def custom_getattribute_from_module(module, attr):
     
 
 
+# editing huggingface's transformers source code for supporting modules from .models
 class _CustomLazyAutoMapping(_LazyAutoMapping):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -35,6 +38,7 @@ class _CustomLazyAutoMapping(_LazyAutoMapping):
         return custom_getattribute_from_module(self._modules[module_name], attr)
 
 
+# Defining config mapping for custom config classes and custom model names
 PANOPTIC_CONFIG_MAPPING_NAMES = OrderedDict(
     [
         # Model for Panoptic Segmentation mapping
@@ -48,6 +52,7 @@ PANOPTIC_CONFIG_MAPPING_NAMES = OrderedDict(
 )
 
 
+# Defining model mapping for custom model classes and custom model names
 MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING_NAMES = OrderedDict(
     [
         # Model for Panoptic Segmentation mapping
@@ -64,9 +69,10 @@ MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING = _CustomLazyAutoMapping(
     PANOPTIC_CONFIG_MAPPING_NAMES, MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING_NAMES
 )
 
+
+# Defining custom AutoModel for Panoptic segmentation (including all custom models)
 class AutoModelForPanopticSegmentation(_BaseAutoModelClass):
     _model_mapping = MODEL_FOR_PANOPTIC_SEGMENTATION_MAPPING
-
 
 
 
