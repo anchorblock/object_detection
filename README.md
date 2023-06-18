@@ -3,8 +3,9 @@
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
 
 
-| Original Image                          | Bounding Box Detection                 |
+| Input                          | Output                 |
 | --------------------------------------- | -------------------------------------- |
+| Original Image                          | Bounding Box Detection                 |
 | ![Image 1](./assets/000000039769.jpg)    | ![Image 2](./assets/predicted_detection_map.png) |
 | Original Image                          | Semantic Segmentation                  |
 | ![Image 1](./assets/000000039769.jpg)    | ![Image 3](./assets/predicted_semantic_map.png) |
@@ -17,7 +18,7 @@ Welcome to the object detection benchmarking repository! Here, we train and eval
 
 <br>
 
-The later image is generated using this repo's code: [Check the Inference Command](./README.md#inference-with-panoptic-segmentation-model)
+The later images are generated using this repo's code: [Check the Inference Command](./README.md#inference-with-panoptic-segmentation-model)
 
 
 ## Table of Contents
@@ -711,6 +712,45 @@ id2label = model.config.id2label
 # Save the image
 image_gen_mask.save('predicted_semantic_map.png')
 
+```
+
+## Benchmarking (Current Trends)
+
+```
+popular backbone model comparison - 
+	Resnet, ViT, Swin, Focalnet, new_MODEL - all tiny
+	Resnet, ViT, Swin, Focalnet, new_MODEL - all small
+	Resnet, ViT, Swin, Focalnet, new_MODEL - all base
+```
+```
+Popular downstreaming tasks - 
+	Pretraining (Imagenet22k)
+	Classification (Imagenet 1k)
+	Object Detection (COCO), 
+	instance Segmentation (COCO), 
+	Panoptic Segmentation (COCO),
+	Semantic Segmentation (ADEK20)
+```
+```
+Popular Object Detection Models for benchmarking - 
+	Mask-RCNN-1x , 
+	Mask-RCNN-3x
+
+```
+```
+Popular Semantic Segmentation Models for benchmarking - 
+	DLab.v3+, 
+	UperNet, 
+	SegFormer, 
+	Mask2Former
+```
+```
+Popular panoptic Segmentation Models for benchmarking - 
+	DLab.v3+, 
+	UperNet, 
+	SegFormer, 
+  DeTR,
+	Mask2Former
 ```
 
 
