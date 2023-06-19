@@ -53,24 +53,22 @@
     - AP-b-75: Average Precision at IoU threshold of 0.75 for bounding boxes
 
 
-
 - [ ] training and finetuning script: writing train_panoptic_seg.py for training with suitable hyperparameters
+    
+    training hyperparamters with COCO panoptic:
 
-
-
-
-
-
-
-
-
-<!-- 
-    training hyperparamters with COCO:
-
-    | Parameter                     | Value     |
-    |-------------------------------|-----------|
-    | large-scale jittering (LSJ)   | 0.1-2.0   |
-    | fixed size crop               | 1024×1024 | -->
+    | Parameter                      | Value     |
+    |-------------------------------|----------|
+    | Batch Size                    | 16     |
+    | Base Learning Rate            | 0.0001     |
+    | Learning Rate Scheduler       | Step   |
+    | Learning Rate Multiplier to the backbone       | 0.1   |
+    | Learning Rate decay at      | 90% and 95% of total training steps   |
+    | Learning Rate decay factor each time      | 10   |
+    | Training Epochs (depending on small/large backbone gradually)              | 50-100      |
+    | Optimizer                     | AdamW    |
+    | Gradient Clip                 | 5.0      |
+    | Weight Decay                  | 0.05     |
 
 
 - [ ] writing evaluate_panoptic_seg.py for evaluation with validation data
