@@ -4,12 +4,12 @@
 
 ### New README.md Organization
 
-- [ ] writing and maintaining [Vision_Data_Guide.md](./Vision_Data_Guide.md) for step-by-step downloading and preprocessing popular vision datasets:
-    - [ ] Imagenet-1k classification data
-    - [ ] Object Detection (COCO) data
-    - [ ] panoptic Segmentation (COCO) data
+- [x] writing and maintaining [Vision_Data_Guide.md](./Vision_Data_Guide.md) for step-by-step downloading and preprocessing popular vision datasets:
+    - [x] Imagenet-1k classification data
+    - [x] Object Detection (COCO) data
+    - [x] panoptic Segmentation (COCO) data
 
-- [ ] Updating and correction on [README.md](./README.md)
+- [x] Updating and correction on [README.md](./README.md)
 
 
 
@@ -79,12 +79,16 @@
 
 
 
-### Debugging training scripts with GPU
+### Some unresolved debugging issues and miscellaneous
 
-- [x] create all processed parquet data of imagenet and coco in zip format, upload in s3
+All of the scripts have undergone thorough checks, with the exception of a few that were either due to time constraints or because the pipeline was developed on a non-GPU computer. The following tasks need to be debugged:
+
+- [ ] COCO labeling id and bbox id are consistent. But there are complete inconsistency in between label ids and panoptic mask label ids. Have to debug the panoptic dataset issue.
+    - [ ] COCO builder script
+    - [ ] COCO augmentation script
 - [ ] test imagenet training script with the presence of GPU, debug and fix error
 - [ ] test COCO panoptic training script with the presence of GPU, debug and fix error
-
+- [ ] create all processed parquet data of imagenet and coco in zip format, upload in s3
 
 
 ### Making Pretrained Backbone and Panoptic Segmentation models more dynamic

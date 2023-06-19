@@ -549,7 +549,7 @@ All models mentioned above are available in three different sizes:
 - Small
 - Base
 
-**Popular Downstreaming Tasks**
+**Popular Training Tasks and Datasets**
 
 - Pretraining (Imagenet22k)
 - Classification (Imagenet 1k)
