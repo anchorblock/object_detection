@@ -3,16 +3,12 @@
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
 
 
-| Input                          | Output                 |
-| --------------------------------------- | -------------------------------------- |
-| Original Image                          | Bounding Box Detection                 |
-| ![Image 1](./assets/000000039769.jpg)    | ![Image 2](./assets/predicted_detection_map.png) |
-| Original Image                          | Semantic Segmentation                  |
-| ![Image 1](./assets/000000039769.jpg)    | ![Image 3](./assets/predicted_semantic_map.png) |
-| Original Image                          | Instance Segmentation                 |
-| ![Image 1](./assets/000000039769.jpg)    | ![Image 4](./assets/predicted_inference_map.png) |
-| Original Image                          | Panoptic Segmentation                  |
-| ![Image 1](./assets/000000039769.jpg)    | ![Image 5](./assets/predicted_panoptic_map.png) |
+| Input                          | Outputs               |                     | 
+| ------------------------------- | ---------------------- | -------------------------- | 
+| Original Image                  | Bounding Box Detection | Semantic Segmentation      | 
+| ![Image 1](./assets/000000039769.jpg) | ![Image 2](./assets/predicted_detection_map.png) | ![Image 3](./assets/predicted_semantic_map.png) | 
+|                  | Panoptic Segmentation  | Instance Segmentation         |
+| | ![Image 5](./assets/predicted_panoptic_map.png)   |  ![Image 4](./assets/predicted_inference_map.png) |
 
 
 
@@ -59,19 +55,6 @@ Check out our releases and refer to the [TO_DO.md](./TO_DO.md) file for the arch
 
 To set up and install the required dependencies, please follow the instructions in the [INSTALL.md](./INSTALL.md) file.
 
-### Download all processed data at once from s3 bucket
-
-If you want to download all our processed data at once without downloading imagenet and coco data manually, use this commands to download and extract all the formatted data:
-
-```bash
-mkdir formatted_data
-cd formatted_data
-wget https://object-detection-anchorblock.s3.ap-south-1.amazonaws.com/data/formatted_data.zip
-unzip formatted_data.zip
-rm -rf formatted_data.zip
-cd ..
-```
-
 
 ## Backbones Training Pipelines
 
@@ -90,47 +73,7 @@ Backbones:
 - swin
 ```
 
-
-### Downloading and Formatting the ImageNet Dataset
-
-To use the ImageNet-1k dataset (2012), you need to manually download, extract, and organize it. Follow these steps:
-
-1. Download the dataset:
-
-```bash
-bash data/imagenet_1k_download.sh
-```
-
-2. Extract the dataset:
-
-```bash
-bash data/imagenet_1k_extract.sh
-```
-
-For testing purposes, you can use the hosted dataset by executing the following Python code:
-
-```python
-import datasets
-
-IMAGENET_DIR = "data/imagenet_1k"
-ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR, splits = ["validation", "test"], cache_dir=".cache")
-ds["validation"][0]
-```
-
-An example output:
-
-```python
->>> ds["validation"][5678]
-{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=500x375 at 0x7F15A02B0B50>, 'label': 118}
-```
-
-Now, convert all raw data to huggingface image classification data format and save to parquet for faster loading:
-
-```bash
-python scripts/raw_to_parquet_imagenet.py \
-    --imagenet_dir="data/imagenet_1k" \
-    --save_path="formatted_data/imagenet_1k"
-```
+For download and preprocess ImageNet-1k, please follow [this instruction link.](./Vision_Data_Guide.md#downloading-and-formatting-the-imagenet-dataset)
 
 <br>
 
@@ -317,113 +260,16 @@ So, to enable support for all types of pretrained backbones with **maskformer** 
 
 <br>
 
-### Downloading and Formatting the COCO dataset (2017)
+For download and preprocess COCO dataset (2017), please follow this instructions link:
+
+ - [COCO object detection data download and preprocess](./Vision_Data_Guide.md#coco-object-detection-data)
+ - [COCO panoptic segmentation data download and preprocess](./Vision_Data_Guide.md#coco-panoptic-segmentation-data)
+ - [COCO instance segmentation data download and preprocess](./Vision_Data_Guide.md#coco-instance-segmentation-data)
 
 
-For using the COCO dataset (2017), you need to download and extract it manually first:
-
-1. Download the dataset:
-
-```bash
-bash data/coco_datasets_download.sh
-```
-
-2. Extract the dataset:
-
-```bash
-bash data/coco_datasets_extract.sh
-```
-
-Expected dataset structure for COCO:
-
-```
-data/coco_datasets/
-  annotations/
-    instances_{train,val}2017.json
-    panoptic_{train,val}2017.json
-    caption_{train,val}2017.json
-    # evaluate on instance labels derived from panoptic annotations
-    panoptic2instances_val2017.json
-  {train,val}2017/
-    # image files that are mentioned in the corresponding json
-  panoptic_{train,val}2017/  # png annotations
-```
-
-For testing purposes, you can use the hosted dataset by executing the following Python code:
-
-```python
-import datasets
-
-COCO_DIR = "data/coco_datasets"
-
-# bbox_mode = one of ["corners", "height_width"]
-# data_variant = one of ["2017_detection", "2017_panoptic", "2017_detection_skip", "2017_panoptic_skip"]
-
-bbox_mode = "corners"
-data_variant = "2017_panoptic"
-
-ds = datasets.load_dataset("utils/coco_dataset_script.py", data_variant, bbox_mode = bbox_mode, data_dir=COCO_DIR)
-ds["train"][0]
-```
-
-An example output:
-
-```python
->>> ds["train"][3]
-{'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x425 at 0x7F35BE2EA5B0>, 'image/filename': '000000000034.jpg', 'image/id': 34, 'panoptic_objects': [{'id': 5069153, 'area': 92893, 'bbox': [1, 20, 442, 399], 'is_crowd': False, 'category_id': 24, 'category_name': 'zebra', 'supercategory_id': 3, 'supercategory_name': 'animal', 'is_thing': True}, {'id': 2589299, 'area': 177587, 'bbox': [0, 0, 640, 425], 'is_crowd': False, 'category_id': 193, 'category_name': 'grass-merged', 'supercategory_id': 17, 'supercategory_name': 'plant', 'is_thing': False}], 'panoptic_image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x425 at 0x7F35BE2EA730>, 'panoptic_image/filename': '000000000034.png'}
-```
-
-Now, convert all raw data to huggingface object detection/ panoptic segmentation data format and save to parquet for faster loading. You can do for all variants: 
-
-1. 2017_panoptic:
-
-```bash
-export data_variant="2017_panoptic"
-
-python scripts/raw_to_parquet_coco.py \
-    --coco_dir="data/coco_datasets" \
-    --bbox_mode="corners" \
-    --data_variant="$data_variant" \
-    --save_path="formatted_data/coco_$data_variant"
-```
-
-2. 2017_panoptic_skip:
-
-```bash
-export data_variant="2017_panoptic_skip"
-
-python scripts/raw_to_parquet_coco.py \
-    --coco_dir="data/coco_datasets" \
-    --bbox_mode="corners" \
-    --data_variant="$data_variant" \
-    --save_path="formatted_data/coco_$data_variant"
-```
-
-3. 2017_detection:
-
-```bash
-export data_variant="2017_detection"
-
-python scripts/raw_to_parquet_coco.py \
-    --coco_dir="data/coco_datasets" \
-    --bbox_mode="corners" \
-    --data_variant="$data_variant" \
-    --save_path="formatted_data/coco_$data_variant"
-```
-
-4. 2017_detection_skip:
-
-```bash
-export data_variant="2017_detection_skip"
-
-python scripts/raw_to_parquet_coco.py \
-    --coco_dir="data/coco_datasets" \
-    --bbox_mode="corners" \
-    --data_variant="$data_variant" \
-    --save_path="formatted_data/coco_$data_variant"
-```
 
 <br>
+
 
 
 ### Training and Finetuning different Panoptic Segmentation architecture models for any backbones
@@ -480,14 +326,9 @@ outputs = model(**inputs)
 
 # you can pass them to feature_extractor for postprocessing
 result = feature_extractor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
-
 
 predicted_panoptic_map = result["segmentation"]
-
-# Get segments_info
 segments_info = result['segments_info']
-
 
 # Convert the tensor to numpy
 image_array = predicted_panoptic_map.numpy()
@@ -565,14 +406,9 @@ outputs = model(**inputs)
 
 # you can pass them to feature_extractor for postprocessing
 result = feature_extractor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
-
 
 predicted_panoptic_map = result["segmentation"]
-
-# Get segments_info
 segments_info = result['segments_info']
-
 
 # Convert the tensor to numpy
 image_array = predicted_panoptic_map.numpy()
@@ -589,11 +425,8 @@ image_gen_mask = Image.fromarray(uint8_array)
 # Load the labels dictionary from the model configuration (model.config.id2label)
 id2label = model.config.id2label
 
-
-
 # Save the image
 image_gen_mask.save('predicted_panoptic_map.png')
-
 ```
 
 <br>
@@ -627,14 +460,9 @@ outputs = model(**inputs)
 
 # you can pass them to feature_extractor for postprocessing
 result = feature_extractor.post_process_instance_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
-
 
 predicted_panoptic_map = result["segmentation"]
-
-# Get segments_info
 segments_info = result['segments_info']
-
 
 # Convert the tensor to numpy
 image_array = predicted_panoptic_map.numpy()
@@ -651,10 +479,8 @@ image_gen_mask = Image.fromarray(uint8_array)
 # Load the labels dictionary from the model configuration (model.config.id2label)
 id2label = model.config.id2label
 
-
 # Save the image
 image_gen_mask.save('predicted_inference_map.png')
-
 ```
 
 <br>
@@ -688,14 +514,6 @@ outputs = model(**inputs)
 
 # you can pass them to feature_extractor for postprocessing
 result = feature_extractor.post_process_semantic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-# we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
-
-
-# predicted_panoptic_map = result["segmentation"]
-
-# # Get segments_info
-# segments_info = result['segments_info']
-
 
 # Convert the tensor to numpy
 image_array = result.numpy()
@@ -712,11 +530,8 @@ image_gen_mask = Image.fromarray(uint8_array)
 # Load the labels dictionary from the model configuration (model.config.id2label)
 id2label = model.config.id2label
 
-
-
 # Save the image
 image_gen_mask.save('predicted_semantic_map.png')
-
 ```
 
 ## Benchmarking (Current Trends)
