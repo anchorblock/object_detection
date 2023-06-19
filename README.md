@@ -533,42 +533,51 @@ image_gen_mask.save('predicted_semantic_map.png')
 
 ## Benchmarking (Current Trends)
 
-```
-popular backbone model comparison - 
-	Resnet, ViT, Swin, Focalnet, new_MODEL - all tiny
-	Resnet, ViT, Swin, Focalnet, new_MODEL - all small
-	Resnet, ViT, Swin, Focalnet, new_MODEL - all base
-```
-```
-Popular downstreaming tasks - 
-	Pretraining (Imagenet22k)
-	Classification (Imagenet 1k)
-	Object Detection (COCO), 
-	instance Segmentation (COCO), 
-	Panoptic Segmentation (COCO),
-	Semantic Segmentation (ADEK20)
-```
-```
-Popular Object Detection Models for benchmarking - 
-	Mask-RCNN-1x , 
-	Mask-RCNN-3x
+Explore popular backbone models and benchmarking models and datasets here for object detection, semantic segmentation, instance segmentation, and panoptic segmentation in computer vision. 
 
-```
-```
-Popular Semantic Segmentation Models for benchmarking - 
-	DLab.v3+, 
-	UperNet, 
-	SegFormer, 
-	Mask2Former
-```
-```
-Popular panoptic Segmentation Models for benchmarking - 
-	DLab.v3+, 
-	UperNet, 
-	SegFormer, 
-	DeTR,
-	Mask2Former
-```
+**Popular Backbone Model Comparison:**
+
+- Resnet
+- ViT
+- Swin
+- Focalnet
+- new_MODEL
+
+All models mentioned above are available in three different sizes:
+
+- Tiny
+- Small
+- Base
+
+**Popular Downstreaming Tasks**
+
+- Pretraining (Imagenet22k)
+- Classification (Imagenet 1k)
+- Object Detection (COCO)
+- Instance Segmentation (COCO)
+- Panoptic Segmentation (COCO)
+- Semantic Segmentation (ADE20K)
+
+**Popular Object Detection Models for Benchmarking**
+
+- Mask-RCNN-1x
+- Mask-RCNN-3x
+
+**Popular Semantic Segmentation Models for Benchmarking**
+
+- UperNet
+- SegFormer
+- Mask2Former
+
+**Popular Instance Segmentation Models for Benchmarking**
+
+- DeTR
+- Mask2Former
+
+**Popular Panoptic Segmentation Models for Benchmarking**
+
+- DeTR
+- Mask2Former
 
 
 ## References & Citations
