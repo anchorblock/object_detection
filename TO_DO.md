@@ -2,13 +2,78 @@
 
 ## Future Releases
 
+### New README.md Organization
+
+- [ ] writing and maintaining [Vision_Data_Guide.md](./Vision_Data_Guide.md) for step-by-step downloading and preprocessing popular vision datasets:
+    - [ ] Imagenet-1k classification data
+    - [ ] Object Detection (COCO) data
+    - [ ] panoptic Segmentation (COCO) data
+
+- [ ] Updating and correction on [README.md](./README.md)
+
+
+
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
 
-- [ ] writing [augmentation script](./utils/augmentations.py) for COCO panoptic task
-- [ ] writing [evaluation script](./utils/evaluation.py) for COCO panoptic task
+- [ ] writing [augmentation with preprocessing script](./utils/augmentations.py) for COCO panoptic task
+    COCO panoptic Augmentation:
+
+    while training:
+
+    | Parameter                     | Value     |
+    |-------------------------------|-----------|
+    | large-scale jittering (LSJ)   | 0.1-2.0   |
+    | fixed size crop               | 1024×1024 |
+
+    while inference:
+
+    | Parameter                     | Value     |
+    |-------------------------------|-----------|
+    | Resize: shorter side          | upto 800  |
+    | Resize: longer side           | upto 1333 |
+
+
+
+- [ ] writing [evaluation script](./utils/evaluation.py) function: compute_metrics_coco_panoptic() for COCO panoptic task
+
+    - AP: Average Precision
+    - PQ: Panoptic Quality
+    - mIoU: Mean Intersection over Union
+
+- [ ] writing [evaluation script](./utils/evaluation.py) function: compute_metrics_coco_instance() for COCO instance task
+
+    - AP-m: Average Precision for instance segmentation masks
+    - AP-m-50: Average Precision at IoU threshold of 0.50 for instance segmentation masks
+    - AP-m-75: Average Precision at IoU threshold of 0.75 for instance segmentation masks
+
+- [ ] writing [evaluation script](./utils/evaluation.py) function: compute_metrics_coco_bbox() for COCO bbox detection task
+
+    - AP-b: Average Precision for bounding boxes
+    - AP-b-50: Average Precision at IoU threshold of 0.50 for bounding boxes
+    - AP-b-75: Average Precision at IoU threshold of 0.75 for bounding boxes
+
+
 
 - [ ] training and finetuning script: writing train_panoptic_seg.py for training with suitable hyperparameters
-- [ ] writing evaluate_panoptic_seg.py for evaluation
+
+
+
+
+
+
+
+
+
+<!-- 
+    training hyperparamters with COCO:
+
+    | Parameter                     | Value     |
+    |-------------------------------|-----------|
+    | large-scale jittering (LSJ)   | 0.1-2.0   |
+    | fixed size crop               | 1024×1024 | -->
+
+
+- [ ] writing evaluate_panoptic_seg.py for evaluation with validation data
 
 - [ ] training_coco_panoptic bash command --> README.md
 - [ ] evaluating_coco_panoptic bash command --> README.md
@@ -33,6 +98,124 @@
     - [ ] any huggingface model hub or local model path
     - [ ] any newly defined / customized huggingface model child class
     - [ ] any custom pytorch model
+
+
+### Extensions of this repository for different datasets benchmarking
+
+- [ ] Pretraining Data (Imagenet22k)
+- [ ] Object Detection (COCO)
+- [ ] instance Segmentation (COCO)
+- [ ] Semantic Segmentation (ADE20K)
+
+
+### Extensions of this repository for more custom Object Detection Models
+
+- [ ] Mask-RCNN-1x
+- [ ] Mask-RCNN-3x
+
+
+### Extensions of this repository for more Semantic Segmentation Models for benchmarking
+
+- [ ] UperNet
+- [ ] SegFormer
+
+
+### Estimation of total training time, #Params(M) and GPU memory usage (5-10 iterations)
+
+Results will be written in a table format: [Estimation_params_time_GPU_usage.md](./Estimation_params_time_GPU_usage.md)
+
+
+- [ ] classification pretraining models
+    - [ ] swin-tiny
+    - [ ] swin-small
+    - [ ] swin-base
+    - [ ] focalnet-tiny
+    - [ ] focalnet-small
+    - [ ] focalnet-base
+
+- [ ] classification models
+    - [ ] swin-tiny
+    - [ ] swin-small
+    - [ ] swin-base
+    - [ ] focalnet-tiny
+    - [ ] focalnet-small
+    - [ ] focalnet-base
+
+- [ ] object detection models
+    - [ ] Mask-RCNN-1x with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+    - [ ] Mask-RCNN-3x with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+
+
+- [ ] semantic segmentation models
+    - [ ] UperNet with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+    - [ ] SegFormer with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+    - [ ] mask2former with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+
+- [ ] instance segmentation models
+    - [ ] DeTR with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+    - [ ] mask2former with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+
+- [ ] panoptic segmentation models
+    - [ ] DeTR with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+    - [ ] mask2former with backbones of - 
+        - [ ] swin-tiny
+        - [ ] swin-small
+        - [ ] swin-base
+        - [ ] focalnet-tiny
+        - [ ] focalnet-small
+        - [ ] focalnet-base
+
+
+
+
 
 <br>
 
@@ -165,4 +348,11 @@
     - [x] [custom_maskformer](./configs/architectures/custom_maskformer),
     - [x] [custom_mask2former](./configs/architectures/custom_mask2former),
     - [x] [oneformer](./configs/architectures/oneformer); and change "architectures" parameter with custom class name
+
+
+
+## Pre-Alpha Release 0.3.0
+
+### (write something)
+
 

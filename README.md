@@ -40,6 +40,11 @@ Check this out!
     - [🚀 Training and Finetuning different Panoptic Segmentation architecture models for any backbones](#training-and-finetuning-different-panoptic-segmentation-architecture-models-for-any-backbones)
     - [📊 Evaluate different Panoptic Segmentation architecture models with COCO Panoptic validation data](#evaluate-different-panoptic-segmentation-architecture-models-with-coco-panoptic-validation-data)
     - [💡 Inference with Panoptic Segmentation Model](#inference-with-panoptic-segmentation-model)
+      - [Inferenece 1: Bounding Box Detection](#inferenece-1-bounding-box-detection)
+      - [Inferenece 2: Panoptic Segmentation](#inferenece-2-panoptic-segmentation)
+      - [Inferenece 3: Instance Segmentation](#inferenece-3-instance-segmentation)
+      - [Inferenece 4: Semantic Segmentation](#inferenece-4-semantic-segmentation)
+  - [Benchmarking (Current Trends)](#benchmarking-current-trends)
   - [📚 References & Citations](#references--citations)
 
 
@@ -749,7 +754,7 @@ Popular panoptic Segmentation Models for benchmarking -
 	DLab.v3+, 
 	UperNet, 
 	SegFormer, 
-  DeTR,
+	DeTR,
 	Mask2Former
 ```
 
