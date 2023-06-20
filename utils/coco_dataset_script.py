@@ -509,7 +509,7 @@ class Coco(datasets.GeneratorBasedBuilder):
                         'area': instance['area'],
                         'bbox': build_bbox(*instance['bbox']) if self.config.bbox_mode == "corners" else instance['bbox'],
                         'is_crowd': bool(instance['iscrowd']),
-                        'category_id': categories_dict[instance['category_id']]['id'],
+                        'category_id': categories_dict[instance['category_id']]['id'], #id or new_id ?
                         'category_name': categories_dict[instance['category_id']]['name'],
                         'supercategory_id': categories_dict[instance['category_id']]['supercategory_id'],
                         'supercategory_name': categories_dict[instance['category_id']]['supercategory'],

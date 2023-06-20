@@ -1,0 +1,21 @@
+
+https://github.com/cocodataset/panopticapi
+
+https://github.com/cocodataset/panopticapi/blob/master/panopticapi/evaluation.py
+
+https://github.com/cocodataset/panopticapi/blob/master/converters/detection2panoptic_coco_format.py
+
+
+
+
+
+
+very important:
+
+https://github.com/google-research/deeplab2/blob/main/g3doc/setup/coco.md
+
+
+
+
+
+

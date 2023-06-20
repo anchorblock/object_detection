@@ -2,18 +2,42 @@
 
 ## Future Releases
 
-### New README.md Organization
-
-- [x] writing and maintaining [Vision_Data_Guide.md](./Vision_Data_Guide.md) for step-by-step downloading and preprocessing popular vision datasets:
-    - [x] Imagenet-1k classification data
-    - [x] Object Detection (COCO) data
-    - [x] panoptic Segmentation (COCO) data
-
-- [x] Updating and correction on [README.md](./README.md)
-
-
-
 ### Train Models with COCO_panoptic using imagenet-pretrained backbones (remaining)
+
+- [ ] corrections on coco panoptic mask values: following scripts will be edited:
+    - [ ] [configs/datasets/coco*](./configs/datasets/)
+    - [ ] [coco builder script](./utils/coco_dataset_script.py)
+    - [ ] [augmentation script](./utils/augmentations.py)
+
+    Theory behind editing coco panoptic mask values according to detectron2 repo: 
+    The encoding of the panoptic segmentation mask is as follows:
+    - The red channel encodes the lower bits of the instance ID.
+    - The green channel encodes the higher bits of the instance ID.
+    - The blue channel encodes the semantic label ID.
+
+    For panoptic segmentation, the encoded segmentation map will be the raw bytes of an int32 panoptic map, where each pixel is assigned to a panoptic ID, which is computed by:
+
+    ```
+    panoptic ID = semantic ID * label divisor + instance ID
+    ```
+
+    where semantic ID will be:
+
+    - ignore label (0) for pixels not belonging to any segment
+    - for segments associated with iscrowd label:
+        - (default): ignore label (0)
+        - (if set --treat_crowd_as_ignore=false while running build_coco_data.py): category_id
+    - category_id for other segments
+
+    The instance ID will be 0 for pixels belonging to
+
+    - stuff class
+    - thing class with iscrowd label
+    - pixels with ignore label
+
+    and [1, label divisor] otherwise.
+
+    <br>
 
 - [ ] writing [augmentation with preprocessing script](./utils/augmentations.py) for COCO panoptic task
     COCO panoptic Augmentation:
@@ -31,7 +55,6 @@
     |-------------------------------|-----------|
     | Resize: shorter side          | upto 800  |
     | Resize: longer side           | upto 1333 |
-
 
 
 - [ ] writing [evaluation script](./utils/evaluation.py) function: compute_metrics_coco_panoptic() for COCO panoptic task
@@ -355,6 +378,13 @@ Results will be written in a table format: [Estimation_params_time_GPU_usage.md]
 
 ## Pre-Alpha Release 0.3.0
 
-### (write something)
+### New README.md Organization
+
+- [x] writing and maintaining [Vision_Data_Guide.md](./Vision_Data_Guide.md) for step-by-step downloading and preprocessing popular vision datasets:
+    - [x] Imagenet-1k classification data
+    - [x] Object Detection (COCO) data
+    - [x] panoptic Segmentation (COCO) data
+
+- [x] Updating and correction on [README.md](./README.md)
 
 
