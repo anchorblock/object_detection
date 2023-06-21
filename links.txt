@@ -6,7 +6,7 @@ https://github.com/cocodataset/panopticapi/blob/master/panopticapi/evaluation.py
 https://github.com/cocodataset/panopticapi/blob/master/converters/detection2panoptic_coco_format.py
 
 
-
+https://github.com/open-mmlab/mmdetection/blob/main/mmdet/datasets/coco_panoptic.py
 
 
 

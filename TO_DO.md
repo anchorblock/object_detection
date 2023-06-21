@@ -10,6 +10,7 @@
     - [ ] [augmentation script](./utils/augmentations.py)
 
     Theory behind editing coco panoptic mask values according to detectron2 repo: 
+    
     The encoding of the panoptic segmentation mask is as follows:
     - The red channel encodes the lower bits of the instance ID.
     - The green channel encodes the higher bits of the instance ID.

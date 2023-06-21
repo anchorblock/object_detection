@@ -23,7 +23,6 @@ outputs = model(**inputs)
 result = feature_extractor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
 # we refer to the demo notebooks for visualization (see "Resources" section in the MaskFormer docs)
 
-
 predicted_panoptic_map = result["segmentation"]
 
 # Get segments_info
