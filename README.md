@@ -271,6 +271,10 @@ For download and preprocess COCO dataset (2017), please follow this instructions
 
 ### Training and Finetuning different Panoptic Segmentation architecture models for any backbones
 
+Backbone must be freezed during training after loaded with pretrained backbone weights for better results.
+
+![Alt text](./assets/freeze.png)
+
 🚧 Training different models for different backbones will be added in future release. Stay tuned!
 
 <br>

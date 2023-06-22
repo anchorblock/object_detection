@@ -15,7 +15,14 @@ very important:
 https://github.com/google-research/deeplab2/blob/main/g3doc/setup/coco.md
 
 
+https://github.com/MittalNeha/detr-panoptic#detr-for-panoptic-segmentation
 
 
 
+very very very importatnt:
 
+
+
+https://cocodataset.org/#format-data
+
+https://huggingface.co/docs/transformers/model_doc/maskformer#transformers.MaskFormerFeatureExtractor
