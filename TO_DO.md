@@ -118,7 +118,7 @@ The object_detection repo became too big and messy; needs restructuring to addre
 
 ### Some untested debugging scripts in the presence of GPU and miscellaneous
 
-All of the scripts have undergone thorough checks, with the exception of a few that were either due to time constraints or because the pipeline was developed on a non-GPU computer. The following tasks need to be debugged:
+All of the scripts have undergone thorough checks, with the exception of a few, because the pipeline was developed on a non-GPU computer. The following tasks need to be debugged:
 
 - [ ] test imagenet training script with the presence of GPU, debug and fix error
 - [ ] test COCO panoptic training script with the presence of GPU, debug and fix error
