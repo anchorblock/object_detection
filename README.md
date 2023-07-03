@@ -116,9 +116,7 @@ export n_gpu=1
 export model_type="focalnet"
 
 torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.py \
-    --model_type="resnet" \
-    --config_path="configs/backbones/$model_type/config.json" \
-    --processor_config_path="configs/backbones/$model_type/preprocessor_config.json" \
+    --pretrained_model_name_or_path="./models/backbones/focalnet" \
     --do_mixup_cutmix=true \
     --per_device_train_batch_size=1024 \
     --per_device_eval_batch_size=1024 \
@@ -182,34 +180,6 @@ python scripts/evaluate_backbone_classifier.py \
 
 An example inference code:
 
-```python
-from PIL import Image
-import requests
-from io import BytesIO
-import matplotlib.pyplot as plt
-
-from transformers import AutoImageProcessor, pipeline
-from utils.augmentations import generate_transform_function
-
-# picture of a baby golden retriver
-IMG_URL = "https://t4.ftcdn.net/jpg/05/68/28/05/360_F_568280532_Bvxwd66M3Y22vVeJ3VRqHRAqrdNfJo7o.jpg" # change
-
-pretrained_model_name_or_path = "microsoft/focalnet-tiny" # change
-
-response = requests.get(IMG_URL)
-image = Image.open(BytesIO(response.content))
-
-classifier = pipeline("image-classification", model=pretrained_model_name_or_path)
-
-classifier(image)
-
-# output:
-# [{'score': 0.9616713523864746, 'label': 'golden retriever'},
-#  {'score': 0.004097872879356146, 'label': 'Labrador retriever'},
-#  {'score': 0.001239714794792235, 'label': 'flat-coated retriever'},
-#  {'score': 0.0010671772761270404, 'label': 'tennis ball'},
-#  {'score': 0.0008922729175537825, 'label': 'kuvasz'}]
-```
 
 
 <br>
@@ -303,79 +273,6 @@ You can infer as four types of vision tasks!
 
 An example inference code:
 
-```python
-import sys
-sys.path.append('./')
-
-from transformers import AutoImageProcessor
-from PIL import Image, ImageDraw
-import numpy as np
-import requests
-import torch
-from models import AutoModelForPanopticSegmentation
-
-
-# load MaskFormer fine-tuned on COCO panoptic segmentation
-feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
-model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
-
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
-inputs = feature_extractor(images=image, return_tensors="pt")
-
-outputs = model(**inputs)
-
-# you can pass them to feature_extractor for postprocessing
-result = feature_extractor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-
-predicted_panoptic_map = result["segmentation"]
-segments_info = result['segments_info']
-
-# Convert the tensor to numpy
-image_array = predicted_panoptic_map.numpy()
-
-# Normalize the array to the range 0-255
-normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
-
-# Convert the array to uint8 data type
-uint8_array = normalized_array.astype(np.uint8)
-
-# Create a PIL image from the uint8 array
-image_gen_mask = Image.fromarray(uint8_array)
-
-# Load the labels dictionary from the model configuration (model.config.id2label)
-id2label = model.config.id2label
-
-
-# Create a PIL draw object
-draw = ImageDraw.Draw(image)
-
-# Iterate over the segments_info dictionary
-for segment in segments_info:
-    segment_id = segment['id']
-    label_id = segment['label_id']
-    label = id2label[label_id]
-    if int(label_id) > 79:
-        continue
-    score = segment['score']
-    
-    # Get the bounding box coordinates for the segment
-    bbox = np.argwhere(image_array == segment_id)
-    ymin, xmin = np.min(bbox, axis=0)
-    ymax, xmax = np.max(bbox, axis=0)
-    
-    # Draw the bounding box rectangle
-    draw.rectangle([(xmin, ymin), (xmax, ymax)], outline='white')
-    
-    # Add label text
-    text = f"{label} ({score:.2f})"
-    draw.text((xmin, ymin - 12), text, fill='white')
-
-
-# Save the image
-image.save('predicted_detection_map.png')
-
-```
 
 <br>
 
@@ -383,52 +280,7 @@ image.save('predicted_detection_map.png')
 
 An example inference code:
 
-```python
-import sys
-sys.path.append('./')
 
-from transformers import AutoImageProcessor
-from PIL import Image, ImageDraw
-import numpy as np
-import requests
-import torch
-from models import AutoModelForPanopticSegmentation
-
-
-# load MaskFormer fine-tuned on COCO panoptic segmentation
-feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
-model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
-
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
-inputs = feature_extractor(images=image, return_tensors="pt")
-
-outputs = model(**inputs)
-
-# you can pass them to feature_extractor for postprocessing
-result = feature_extractor.post_process_panoptic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-
-predicted_panoptic_map = result["segmentation"]
-segments_info = result['segments_info']
-
-# Convert the tensor to numpy
-image_array = predicted_panoptic_map.numpy()
-
-# Normalize the array to the range 0-255
-normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
-
-# Convert the array to uint8 data type
-uint8_array = normalized_array.astype(np.uint8)
-
-# Create a PIL image from the uint8 array
-image_gen_mask = Image.fromarray(uint8_array)
-
-# Load the labels dictionary from the model configuration (model.config.id2label)
-id2label = model.config.id2label
-
-# Save the image
-image_gen_mask.save('predicted_panoptic_map.png')
-```
 
 <br>
 
@@ -437,52 +289,7 @@ image_gen_mask.save('predicted_panoptic_map.png')
 
 An example inference code:
 
-```python
-import sys
-sys.path.append('./')
 
-from transformers import AutoImageProcessor
-from PIL import Image, ImageDraw
-import numpy as np
-import requests
-import torch
-from models import AutoModelForPanopticSegmentation
-
-
-# load MaskFormer fine-tuned on COCO panoptic segmentation
-feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
-model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
-
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
-inputs = feature_extractor(images=image, return_tensors="pt")
-
-outputs = model(**inputs)
-
-# you can pass them to feature_extractor for postprocessing
-result = feature_extractor.post_process_instance_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-
-predicted_panoptic_map = result["segmentation"]
-segments_info = result['segments_info']
-
-# Convert the tensor to numpy
-image_array = predicted_panoptic_map.numpy()
-
-# Normalize the array to the range 0-255
-normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
-
-# Convert the array to uint8 data type
-uint8_array = normalized_array.astype(np.uint8)
-
-# Create a PIL image from the uint8 array
-image_gen_mask = Image.fromarray(uint8_array)
-
-# Load the labels dictionary from the model configuration (model.config.id2label)
-id2label = model.config.id2label
-
-# Save the image
-image_gen_mask.save('predicted_inference_map.png')
-```
 
 <br>
 
@@ -491,49 +298,7 @@ image_gen_mask.save('predicted_inference_map.png')
 
 An example inference code:
 
-```python
-import sys
-sys.path.append('./')
 
-from transformers import AutoImageProcessor
-from PIL import Image, ImageDraw
-import numpy as np
-import requests
-import torch
-from models import AutoModelForPanopticSegmentation
-
-
-# load MaskFormer fine-tuned on COCO panoptic segmentation
-feature_extractor = AutoImageProcessor.from_pretrained("facebook/maskformer-swin-tiny-coco")
-model = AutoModelForPanopticSegmentation.from_pretrained("facebook/maskformer-swin-tiny-coco")
-
-url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-image = Image.open(requests.get(url, stream=True).raw)
-inputs = feature_extractor(images=image, return_tensors="pt")
-
-outputs = model(**inputs)
-
-# you can pass them to feature_extractor for postprocessing
-result = feature_extractor.post_process_semantic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
-
-# Convert the tensor to numpy
-image_array = result.numpy()
-
-# Normalize the array to the range 0-255
-normalized_array = (image_array - np.min(image_array)) * (255 / (np.max(image_array) - np.min(image_array)))
-
-# Convert the array to uint8 data type
-uint8_array = normalized_array.astype(np.uint8)
-
-# Create a PIL image from the uint8 array
-image_gen_mask = Image.fromarray(uint8_array)
-
-# Load the labels dictionary from the model configuration (model.config.id2label)
-id2label = model.config.id2label
-
-# Save the image
-image_gen_mask.save('predicted_semantic_map.png')
-```
 
 ## Benchmarking (Current Trends)
 

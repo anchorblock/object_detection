@@ -91,12 +91,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser(description='ImageNet Classifier (backbone) Training')
 
     # Model arguments
-    parser.add_argument('--model_type', type=str, choices=['bit', 'convnext', 'convnextv2', 'dinat', 'focalnet', 'nat', 'resnet', 'swin'], default='resnet', help='Specify the model type (optional if config_path and processor_config_path are given)')
+    parser.add_argument('--pretrained_model_name_or_path', type=str, default = "microsoft/focalnet-tiny", help='Name or path of the pretrained model')
 
-    type_args = parser.parse_args()
-
-    parser.add_argument('--config_path', type=str, default=f'configs/backbones/{type_args.model_type}/config.json', help='Specify the path to the model config.json file (optional if model_type is given)')
-    parser.add_argument('--processor_config_path', type=str, default=f'configs/backbones/{type_args.model_type}/preprocessor_config.json', help='Specify the path to the processor_config.json file (optional if model_type is given)')
     parser.add_argument('--augmentation_config_path', type=str, default='configs/augmentation/augmentation_config_imagenet.json', help='Path to the augmentation config file')
 
     # Data paths
@@ -126,7 +122,7 @@ def parse_arguments():
 
     parser.add_argument('--stochastic_drop_path_rate', type=float, default=0.2, help='Rate of stochastic drop path')
     parser.add_argument('--gradient_clip', type=float, default=5.0, help='Gradient clipping value')
-    parser.add_argument('--save_directory', type=str, default=f"outputs/backbone/{type_args.model_type}", help='Directory to save the trained model')
+    parser.add_argument('--save_directory', type=str, default=f"outputs/backbone", help='Directory to save the trained model')
     parser.add_argument('--resume_from_checkpoint', type=str, default=None, help='Path to a checkpoint to resume training from')
     parser.add_argument('--gradient_checkpointing', type=bool, default=False, help='Whether to use gradient checkpointing')
     parser.add_argument('--fp16', type=bool, default=True, help='Whether to use mixed precision training with FP16')
@@ -161,7 +157,7 @@ def main():
 
     ### LOAD CONFIG, BUILD MODEL AND LOAD PROCESSORS
 
-    config = AutoConfig.from_pretrained(args.config_path)
+    config = AutoConfig.from_pretrained(args.pretrained_model_name_or_path)
 
     # read id2label
     with open(args.id2label, 'r') as json_file:
@@ -182,7 +178,7 @@ def main():
 
     model = AutoModelForImageClassification.from_config(config)
 
-    image_processor = AutoImageProcessor.from_pretrained(args.processor_config_path)
+    image_processor = AutoImageProcessor.from_pretrained(args.pretrained_model_name_or_path)
 
 
     _transforms_train, mixup_cutmix_fn = generate_transform_function(

@@ -4,11 +4,11 @@
 
 ### Newly organized repo
 
-- [ ] `./notebooks` folder preparation and write all trial notebooks and inference scripts (both backbones and coco detection, semantic, instance, panoptic)
-- [ ] `./docs` folder preparation and add all markdown files, complete all the markdown files' writings and correction of dependenble paths
-- [ ] write new / updated benchmarking plan and add in `./docs/Estimation_params_time_GPU_usage.md`
+- [x] `./notebooks` folder preparation and write all trial notebooks and inference scripts (both backbones and coco detection, semantic, instance, panoptic)
+- [x] `./docs` folder preparation and add all markdown files, complete all the markdown files' writings and correction of dependenble paths
+- [x] write new / updated benchmarking plan and add in `./docs/Estimation_params_time_GPU_usage.md`
 
-- [ ] writw and maintain `./docs/Vision_Data_Guide.md` for step-by-step downloading and preprocessing popular vision datasets:
+- [ ] write and maintain `./docs/Vision_Data_Guide.md` for step-by-step downloading and preprocessing popular vision datasets:
     - [ ] Imagenet-1k classification data
     - [ ] Object Detection (COCO) data
     - [ ] panoptic Segmentation (COCO) data
@@ -17,7 +17,7 @@
 
 The object_detection repo became too big and messy; needs restructuring to address its size and complexity. Adding a new model currently requires modifying numerous scripts (around 11 scripts), which complicates the process. To simplify and improve scalability, the entire repository, model files, loading scheme, and dependencies need to be organized and edited accordingly.
 
-- [ ] change `./configs/backbones` folder entirely by introducing a new organization approach with 
+- [x] change `./configs/backbones` folder entirely by introducing a new organization approach with 
     - local loading script, 
     - local config files, 
     - checkpoint loading scheme, 
