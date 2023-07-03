@@ -418,7 +418,7 @@ class Coco(datasets.GeneratorBasedBuilder):
         for category in categories_data:
             supercategory = category["supercategory"]
             if supercategory not in supercategory_ids:
-                supercategory_ids[supercategory] = len(supercategory_ids)
+                supercategory_ids[supercategory] = len(supercategory_ids) + 1
 
         # Add unique supercategory IDs and new sequential IDs to the categories
         new_categories = copy.deepcopy(categories_data)
@@ -426,10 +426,21 @@ class Coco(datasets.GeneratorBasedBuilder):
         for new_id, category in enumerate(new_categories):
             supercategory = category["supercategory"]
             category["supercategory_id"] = supercategory_ids[supercategory]
-            category["new_id"] = new_id
+            category["new_id"] = new_id + 1
 
         # change dictionary format: add id as keys
         categories_dict = {}
+
+        # insert background label
+        categories_dict[0] = {
+            "supercategory":"__background__",
+            "isthing":0,
+            "id":0,
+            "name":"__background__",
+            "supercategory_id":0,
+            "new_id":0
+        }
+
         for category in new_categories:
             category_id = category["id"]
             categories_dict[category_id] = category

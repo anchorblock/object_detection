@@ -26,14 +26,14 @@ The object_detection repo became too big and messy; needs restructuring to addre
     
     (if any; especially for custom backbone models; these extra scripts are not required for huggingface hub's models). If this method maintains, we can train any local or huggingface hub's model with just one script.
 
-- [ ] change `./scripts/train_backbone_classifier.py` backbone training script's argument parsers and simplify loading method
+- [x] change `./scripts/train_backbone_classifier.py` backbone training script's argument parsers and simplify loading method
 
 
 ### COCO_panoptic datasets preprocessing (correction, major bug fix)
 
 - [ ] corrections on coco panoptic mask values: following scripts will be edited:
-    - [ ] [configs/datasets/coco*](./configs/datasets/)
-    - [ ] [coco builder script](./utils/coco_dataset_script.py)
+    - [x] [coco builder script](./utils/coco_dataset_script.py)
+    - [x] [configs/datasets/coco*](./configs/datasets/)
     - [ ] [augmentation script](./utils/augmentations.py)
 
 - [ ] develop preprocessing pipeline: `./notebooks/preprocessing_forward_pass_panoptic.ipynb`
