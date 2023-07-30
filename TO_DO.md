@@ -2,41 +2,14 @@
 
 ## Future Releases
 
-### Newly organized repo
-
-- [x] `./notebooks` folder preparation and write all trial notebooks and inference scripts (both backbones and coco detection, semantic, instance, panoptic)
-- [x] `./docs` folder preparation and add all markdown files, complete all the markdown files' writings and correction of dependenble paths
-- [x] write new / updated benchmarking plan and add in `./docs/Estimation_params_time_GPU_usage.md`
-
-- [ ] write and maintain `./docs/Vision_Data_Guide.md` for step-by-step downloading and preprocessing popular vision datasets:
-    - [ ] Imagenet-1k classification data
-    - [ ] Object Detection (COCO) data
-    - [ ] panoptic Segmentation (COCO) data
-
-### Changing Backbone Models' organization and training pipeline
-
-The object_detection repo became too big and messy; needs restructuring to address its size and complexity. Adding a new model currently requires modifying numerous scripts (around 11 scripts), which complicates the process. To simplify and improve scalability, the entire repository, model files, loading scheme, and dependencies need to be organized and edited accordingly.
-
-- [x] change `./configs/backbones` folder entirely by introducing a new organization approach with 
-    - local loading script, 
-    - local config files, 
-    - checkpoint loading scheme, 
-    - add autotype key and 
-    - maintain separate .py script for every model and config class 
-    
-    (if any; especially for custom backbone models; these extra scripts are not required for huggingface hub's models). If this method maintains, we can train any local or huggingface hub's model with just one script.
-
-- [x] change `./scripts/train_backbone_classifier.py` backbone training script's argument parsers and simplify loading method
-
 
 ### COCO_panoptic datasets preprocessing (correction, major bug fix)
 
-- [ ] corrections on coco panoptic mask values: following scripts will be edited:
+- [x] corrections on coco panoptic mask values: following scripts will be edited:
     - [x] [coco builder script](./utils/coco_dataset_script.py)
     - [x] [configs/datasets/coco*](./configs/datasets/)
-    - [ ] [augmentation script](./utils/augmentations.py)
 
-- [ ] develop preprocessing pipeline: `./notebooks/preprocessing_forward_pass_panoptic.ipynb`
+- [ ] develop preprocessing pipeline: `./notebooks/preprocessing_one_forward_pass_panoptic.ipynb`
 - [ ] writing [augmentation with preprocessing script](./utils/augmentations.py) for COCO panoptic task
     COCO panoptic Augmentation:
 
@@ -155,7 +128,30 @@ Results will be written in a table format: `./docs/Estimation_params_time_GPU_us
 
 ## Pre-Alpha Release 0.3.0
 
-(add something)
+### Newly organized repo
 
-<!-- ### DOCS Organization -->
+- [x] `./notebooks` folder preparation and write all trial notebooks and inference scripts (both backbones and coco detection, semantic, instance, panoptic)
+- [x] `./docs` folder preparation and add all markdown files, complete all the markdown files' writings and correction of dependenble paths
+- [x] write new / updated benchmarking plan and add in `./docs/Estimation_params_time_GPU_usage.md`
+
+- [x] write and maintain `./docs/Vision_Data_Guide.md` for step-by-step downloading and preprocessing popular vision datasets:
+    - [x] Imagenet-1k classification data
+    - [x] Object Detection (COCO) data
+    - [x] panoptic Segmentation (COCO) data
+
+### Changing Backbone Models' organization and training pipeline
+
+The object_detection repo became too big and messy; needs restructuring to address its size and complexity. Adding a new model currently requires modifying numerous scripts (around 11 scripts), which complicates the process. To simplify and improve scalability, the entire repository, model files, loading scheme, and dependencies need to be organized and edited accordingly.
+
+- [x] change `./configs/backbones` folder entirely by introducing a new organization approach with 
+    - local loading script, 
+    - local config files, 
+    - checkpoint loading scheme, 
+    - add autotype key and 
+    - maintain separate .py script for every model and config class 
+    
+    (if any; especially for custom backbone models; these extra scripts are not required for huggingface hub's models). If this method maintains, we can train any local or huggingface hub's model with just one script.
+
+- [x] change `./scripts/train_backbone_classifier.py` backbone training script's argument parsers and simplify loading method
+
 
