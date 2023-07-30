@@ -6,7 +6,7 @@
 ### COCO_panoptic datasets preprocessing (correction, major bug fix)
 
 - [x] corrections on coco panoptic mask values: following scripts will be edited:
-    - [x] [coco builder script](./utils/coco_dataset_script.py)
+    - [x] [coco builder script](./utils/dataset_utils/coco_dataset_script.py)
     - [x] [configs/datasets/coco*](./configs/datasets/)
 
 - [ ] develop preprocessing pipeline: `./notebooks/preprocessing_one_forward_pass_panoptic.ipynb`
@@ -152,6 +152,6 @@ The object_detection repo became too big and messy; needs restructuring to addre
     
     (if any; especially for custom backbone models; these extra scripts are not required for huggingface hub's models). If this method maintains, we can train any local or huggingface hub's model with just one script.
 
-- [x] change `./scripts/train_backbone_classifier.py` backbone training script's argument parsers and simplify loading method
+- [x] change `./scripts/training_scripts/train_backbone_classifier.py` backbone training script's argument parsers and simplify loading method
 
 

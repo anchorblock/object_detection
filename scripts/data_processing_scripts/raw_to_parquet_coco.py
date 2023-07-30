@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
 
     # loading full COCO dataset
-    coco_dataset = load_dataset(path = "utils/coco_dataset_script.py", name = args.data_variant, bbox_mode = args.bbox_mode, data_dir=args.coco_dir, cache_dir=".cache")
+    coco_dataset = load_dataset(path = "utils/dataset_utils/coco_dataset_script.py", name = args.data_variant, bbox_mode = args.bbox_mode, data_dir=args.coco_dir, cache_dir=".cache")
 
     # creating saving directory
     if not os.path.exists(args.save_path):

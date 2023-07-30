@@ -115,7 +115,7 @@ export OMP_NUM_THREADS=4
 export n_gpu=1
 export model_type="focalnet"
 
-torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.py \
+torchrun --standalone --nproc_per_node=$n_gpu scripts/training_scripts/train_backbone_classifier.py \
     --pretrained_model_name_or_path="./models/backbones/focalnet" \
     --do_mixup_cutmix=true \
     --per_device_train_batch_size=1024 \
@@ -162,7 +162,7 @@ Now, evaluate the model with imagenet validation data:
 ```bash
 export model_type="focalnet"
 
-python scripts/evaluate_backbone_classifier.py \
+python scripts/evaluation_scripts/evaluate_backbone_classifier.py \
     --pretrained_model_name_or_path="outputs/backbone/$model_type" \
     --results_dir="outputs/backbone/$model_type"
 ```
@@ -170,7 +170,7 @@ python scripts/evaluate_backbone_classifier.py \
 You can also directly evaluate a huggingface's classifier model pretrained with imagenet:
 
 ```bash
-python scripts/evaluate_backbone_classifier.py \
+python scripts/evaluation_scripts/evaluate_backbone_classifier.py \
     --pretrained_model_name_or_path="microsoft/focalnet-tiny" \
     --results_dir="outputs"
 ```

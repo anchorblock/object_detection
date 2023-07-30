@@ -77,7 +77,7 @@ For testing purposes, you can use the hosted dataset by executing the following 
 import datasets
 
 IMAGENET_DIR = "data/imagenet_1k"
-ds = datasets.load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR, splits = ["validation", "test"], cache_dir=".cache")
+ds = datasets.load_dataset("utils/dataset_utils/imagenet_1k_dataset_script.py", data_dir=IMAGENET_DIR, splits = ["validation", "test"], cache_dir=".cache")
 ds["validation"][0]
 ```
 
@@ -91,7 +91,7 @@ An example output:
 Now, convert all raw data to huggingface image classification data format and save to parquet for faster loading:
 
 ```bash
-python scripts/raw_to_parquet_imagenet.py \
+python scripts/data_processing_scripts/raw_to_parquet_imagenet.py \
     --imagenet_dir="data/imagenet_1k" \
     --save_path="formatted_data/imagenet_1k"
 ```
@@ -147,7 +147,7 @@ COCO_DIR = "data/coco_datasets"
 bbox_mode = "corners"
 data_variant = "2017_panoptic"
 
-ds = datasets.load_dataset("utils/coco_dataset_script.py", data_variant, bbox_mode = bbox_mode, data_dir=COCO_DIR)
+ds = datasets.load_dataset("utils/dataset_utils/coco_dataset_script.py", data_variant, bbox_mode = bbox_mode, data_dir=COCO_DIR)
 ds["train"][0]
 ```
 
@@ -166,7 +166,7 @@ Now, convert all raw data to huggingface object detection data format and save t
 ```bash
 export data_variant="2017_detection"
 
-python scripts/raw_to_parquet_coco.py \
+python scripts/data_processing_scripts/raw_to_parquet_coco.py \
     --coco_dir="data/coco_datasets" \
     --bbox_mode="corners" \
     --data_variant="$data_variant" \
@@ -178,7 +178,7 @@ python scripts/raw_to_parquet_coco.py \
 ```bash
 export data_variant="2017_detection_skip"
 
-python scripts/raw_to_parquet_coco.py \
+python scripts/data_processing_scripts/raw_to_parquet_coco.py \
     --coco_dir="data/coco_datasets" \
     --bbox_mode="corners" \
     --data_variant="$data_variant" \
@@ -200,7 +200,7 @@ You can convert all raw data to huggingface panoptic segmentation data format an
 ```bash
 export data_variant="2017_panoptic"
 
-python scripts/raw_to_parquet_coco.py \
+python scripts/data_processing_scripts/raw_to_parquet_coco.py \
     --coco_dir="data/coco_datasets" \
     --bbox_mode="corners" \
     --data_variant="$data_variant" \
@@ -212,7 +212,7 @@ python scripts/raw_to_parquet_coco.py \
 ```bash
 export data_variant="2017_panoptic_skip"
 
-python scripts/raw_to_parquet_coco.py \
+python scripts/data_processing_scripts/raw_to_parquet_coco.py \
     --coco_dir="data/coco_datasets" \
     --bbox_mode="corners" \
     --data_variant="$data_variant" \

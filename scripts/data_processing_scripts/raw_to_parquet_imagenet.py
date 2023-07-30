@@ -12,7 +12,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # loading full imagnet dataset
-    imagenet_dataset = load_dataset("utils/imagenet_1k_dataset_script.py", data_dir=args.imagenet_dir, splits = ["train", "validation", "test"], cache_dir=".cache")
+    imagenet_dataset = load_dataset("utils/dataset_utils/imagenet_1k_dataset_script.py", data_dir=args.imagenet_dir, splits = ["train", "validation", "test"], cache_dir=".cache")
 
     # creating saving directory
     if not os.path.exists(args.save_path):

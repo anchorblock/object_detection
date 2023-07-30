@@ -21,7 +21,7 @@ Contribution:
     - F1-Score
     - Mean Average Precision (mAP)
 
-- [x] **Backbone Training Script:** [scripts/train_backbone_classifier.py](./scripts/train_backbone_classifier.py) (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
+- [x] **Backbone Training Script:** [scripts/training_scripts/train_backbone_classifier.py](./scripts/training_scripts/train_backbone_classifier.py) (training script of backbone with imagenet data) with hparams according to [FocalNet paper](https://arxiv.org/abs/2203.11926) training with imagenet
 
     | Parameter                      | Value     |
     |-------------------------------|----------|
@@ -42,7 +42,7 @@ Contribution:
     During fine-tuning epochs, cutmix and mixup will be disabled automatically, and it will be handleed with custom callback class.
 
 
-- [x] **Backbone Evaluation Script:** [scripts/evaluate_backbone_classifier.py](./scripts/evaluate_backbone_classifier.py) evaluation for imagenet validation data
+- [x] **Backbone Evaluation Script:** [scripts/evaluation_scripts/evaluate_backbone_classifier.py](./scripts/evaluation_scripts/evaluate_backbone_classifier.py) evaluation for imagenet validation data
 
 - [x] **backbone training bash command with hyperparameters:** training_imagenet_1k bash command --> [README.md](./README.md#🚀-training-backbones-with-imagenet-1k-and-config-files)
 - [x] **backbone evaluation bash command:** evaluation_imagenet_1k bash command --> [README.md](./README.md#📊-evaluate-backbones-with-imagenet-1k-validation-data)
@@ -60,12 +60,12 @@ Contribution:
     - [x] [configs/datasets/coco-panoptic-label2id.json](./configs/datasets/coco-panoptic-label2id.json)
 
 
-- [x] **Raw data to Huggingface format:** Huggingface builder script: writing [utils/coco_dataset_script.py](./utils/coco_dataset_script.py) dynamic Builder Classes for working with local COCO datasets files for getting data as huggingface datasets format. This script is dynamic; following types of COCO data can be built with this script: "2017_detection", "2017_panoptic", "2017_detection_skip", "2017_panoptic_skip". 
+- [x] **Raw data to Huggingface format:** Huggingface builder script: writing [utils/dataset_utils/coco_dataset_script.py](./utils/dataset_utils/coco_dataset_script.py) dynamic Builder Classes for working with local COCO datasets files for getting data as huggingface datasets format. This script is dynamic; following types of COCO data can be built with this script: "2017_detection", "2017_panoptic", "2017_detection_skip", "2017_panoptic_skip". 
 
     Sample:  {'image': <PIL.JpegImagePlugin.JpegImageFile image mode=RGB size=640x425 at 0x7F35BE2EA5B0>, 'image/filename': '000000000034.jpg', 'image/id': 34, 'panoptic_objects': [{'id': 5069153, 'area': 92893, 'bbox': [1, 20, 442, 399], 'is_crowd': False, 'category_id': 24, 'category_name': 'zebra', 'supercategory_id': 3, 'supercategory_name': 'animal', 'is_thing': True}, {'id': 2589299, 'area': 177587, 'bbox': [0, 0, 640, 425], 'is_crowd': False, 'category_id': 193, 'category_name': 'grass-merged', 'supercategory_id': 17, 'supercategory_name': 'plant', 'is_thing': False}], 'panoptic_image': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x425 at 0x7F35BE2EA730>, 'panoptic_image/filename': '000000000034.png'}
 
 
-- [x] **COCO compression:** COCO data compression script: [scripts/raw_to_parquet_coco.py](./scripts/raw_to_parquet_coco.py) for faster saving and loading in parquet format (compressed full ~28.2 GB COCO data to total ~133 MB by saving images in Pillow format inside parquet chart).
+- [x] **COCO compression:** COCO data compression script: [scripts/data_processing_scripts/raw_to_parquet_coco.py](./scripts/data_processing_scripts/raw_to_parquet_coco.py) for faster saving and loading in parquet format (compressed full ~28.2 GB COCO data to total ~133 MB by saving images in Pillow format inside parquet chart).
 
 
 - [x] **panoptic models' configs:** panoptic model architectures: pretrained backbone weight can be loaded, and supported for these backbones: bit, convnext, convnextv2, dinat, focalnet, nat, resnet, swin

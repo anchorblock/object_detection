@@ -145,3 +145,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+/data/coco_datasets/
+/data/imagenet_1k/
