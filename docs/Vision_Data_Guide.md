@@ -4,14 +4,14 @@ Welcome to **Step-by-Step: Downloading and Preprocessing Vision Datasets!** In t
 
 We will download and preprocess the following datasets:
 
- - ImageNet-22k classification pretraining data
- - Imagenet-1k classification data
- - COCO object detection data
- - COCO panoptic segmentation data
- - COCO instance segmentation data
- - ADE20K semantic segmentation data
+ - [ImageNet-22k classification pretraining data](#imagenet-22k-classification-pretraining-data)
+ - [Imagenet-1k classification data](#imagenet-1k-classification-data)
+ - [COCO object detection data](#coco-object-detection-data)
+ - [COCO panoptic segmentation data](#coco-panoptic-segmentation-data)
+ - [COCO instance segmentation data](#coco-instance-segmentation-data)
+ - [ADE20K semantic segmentation data](#ade20k-semantic-segmentation-data)
 
-Let's deep dive!
+Let's dive deeper!
 
 <br>
 
@@ -49,6 +49,13 @@ Imagenet-1k classification data is a subset of the ImageNet dataset, focusing on
 <br>
 
 ### Downloading and Formatting the ImageNet Dataset
+
+Install the following dependencies:
+
+```bash
+sudo apt update
+sudo apt install axel
+```
 
 To use the ImageNet-1k dataset (2012), you need to manually download, extract, and organize it. Follow these steps:
 

@@ -3,7 +3,7 @@
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
 
 
-| Input                          | Outputs               |                     | 
+| Input                           | Outputs                |                            | 
 | ------------------------------- | ---------------------- | -------------------------- | 
 | Original Image                  | Bounding Box Detection | Semantic Segmentation      | 
 | ![Image 1](./assets/000000039769.jpg) | ![Image 2](./assets/predicted_detection_map.png) | ![Image 3](./assets/predicted_semantic_map.png) | 
@@ -59,18 +59,18 @@ This repository supports training the following backbones with the imagenet-1k d
 
 Backbones: 
 
-```
-- bit
-- convnext
-- convnextv2
-- dinat
-- focalnet
-- nat
-- resnet
-- swin
-```
 
-For download and preprocess ImageNet-1k, please follow [this instruction link.](./Vision_Data_Guide.md#downloading-and-formatting-the-imagenet-dataset)
+- [BiT](https://arxiv.org/abs/1912.11370)
+- [ConvNeXt](https://arxiv.org/abs/2201.03545)
+- [ConvNeXt V2](https://arxiv.org/abs/2301.00808)
+- [DiNAT](https://arxiv.org/abs/2209.15001)
+- [FocalNet](https://arxiv.org/abs/2203.11926)
+- [NAT](https://arxiv.org/abs/2204.07143)
+- [ResNet](https://arxiv.org/abs/1512.03385)
+- [Swin Transformer](https://arxiv.org/abs/2103.14030)
+
+
+For download and preprocess ImageNet-1k, please follow [this instruction link.](./docs/Vision_Data_Guide.md#downloading-and-formatting-the-imagenet-dataset)
 
 <br>
 
@@ -79,30 +79,30 @@ For download and preprocess ImageNet-1k, please follow [this instruction link.](
 The default hyperparameters for training, as specified in the [FocalNet paper](https://arxiv.org/abs/2203.11926), are as follows:
 
 ```
-| Parameter                      | Value     |
-|-------------------------------|----------|
-| Batch Size                    | 1024     |
-| Base Learning Rate            | 1e-3     |
-| Learning Rate Scheduler       | Cosine   |
-| Minimum Learning Rate         | 1e-5     |
-| Warm-up Epochs                | 20       |
-| Training Epochs               | 300      |
-| Finetuning Epochs             | 30       |
-| Warm-up Schedule              | Linear   |
-| Warm-up Learning Rate         | 1e-6     |
-| Optimizer                     | AdamW    |
-| Color Jitter Factor           | 0.4      |
+| Parameter                     | Value                |
+|-------------------------------|----------------------|
+| Batch Size                    | 1024                 |
+| Base Learning Rate            | 1e-3                 |
+| Learning Rate Scheduler       | Cosine               |
+| Minimum Learning Rate         | 1e-5                 |
+| Warm-up Epochs                | 20                   |
+| Training Epochs               | 300                  |
+| Finetuning Epochs             | 30                   |
+| Warm-up Schedule              | Linear               |
+| Warm-up Learning Rate         | 1e-6                 |
+| Optimizer                     | AdamW                |
+| Color Jitter Factor           | 0.4                  |
 | Auto-augmentation             | rand-m9-mstd0.5-inc1 |
-| Random Erasing Probability    | 0.25     |
-| Random Erasing Mode           | Pixel    |
-| Mixup α                       | 0.8      |
-| Cutmix α                      | 0.8      |
-| Mixup Probability             | 1.0      |
-| Mixup Switch Probability      | 0.5      |
-| Stochastic Drop Path Rate     | 0.2      |
-| Label Smoothing               | 0.1      |
-| Gradient Clip                 | 5.0      |
-| Weight Decay                  | 0.05     |
+| Random Erasing Probability    | 0.25                 |
+| Random Erasing Mode           | Pixel                |
+| Mixup α                       | 0.8                  |
+| Cutmix α                      | 0.8                  |
+| Mixup Probability             | 1.0                  |
+| Mixup Switch Probability      | 0.5                  |
+| Stochastic Drop Path Rate     | 0.2                  |
+| Label Smoothing               | 0.1                  |
+| Gradient Clip                 | 5.0                  |
+| Weight Decay                  | 0.05                 |
 ```
 
 <br>
@@ -147,14 +147,14 @@ torchrun --standalone --nproc_per_node=$n_gpu scripts/train_backbone_classifier.
 
 These are the popular evaluation metrics used for ImageNet-1K:
 
-```
-- Top-1 Accuracy
-- Top-5 Accuracy
-- Precision
-- Recall
-- F1-Score
-- Mean Average Precision (mAP)
-```
+
+- [Top-1 Accuracy](## "Top-1 accuracy is the conventional accuracy, which means that the model answer (the one with the highest probability) must be exactly the expected answer.")
+- [Top-5 Accuracy](## "Top-5 accuracy means that any of your model that gives 5 highest probability answers that must match the expected answer.")
+- [Precision](## "Precision is the ratio of correctly classified positive samples (True Positive) to a total number of classified positive samples (either correctly or incorrectly).")
+- [Recall](## "Recall is the ratio between the numbers of Positive samples correctly classified as Positive to the total number of Positive samples.")
+- [F1-Score](## "F1-Score is the harmonic mean of Precision and Recall.")
+- [Mean Average Precision (mAP)](## "The mean average precision or MAP score is calculated by taking the mean AP over all classes and/or overall IoU thresholds, depending on different detection challenges that exist.")
+
 
 
 Now, evaluate the model with imagenet validation data:
@@ -177,8 +177,7 @@ python scripts/evaluate_backbone_classifier.py \
 
 
 ### Inference with Backbones
-
-An example inference code:
+Follow this [notebook](./notebooks/inference/backbone_classification.ipynb).
 
 
 
@@ -190,28 +189,28 @@ This repository supports training the following architectures with the COCO data
 
 Architectures:
 
-```
-- DeTR
-- mask2former
-- maskformer
-- custom_mask2former
-- custom_maskformer
-- oneformer
-```
+
+- [DeTR](./models/detr.py)
+- [mask2former](./models/mask2former.py)
+- [maskformer](./models/maskformer.py)
+- [custom_mask2former](./models/custom_mask2former.py)
+- [custom_maskformer](./models/custom_maskformer.py)
+- [oneformer](./models/oneformer.py)
+
 
 ### Supported Backbones for Panoptic Segmentation Architectures
 
 💪 The following list represents the supported backbones for Panoptic Segmentation Architectures:
-```
-- `bit`
-- `convnext`
-- `convnextv2`
-- `dinat`
-- `focalnet`
-- `nat`
-- `resnet`
-- `swin`
-```
+
+- [bit](./models/backbones/bit/)
+- [convnext](./models/backbones/convnext/)
+- [convnextv2](./models/backbones/convnextv2/)
+- [dinat](./models/backbones/dinat/)
+- [focalnet](./models/backbones/focalnet/)
+- [nat](./models/backbones/nat/)
+- [resnet](./models/backbones/resnet/)
+- [swin](./models/backbones/swin/)
+
 
 Please note the following important details about default huggingface object detection/ panoptic segmentation models:
 
@@ -229,9 +228,9 @@ So, to enable support for all types of pretrained backbones with **maskformer** 
 
 For download and preprocess COCO dataset (2017), please follow this instructions link:
 
- - [COCO object detection data download and preprocess](./Vision_Data_Guide.md#coco-object-detection-data)
- - [COCO panoptic segmentation data download and preprocess](./Vision_Data_Guide.md#coco-panoptic-segmentation-data)
- - [COCO instance segmentation data download and preprocess](./Vision_Data_Guide.md#coco-instance-segmentation-data)
+ - [COCO object detection data download and preprocess](./docs/Vision_Data_Guide.md#coco-object-detection-data)
+ - [COCO panoptic segmentation data download and preprocess](./docs/Vision_Data_Guide.md#coco-panoptic-segmentation-data)
+ - [COCO instance segmentation data download and preprocess](./docs/Vision_Data_Guide.md#coco-instance-segmentation-data)
 
 
 
@@ -261,42 +260,10 @@ Backbone must be freezed during training after loaded with pretrained backbone w
 ### Inference with Panoptic Segmentation Model
 
 You can infer as four types of vision tasks!
-1. Bounding Box Detection
-2. Panoptic Segmentation
-3. Instance Segmentation
-4. Semantic Segmentation
-
-<br>
-
-
-#### Inferenece 1: Bounding Box Detection
-
-An example inference code:
-
-
-<br>
-
-#### Inferenece 2: Panoptic Segmentation
-
-An example inference code:
-
-
-
-<br>
-
-
-#### Inferenece 3: Instance Segmentation
-
-An example inference code:
-
-
-
-<br>
-
-
-#### Inferenece 4: Semantic Segmentation
-
-An example inference code:
+1. [Bounding Box Detection](./notebooks/inference/bbox_detection.ipynb)
+2. [Panoptic Segmentation](./notebooks/inference/panoptic_segmentation.ipynb)
+3. [Instance Segmentation](./notebooks/inference/instance_segmentation.ipynb)
+4. [Semantic Segmentation](./notebooks/inference/semantic_segmentation.ipynb)
 
 
 
@@ -306,11 +273,11 @@ Explore popular backbone models and benchmarking models and datasets here for ob
 
 **Popular Backbone Model Comparison:**
 
-- Resnet
-- ViT
-- Swin
-- Focalnet
-- new_MODEL
+- [ResNet](https://arxiv.org/abs/1512.03385)
+- [ViT](https://arxiv.org/abs/2010.11929)
+- [Swin Transformer](https://arxiv.org/abs/2103.14030)
+- [FocalNet](https://arxiv.org/abs/2203.11926)
+<!-- - new_MODEL -->
 
 All models mentioned above are available in three different sizes:
 
@@ -320,33 +287,33 @@ All models mentioned above are available in three different sizes:
 
 **Popular Training Tasks and Datasets**
 
-- Pretraining (Imagenet22k)
-- Classification (Imagenet 1k)
-- Object Detection (COCO)
-- Instance Segmentation (COCO)
-- Panoptic Segmentation (COCO)
-- Semantic Segmentation (ADE20K)
+- Pretraining ([Imagenet22k](https://www.image-net.org/index.php))
+- Classification ([Imagenet 1k](https://www.image-net.org/download.php))
+- Object Detection ([COCO](https://cocodataset.org/#home))
+- Instance Segmentation ([COCO](https://cocodataset.org/#home))
+- Panoptic Segmentation ([COCO](https://cocodataset.org/#home))
+- Semantic Segmentation ([ADE20K](https://groups.csail.mit.edu/vision/datasets/ADE20K/))
 
 **Popular Object Detection Models for Benchmarking**
 
-- Mask-RCNN-1x
-- Mask-RCNN-3x
+- [Mask-RCNN-1x](https://github.com/facebookresearch/maskrcnn-benchmark)
+- [Mask-RCNN-3x](https://github.com/facebookresearch/maskrcnn-benchmark)
 
 **Popular Semantic Segmentation Models for Benchmarking**
 
-- UperNet
-- SegFormer
-- Mask2Former
+- [UperNet](https://arxiv.org/abs/1807.10221)
+- [SegFormer](https://arxiv.org/abs/2105.15203)
+- [Mask2Former](https://github.com/facebookresearch/Mask2Former)
 
 **Popular Instance Segmentation Models for Benchmarking**
 
-- DeTR
-- Mask2Former
+- [DeTR](https://github.com/facebookresearch/detr)
+- [Mask2Former](https://github.com/facebookresearch/Mask2Former)
 
 **Popular Panoptic Segmentation Models for Benchmarking**
 
-- DeTR
-- Mask2Former
+- [DeTR](https://github.com/facebookresearch/detr)
+- [Mask2Former](https://github.com/facebookresearch/Mask2Former)
 
 
 ## References & Citations
@@ -396,7 +363,7 @@ All models mentioned above are available in three different sizes:
 
 **Natten** for Neighborhood Attention and Dilated Neighborhood Attention
 
-Link: [github link](https://github.com/SHI-Labs/NATTEN)
+Link: [GitHub](https://github.com/SHI-Labs/NATTEN)
 
 ```
 @inproceedings{hassani2023neighborhood,
