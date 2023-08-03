@@ -1,6 +1,6 @@
 # Object Detection
 
-Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones.
+Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones. 
 
 
 | Input                           | Outputs                |                            | 
@@ -16,6 +16,7 @@ Welcome to the object detection benchmarking repository! Here, we train and eval
 
 The later images are generated using this repo's code: [Check the Inference Command](./README.md#inference-with-panoptic-segmentation-model)
 
+[Check the pdf](./object_detection/object_detection.pdf) about learn more about object detection benchmarking.
 
 ## Table of Contents
 
