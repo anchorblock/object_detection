@@ -16,7 +16,7 @@ Welcome to the object detection benchmarking repository! Here, we train and eval
 
 The later images are generated using this repo's code: [Check the Inference Command](./README.md#inference-with-panoptic-segmentation-model)
 
-[Check the pdf](./object_detection/object_detection.pdf) about learn more about object detection benchmarking.
+[Check the pdf](./object_detection.pdf) about learn more about object detection benchmarking.
 
 ## Table of Contents
 
