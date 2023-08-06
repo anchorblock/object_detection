@@ -1,4 +1,4 @@
-# Object Detection
+<h1 align="center">Object Detection</h1>
 
 <p align="center">
   <a href="https://ubuntu.com/">
