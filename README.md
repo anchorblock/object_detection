@@ -1,5 +1,29 @@
 # Object Detection
 
+<p align="center">
+  <a href="https://ubuntu.com/">
+    <img src="https://img.shields.io/badge/Ubuntu-22.04-blue" alt="Ubuntu">
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.9.0-blue" alt="Python">
+  </a>
+  <a href="https://pytorch.org/">
+    <img src="https://img.shields.io/badge/Torch-2.0.1-orange" alt="Torch">
+  </a>
+  <a href="https://huggingface.co/transformers/">
+    <img src="https://img.shields.io/badge/Transformers-4.29.2-orange" alt="Transformers">
+  </a>
+  <a href="https://huggingface.co/datasets/">
+    <img src="https://img.shields.io/badge/Datasets-2.12.0-orange" alt="Datasets">
+  </a>
+  <a href="https://huggingface.co/docs/accelerate/">
+    <img src="https://img.shields.io/badge/Accelerate-0.19.0-green" alt="Accelerate">
+  </a>
+  <a href="https://github.com/rwightman/pytorch-image-models">
+    <img src="https://img.shields.io/badge/timm-0.9.2-green" alt="timm">
+  </a>
+</p>
+
 Welcome to the object detection benchmarking repository! Here, we train and evaluate various transformers backbones for imagenet classification task using imagenet-1k and various transformers architectures for the panoptic segmentation task using the COCO dataset. To ensure ease of training and inference, we use the tiny versions of models and backbones. 
 
 
